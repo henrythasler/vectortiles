@@ -7,7 +7,7 @@ dbpath="/media/mapdata/pgdata_mvt"
 #osmdata="/media/henry/Tools/map/data/oberbayern-latest.osm.pbf"
 osmdata="/media/henry/Tools/map/data/slice.osm.pbf"
 
-mapping="$(pwd)/mapping.json"
+mappingfile="$(pwd)/mapping.yaml"
 
 ### Start postgis-container
 if [ ! "$(docker ps -q -f name=postgis)" ]; then
@@ -71,9 +71,9 @@ docker run -it --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d $db
 
 ### Import OSM-data
 docker run --network gis --rm \
-    -v ${osmdata}:/opt/imposm3/osmdata.osm.pbf \
-    -v $(pwd)/mapping.json:/opt/imposm3/mapping.json \
+    -v ${osmdata}:/opt/imposm3/osmdata.osm.pbf:ro \
+    -v ${mappingfile}:/opt/imposm3/mapping.yaml:ro \
     jawg/imposm3 import \
-        -mapping mapping.json \
+        -mapping mapping.yaml \
         -read osmdata.osm.pbf \
         -overwritecache -write -connection 'postgis://postgres@postgis/'${dbname}

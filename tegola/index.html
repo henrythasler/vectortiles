@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+    <title>Mapbox example</title>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script type="text/javascript">
+      // TODO: Enter your mapbox gl access token on the line below
+      mapboxgl.accessToken = ''
+      var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v9',
+        hash: true,
+        dragRotate: false,
+        center: [10.85, 48.05],
+        zoom: 12
+      });
+
+      var nav = new mapboxgl.NavigationControl();
+      map.addControl(nav, 'top-right');      
+
+      map.on('load', function () {
+        map.addSource('osm', {
+          'type': 'vector',
+          "tiles": ["http://localhost:8080/maps/osm/{z}/{x}/{y}.vector.pbf?debug=true"],
+//          "tolerance": 0
+        });
+
+        map.addLayer({
+          "id": "admin",
+          "source": "osm",
+          "source-layer": "admin",
+          "type": "line",
+          "paint": {
+            "line-color": "#AA00AA",
+            "line-width": 3
+          }
+        });
+
+        map.addLayer({
+          "id": "roads",
+          "source": "osm",
+          "source-layer": "roads",
+          "type": "line",
+          "paint": {
+            "line-color": "#00A",
+            "line-width": 1
+          }
+        });
+
+        map.addLayer({
+          "id": "buildings",
+          "source": "osm",
+          "source-layer": "buildings",
+          "type": "fill",
+          "paint": {
+            "fill-color": "#444",
+          }
+        });
+
+        map.addLayer({
+          "id": "amenities",
+          "source": "osm",
+          "source-layer": "amenities",
+          "type": "circle",
+          "paint": {
+            "circle-color": "#0a0",
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
