@@ -1,0 +1,136 @@
+{
+    "tables": {
+        "roads": {
+            "fields": [
+                {
+                    "type": "id",
+                    "name": "osm_id",
+                    "key": null
+                },
+                {
+                    "type": "geometry",
+                    "name": "geometry",
+                    "key": null
+                },
+                {
+                    "type": "string",
+                    "name": "name",
+                    "key": "name"
+                },
+                {
+                    "type": "mapping_value",
+                    "name": "type",
+                    "key": null
+                }
+            ],
+            "type": "linestring",
+            "mapping": {
+                "highway": [
+                    "__any__"
+                ]
+            }
+        },
+        "buildings": {
+            "fields": [
+                {
+                    "type": "id",
+                    "name": "osm_id",
+                    "key": null
+                },
+                {
+                    "type": "geometry",
+                    "name": "geometry",
+                    "key": null
+                },
+                {
+                    "type": "string",
+                    "name": "name",
+                    "key": "name"
+                },
+                {
+                    "type": "mapping_value",
+                    "name": "type",
+                    "key": null
+                }
+            ],
+            "type": "polygon",
+            "mapping": {
+                "building": [
+                    "__any__"
+                ]
+            }
+        },
+        "admin": {
+            "fields": [
+                {
+                    "type": "id",
+                    "name": "osm_id",
+                    "key": null
+                },
+                {
+                    "type": "geometry",
+                    "name": "geometry",
+                    "key": null
+                },
+                {
+                    "type": "string",
+                    "name": "name",
+                    "key": "name"
+                },
+                {
+                    "type": "mapping_value",
+                    "name": "type",
+                    "key": null
+                },
+                {
+                    "type": "integer",
+                    "name": "admin_level",
+                    "key": "admin_level"
+                }
+            ],
+            "type": "linestring",
+            "mapping": {
+                "boundary": [
+                    "administrative"
+                ]
+            }
+        },
+        "amenities": {
+            "fields": [
+                {
+                    "type": "id",
+                    "name": "osm_id",
+                    "key": null
+                },
+                {
+                    "type": "geometry",
+                    "name": "geometry",
+                    "key": null
+                },
+                {
+                    "type": "string",
+                    "name": "name",
+                    "key": "name"
+                },
+                {
+                    "type": "mapping_value",
+                    "name": "type",
+                    "key": null
+                }
+            ],
+            "type": "point",
+            "mapping": {
+                "amenity": [
+                    "university",
+                    "school",
+                    "library",
+                    "fuel",
+                    "hospital",
+                    "fire_station",
+                    "police",
+                    "townhall"
+                ]
+            }
+        }
+    }
+}

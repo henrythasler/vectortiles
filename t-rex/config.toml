@@ -1,0 +1,90 @@
+# t-rex configuration
+
+[service.mvt]
+viewer = true
+
+[[datasource]]
+dbconn = "postgresql://postgres@postgis/vector"
+name = "dbconn"
+default = true
+
+[grid]
+predefined = "web_mercator"
+
+[[tileset]]
+name = "osm_admin"
+extent = [10.74482, 47.92962, 11.28213, 48.29387]
+[[tileset.layer]]
+name = "osm_admin"
+table_name = "import.osm_admin"
+geometry_field = "geometry"
+geometry_type = "LINESTRING"
+srid = 3857
+buffer_size = 0
+#make_valid = true
+simplify = true
+query_limit = 1000
+#[[tileset.layer.query]]
+#sql = """SELECT geometry,id,osm_id,name,type,admin_level FROM import.osm_admin WHERE geometry && !bbox!"""
+
+[[tileset]]
+name = "osm_roads"
+extent = [10.74482, 47.92962, 11.28213, 48.29387]
+[[tileset.layer]]
+name = "osm_roads"
+table_name = "import.osm_roads"
+geometry_field = "geometry"
+geometry_type = "LINESTRING"
+srid = 3857
+buffer_size = 0
+#make_valid = true
+simplify = true
+query_limit = 1000
+#[[tileset.layer.query]]
+#sql = """SELECT geometry,id,osm_id,name,type,admin_level FROM import.osm_admin WHERE geometry && !bbox!"""
+
+
+[[tileset]]
+name = "osm_amenities"
+extent = [10.74406, 47.94090, 11.27975, 48.29575]
+[[tileset.layer]]
+name = "osm_amenities"
+table_name = "import.osm_amenities"
+geometry_field = "geometry"
+geometry_type = "POINT"
+srid = 3857
+buffer_size = 0
+#make_valid = true
+query_limit = 1000
+#[[tileset.layer.query]]
+#sql = """SELECT geometry,id,osm_id,name,type FROM import.osm_amenities WHERE geometry && !bbox!"""
+
+[[tileset]]
+name = "osm_buildings"
+extent = [10.73914, 47.92739, 11.28295, 48.29599]
+[[tileset.layer]]
+name = "osm_buildings"
+table_name = "import.osm_buildings"
+geometry_field = "geometry"
+geometry_type = "GEOMETRY"
+srid = 3857
+buffer_size = 0
+make_valid = true
+simplify = true
+#query_limit = 1000
+[[tileset.layer.query]]
+sql = """SELECT st_makevalid(geometry),id,osm_id,name,type FROM import.osm_buildings WHERE st_makevalid(geometry) && !bbox!"""
+
+[cache.file]
+base = "/cache"
+#baseurl = "http://example.com/tiles"
+
+[webserver]
+# Bind address. Use 0.0.0.0 to listen on all adresses.
+bind = "0.0.0.0"
+port = 6767
+
+#[[webserver.static]]
+#path = "/static"
+#dir = "./public/"
+
