@@ -38,9 +38,10 @@ srid = 3857             # The default srid for this provider. If not provided it
 
     [[providers.layers]]
     name = "roads"
-    tablename = "import.osm_roads"
-    geometry_fieldname = "geometry"
-    id_fieldname = "id"
+    # tablename = "import.osm_roads"
+    # geometry_fieldname = "geometry"
+    # id_fieldname = "id"
+    sql = "SELECT id, ST_AsBinary(geometry) as geom, type as class FROM import.osm_roads WHERE geometry && !BBOX!"
 
 [[maps]]
 name = "osm"
@@ -62,5 +63,6 @@ name = "osm"
 
     [[maps.layers]]
     provider_layer = "osm.roads"
-    min_zoom = 1
-    max_zoom = 24        
+    min_zoom = 12
+    max_zoom = 24 
+    dont_simplify = true
