@@ -1,4 +1,5 @@
 #!/bin/bash
+dbpath="/media/mapdata/pgdata_mvt"
 
 ### Start postgis-container
 if [ ! "$(docker ps -q -f name=postgis)" ]; then
