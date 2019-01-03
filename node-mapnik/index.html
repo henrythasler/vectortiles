@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+    <title>Mapbox example</title>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script type="text/javascript">
+      // TODO: Enter your mapbox gl access token on the line below
+      mapboxgl.accessToken = ''
+      var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v9',
+        hash: true,
+        dragRotate: false,
+        center: [0, 0],
+        zoom: 0
+      });
+
+      var nav = new mapboxgl.NavigationControl();
+      map.addControl(nav, 'top-right');      
+
+      map.on('load', function () {
+        map.addSource('vector', {
+          'type': 'vector',
+          "tiles": ["http://localhost:8000?type=vector&z={z}&x={x}&y={y}"],
+        });
+
+        map.addSource('raster', {
+          'type': 'raster',
+          "tiles": ["http://localhost:8000?type=raster&z={z}&x={x}&y={y}"],
+          "tileSize": 256,
+        });
+
+        map.addLayer({
+          "id": "raster",
+          "type": "raster",
+          "source": "raster",
+          "maxzoom": 8,
+          "paint": {
+            "raster-opacity": 0.5,
+          }
+        });
+
+        map.addLayer({
+          "id": "land",
+          "source": "vector",
+          "source-layer": "land",
+          "type": "fill",
+          "maxzoom": 8,
+          "paint": {
+            "fill-color": "#AA00AA",
+            "fill-opacity": .5,
+          }
+        });
+
+
+        map.addLayer({
+          "id": "admin_gen",
+          "source": "vector",
+          "source-layer": "admin_gen",
+          "type": "line",
+          "minzoom": 6,
+          "maxzoom": 11,
+          "paint": {
+            "line-color": "#AA00AA",
+            "line-width": 3
+          }
+        });
+
+        map.addLayer({
+          "id": "admin",
+          "source": "vector",
+          "source-layer": "admin",
+          "type": "line",
+          "minzoom": 11,
+          "paint": {
+            "line-color": "#AA00AA",
+            "line-width": 3
+          }
+        });
+
+        map.addLayer({
+          "id": "roads",
+          "source": "vector",
+          "source-layer": "roads",
+          "type": "line",
+          "minzoom": 12,
+          "paint": {
+            "line-color": "#00A",
+            "line-width": 1
+          }
+        });
+
+        map.addLayer({
+          "id": "buildings",
+          "source": "vector",
+          "source-layer": "buildings",
+          "type": "fill",
+          "minzoom": 13,
+          "paint": {
+            "fill-color": "#444",
+          }
+        });        
+
+      });
+
+    </script>
+  </body>
+</html>
