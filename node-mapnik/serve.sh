@@ -28,4 +28,4 @@ docker run \
     --network gis \
     -p 8000:8000 \
     -v $(pwd):/node-mapnik \
-    afrith/node-mapnik:latest
+    afrith/node-mapnik:latest node node-mapnik/server.js

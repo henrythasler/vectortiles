@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p data
+
 # 1:50m Shaded Relief
 if [ ! -f data/SR_50M/SR_50M.tif ]; then
     echo "downloading 1:50m Shaded Relief"
