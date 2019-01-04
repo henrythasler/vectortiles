@@ -1,2 +1,5 @@
 .cache/
 node_modules/
+node-mapnik/data/
+node-mapnik/out/
+node-mapnik/package-lock.json
