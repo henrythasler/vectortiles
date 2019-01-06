@@ -6,3 +6,4 @@ psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB -c "DROP TABLE IF EXIST
 crs=$(ogrinfo -ro -al -so $SHP_FILE | grep "AUTHORITY" | tail -n1 | grep -Eo "[0-9]+")
 
 shp2pgsql -s ${crs} -I -g geometry $SHP_FILE $SHP_TABLE | psql -h $POSTGRES_HOST -U $POSTGRES_USER -d $POSTGRES_DB > /dev/null
+

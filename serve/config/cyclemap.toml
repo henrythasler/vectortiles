@@ -1,0 +1,184 @@
+[webserver]
+port = ":8080"
+
+[cache]
+max_zoom="16"
+type="file"             # cache type
+basepath="/cache"       # cache specific config
+
+# register data providers
+[[providers]]
+name = "world"            # provider name is referenced from map layers
+type = "postgis"        # the type of data provider. currently only supports postgis
+host = "postgis"        # postgis database host
+port = 5432             # postgis database port
+database = "world"      # postgis database name
+user = "postgres"       # postgis database user
+password = ""           # postgis database password
+srid = 3857             # The default srid for this provider. If not provided it will be WebMercator (3857)
+
+    [[providers.layers]]
+    name = "water_polygons_z2"
+    tablename = "public.water_polygons_z2"
+    geometry_fieldname = "geometry"
+    id_fieldname = "gid"
+
+    [[providers.layers]]
+    name = "water_polygons_z3"
+    tablename = "public.water_polygons_z3"
+    geometry_fieldname = "geometry"
+    id_fieldname = "gid"
+
+    [[providers.layers]]
+    name = "water_polygons_z4"
+    tablename = "public.water_polygons_z4"
+    geometry_fieldname = "geometry"
+    id_fieldname = "gid"
+
+    [[providers.layers]]
+    name = "water_polygons_z5"
+    tablename = "public.water_polygons_z5"
+    geometry_fieldname = "geometry"
+    id_fieldname = "gid"
+
+    [[providers.layers]]
+    name = "water_polygons_z6"
+    tablename = "public.water_polygons_z6"
+    geometry_fieldname = "geometry"
+    id_fieldname = "gid"
+
+    [[providers.layers]]
+    name = "water_polygons_z7"
+    tablename = "public.water_polygons_z7"
+    geometry_fieldname = "geometry"
+    id_fieldname = "gid"
+
+    [[providers.layers]]
+    name = "water_polygons_z8"
+    tablename = "public.water_polygons_z8"
+    geometry_fieldname = "geometry"
+    id_fieldname = "gid"
+
+    [[providers.layers]]
+    name = "simplified_water_polygons"
+    tablename = "public.simplified_water_polygons"
+    geometry_fieldname = "geometry"
+    id_fieldname = "gid"
+
+    [[providers.layers]]
+    name = "water_polygons"
+    tablename = "public.water_polygons"
+    geometry_fieldname = "geometry"
+    id_fieldname = "gid"
+
+[[maps]]
+name = "global"
+
+    [[maps.layers]]
+    provider_layer = "world.water_polygons_z2"
+    max_zoom = 1
+    dont_simplify = true
+
+    [[maps.layers]]
+    provider_layer = "world.water_polygons_z3"
+    min_zoom = 2
+    max_zoom = 2
+    dont_simplify = true
+
+    [[maps.layers]]
+    provider_layer = "world.water_polygons_z4"
+    min_zoom = 3
+    max_zoom = 3
+    dont_simplify = true
+
+    [[maps.layers]]
+    provider_layer = "world.water_polygons_z5"
+    min_zoom = 4
+    max_zoom = 4
+    dont_simplify = true
+
+    [[maps.layers]]
+    provider_layer = "world.water_polygons_z6"
+    min_zoom = 5
+    max_zoom = 5
+    dont_simplify = true
+
+    [[maps.layers]]
+    provider_layer = "world.water_polygons_z7"
+    min_zoom = 6
+    max_zoom = 6
+    dont_simplify = true
+
+    [[maps.layers]]
+    provider_layer = "world.water_polygons_z8"
+    min_zoom = 7
+    max_zoom = 7
+    dont_simplify = true
+
+    [[maps.layers]]
+    provider_layer = "world.simplified_water_polygons"
+    min_zoom = 8
+    max_zoom = 8
+    dont_simplify = true
+
+    [[maps.layers]]
+    provider_layer = "world.water_polygons"
+    min_zoom = 9
+    dont_simplify = true    
+
+[[providers]]
+name = "osm"            # provider name is referenced from map layers
+type = "postgis"        # the type of data provider. currently only supports postgis
+host = "postgis"        # postgis database host
+port = 5432             # postgis database port
+database = "slice"      # postgis database name
+user = "postgres"       # postgis database user
+password = ""           # postgis database password
+srid = 3857             # The default srid for this provider. If not provided it will be WebMercator (3857)
+
+    [[providers.layers]]
+    name = "shiproute"
+    tablename = "import.osm_shiproute"
+    geometry_fieldname = "geometry"
+    id_fieldname = "id"
+
+    [[providers.layers]]
+    name = "cycleroute"
+    tablename = "import.osm_cycleroute"
+    geometry_fieldname = "geometry"
+    id_fieldname = "id"
+    fields = "ref, name"
+
+    [[providers.layers]]
+    name = "buildings"
+    tablename = "import.osm_buildings"
+    geometry_fieldname = "geometry"
+    id_fieldname = "id"
+
+    [[providers.layers]]
+    name = "admin"
+    tablename = "import.osm_admin"
+    geometry_fieldname = "geometry"
+    id_fieldname = "id"
+    fields = "ref, admin_level"
+
+
+[[maps]]
+name = "local"
+
+    [[maps.layers]]
+    provider_layer = "osm.shiproute"
+    min_zoom = 11
+
+    [[maps.layers]]
+    provider_layer = "osm.cycleroute"
+    min_zoom = 11
+
+    [[maps.layers]]
+    provider_layer = "osm.buildings"
+    min_zoom = 14
+
+    [[maps.layers]]
+    provider_layer = "osm.admin"
+    min_zoom = 6
+

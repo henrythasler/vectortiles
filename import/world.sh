@@ -10,6 +10,10 @@ dbpath="/media/mapdata/pgdata_mvt"
 ### Shapefiles
 shapefolder="/media/henry/Tools/map/data/shp/"
 
+NC='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+
 ### Start postgis-container 
 if [ ! "$(docker ps -q -f name=postgis)" ]; then
     if [ "$(docker ps -aq -f status=exited -f name=postgis)" ]; then
@@ -35,10 +39,10 @@ else echo "postgis container already running"
 fi
 
 ### Setup database
-# docker run -it --rm --net gis img-postgis:0.9 psql -h postgis -U postgres \
-#     -c "DROP DATABASE IF EXISTS ${dbname};" \
-#     -c "COMMIT;" \
-#     -c "CREATE DATABASE ${dbname} WITH ENCODING='UTF8' CONNECTION LIMIT=-1;"
+docker run -it --rm --net gis img-postgis:0.9 psql -h postgis -U postgres \
+    -c "DROP DATABASE IF EXISTS ${dbname};" \
+    -c "COMMIT;" \
+    -c "CREATE DATABASE ${dbname} WITH ENCODING='UTF8' CONNECTION LIMIT=-1;"
 
 docker run -it --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
     -c "CREATE EXTENSION IF NOT EXISTS postgis;" \
@@ -60,15 +64,25 @@ do
             --rm \
             --net gis \
             -v ${shapefolder}:${shapefolder}:ro \
-            -v $(pwd)/shp2pgsql.sh:/shp2pgsql.sh:ro \
+            -v $(pwd)/scripts/shp2pgsql.sh:/shp2pgsql.sh:ro \
             -e POSTGRES_USER="postgres" \
             -e POSTGRES_HOST="postgis" \
             -e POSTGRES_DB=${dbname} \
             -e SHP_FILE=${file} \
             -e SHP_TABLE=${table} \
             img-postgis:0.9 /shp2pgsql.sh
-        # exit 1
     done
-    printf ${NC}"\n"
+    printf ${GREEN}"OK"${NC}"\n"
 done
 
+### generate generalized tables
+# docker run \
+#     -it \
+#     --rm \
+#     --net gis \
+#     -v ${shapefolder}:${shapefolder}:ro \
+#     -v $(pwd)/scripts/generalize.sh:/generalize.sh:ro \
+#     -e POSTGRES_USER="postgres" \
+#     -e POSTGRES_HOST="postgis" \
+#     -e POSTGRES_DB=${dbname} \
+#     img-postgis:0.9 /generalize.sh

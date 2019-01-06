@@ -3,8 +3,8 @@
 ### Configure names, folders, etc.
 
 # change the input file here
-# osmfile="slice.osm.pbf"
-osmfile="oberbayern-latest.osm.pbf"
+osmfile="slice.osm.pbf"
+#osmfile="oberbayern-latest.osm.pbf"
 # osmfile="germany-south.osm.pbf"
 dbname="slice"
 
