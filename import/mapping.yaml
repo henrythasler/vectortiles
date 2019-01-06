@@ -1,0 +1,43 @@
+---
+tables:
+  shiproute:
+    type: linestring
+    fields:
+    - name: geometry
+      type: geometry
+    mapping:
+      route: [ferry]
+  cycleroute:
+    type: relation_member
+    relation_types: [route]
+    fields:
+    - name: geometry
+      type: geometry
+    - name: ref
+      type: string      
+      key: ref
+    - name: name
+      type: string      
+      key: name
+    mapping:
+      route: [bicycle]
+  buildings:
+    type: polygon
+    fields:
+    - name: geometry
+      type: geometry
+    mapping:
+      building: [__any__]
+  admin:
+    type: linestring
+    fields:
+    - name: geometry
+      type: geometry
+    - name: ref
+      type: string
+      key: ref
+    - name: admin_level
+      type: integer
+      key: admin_level
+    mapping:
+      boundary: [administrative]
