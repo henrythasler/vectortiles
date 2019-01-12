@@ -30,7 +30,7 @@ else echo "postgis container already running"
 fi
 
 mkdir -p ${cache}
-#rm -rf ${cache}/global
+rm -rf ${cache}/global
 rm -rf ${cache}/local
 
 ### start tileserver
@@ -41,6 +41,6 @@ docker run \
     --user "$(id -u):$(id -g)" \
     -v ${config}:/data/config.toml:ro \
     -v ${cache}:/cache \
-    -e TEGOLA_SQL_DEBUG=LAYER_SQL \
-    gospatial/tegola serve \
+    -e TEGOLA_SQL_DEBUG=LAYER_SQL:EXECUTE_SQL \
+    tegola:testing serve \
         --config /data/config.toml \

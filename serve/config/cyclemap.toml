@@ -80,15 +80,22 @@ srid = 3857             # The default srid for this provider. If not provided it
     tablename = "import.osm_admin"
     geometry_fieldname = "geometry"
     id_fieldname = "id"
-    fields = "ref, admin_level"
+    fields = "ref, level"
+
+    [[providers.layers]]
+    name = "landuse"
+    tablename = "import.osm_residental"
+    geometry_fieldname = "geometry"
+    id_fieldname = "id"
+    fields = "class, subclass, area"
 
 
 [[maps]]
 name = "local"
 
     [[maps.layers]]
-    provider_layer = "osm.shiproute"
-    min_zoom = 11
+    provider_layer = "osm.landuse"
+    min_zoom = 8
 
     [[maps.layers]]
     provider_layer = "osm.cycleroute"

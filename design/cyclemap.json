@@ -1,0 +1,105 @@
+{
+  "version": 8,
+  "name": "Mapbox Local",
+  "metadata": {},
+  "sources": {
+    "global": {
+      "type": "vector",
+      "tiles": [
+        "http://localhost:8080/maps/global/{z}/{x}/{y}.pbf?debug=true"
+      ]
+    },
+    "local": {
+      "type": "vector",
+      "tiles": [
+        "http://localhost:8080/maps/local/{z}/{x}/{y}.pbf"
+      ]
+    }
+  },
+  "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#f6f4e7"
+      }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "global",
+      "source-layer": "water",
+      "paint": {
+        "fill-color": "#7babcd",
+        "fill-opacity-transition": {
+          "duration": 2000
+        },
+        "fill-outline-color": "rgba(192,0,0,0)"
+      }
+    },
+    {
+      "id": "admin",
+      "type": "line",
+      "source": "local",
+      "source-layer": "admin",
+      "minzoom": 11,
+      "paint": {
+        "line-color": "#AA00AA",
+        "line-width": 3
+      }
+    },
+    {
+      "id": "shiproute",
+      "type": "line",
+      "source": "local",
+      "source-layer": "shiproute",
+      "minzoom": 10,
+      "paint": {
+        "line-color": "#1111AA",
+        "line-dasharray": [
+          5,
+          5
+        ],
+        "line-width": 2.4
+      }
+    },
+    {
+      "id": "buildings",
+      "type": "fill",
+      "source": "local",
+      "source-layer": "buildings",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "paint": {
+        "fill-color": "#444",
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              14,
+              0
+            ],
+            [
+              15,
+              1
+            ]
+          ]
+        },
+        "fill-outline-color": {
+          "stops": [
+            [
+              14,
+              "rgba(68, 68, 68, 0)"
+            ],
+            [
+              15,
+              "rgba(68, 68, 68, 1)"
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "id": "cndhwdkjr"
+}

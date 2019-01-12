@@ -1,8 +1,23 @@
 ---
 tables:
+  residental:
+    type: polygon
+    columns:
+    - name: geometry
+      type: geometry
+    - name: area
+      type: area
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    mapping:
+      landuse: [residential, commercial, retail, forest, military, recreation_ground, grass, cemetery]
+      leisure: [park, playground, pitch, golf_course]
+      
   shiproute:
     type: linestring
-    fields:
+    columns:
     - name: geometry
       type: geometry
     mapping:
@@ -10,7 +25,7 @@ tables:
   cycleroute:
     type: relation_member
     relation_types: [route]
-    fields:
+    columns:
     - name: geometry
       type: geometry
     - name: ref
@@ -23,20 +38,20 @@ tables:
       route: [bicycle]
   buildings:
     type: polygon
-    fields:
+    columns:
     - name: geometry
       type: geometry
     mapping:
       building: [__any__]
   admin:
     type: linestring
-    fields:
+    columns:
     - name: geometry
       type: geometry
     - name: ref
       type: string
       key: ref
-    - name: admin_level
+    - name: level
       type: integer
       key: admin_level
     mapping:
