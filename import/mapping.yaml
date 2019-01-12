@@ -1,8 +1,44 @@
 ---
+generalized_tables:
+    # FIXME: filter out unused subclasses
+    # FIXME: find a way to generate valid geometries by simplifying the previous gen-level
+    # FIXME: add generalized buildings
+  landuse_gen8:
+    source: landuse
+    sql_filter: ST_Area(geometry)>20000000.0
+    tolerance: 500.0    
+  landuse_gen9:
+    source: landuse
+    sql_filter: ST_Area(geometry)>2000000.0
+    tolerance: 200.0    
+  landuse_gen10:
+    source: landuse
+    sql_filter: ST_Area(geometry)>200000.0
+    tolerance: 100.0    
+  landuse_gen11:
+    source: landuse
+    sql_filter: ST_Area(geometry)>50000.0
+    tolerance: 50.0    
+  landuse_gen12:
+    source: landuse
+    sql_filter: ST_Area(geometry)>5000.0
+    tolerance: 20.0    
+  landuse_gen13:
+    source: landuse
+    sql_filter: ST_Area(geometry)>2000.0
+    tolerance: 10.0    
+  landuse_gen14:
+    source: landuse
+    sql_filter: ST_Area(geometry)>1000.0
+    tolerance: 5.0    
 tables:
-  residental:
+
+  landuse:
+  # FIXME: remove unused columns
     type: polygon
     columns:
+    - name: osm_id
+      type: id      
     - name: geometry
       type: geometry
     - name: area
@@ -11,9 +47,14 @@ tables:
       type: mapping_key
     - name: subclass
       type: mapping_value
+    - name: surface
+      type: string
+      key: surface
     mapping:
-      landuse: [residential, commercial, retail, forest, military, recreation_ground, grass, cemetery]
+      landuse: [residential, commercial, retail, forest, military, recreation_ground, grass, cemetery, industrial]
       leisure: [park, playground, pitch, golf_course]
+      aeroway: [aerodrome]
+      natural: [wood, scrub, beach]
       
   shiproute:
     type: linestring
@@ -22,6 +63,7 @@ tables:
       type: geometry
     mapping:
       route: [ferry]
+
   cycleroute:
     type: relation_member
     relation_types: [route]
@@ -36,6 +78,7 @@ tables:
       key: name
     mapping:
       route: [bicycle]
+
   buildings:
     type: polygon
     columns:
@@ -43,6 +86,7 @@ tables:
       type: geometry
     mapping:
       building: [__any__]
+
   admin:
     type: linestring
     columns:

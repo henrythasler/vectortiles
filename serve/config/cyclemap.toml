@@ -83,19 +83,32 @@ srid = 3857             # The default srid for this provider. If not provided it
     fields = "ref, level"
 
     [[providers.layers]]
+    # FIXME: remove unused columns
     name = "landuse"
-    tablename = "import.osm_residental"
-    geometry_fieldname = "geometry"
-    id_fieldname = "id"
-    fields = "class, subclass, area"
-
+    sql= """
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.osm_landuse_gen8 WHERE 8 >= !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.osm_landuse_gen9 WHERE 8 < !ZOOM! AND 9 >= !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.osm_landuse_gen10 WHERE 9 < !ZOOM! AND 10 >= !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.osm_landuse_gen11 WHERE 10 < !ZOOM! AND 11 >= !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.osm_landuse_gen12 WHERE 11 < !ZOOM! AND 12 >= !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.osm_landuse_gen13 WHERE 12 < !ZOOM! AND 13 >= !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.osm_landuse_gen14 WHERE 13 < !ZOOM! AND 14 >= !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.osm_landuse WHERE 14 < !ZOOM! AND (geometry && !BBOX!) 
+    """
 
 [[maps]]
 name = "local"
 
     [[maps.layers]]
     provider_layer = "osm.landuse"
-    min_zoom = 8
+    min_zoom = 7
 
     [[maps.layers]]
     provider_layer = "osm.cycleroute"
@@ -103,7 +116,7 @@ name = "local"
 
     [[maps.layers]]
     provider_layer = "osm.buildings"
-    min_zoom = 14
+    min_zoom = 13
 
     [[maps.layers]]
     provider_layer = "osm.admin"

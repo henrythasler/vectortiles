@@ -42,5 +42,5 @@ docker run \
     -v ${config}:/data/config.toml:ro \
     -v ${cache}:/cache \
     -e TEGOLA_SQL_DEBUG=LAYER_SQL:EXECUTE_SQL \
-    tegola:testing serve \
+    tegola:master serve \
         --config /data/config.toml \
