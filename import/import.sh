@@ -17,6 +17,11 @@ dbpath="/media/mapdata/pgdata_mvt"
 
 mappingfile="$(pwd)/mapping.yaml"
 
+#defines
+NC='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+
 ### Start postgis-container 
 if [ ! "$(docker ps -q -f name=postgis)" ]; then
     if [ "$(docker ps -aq -f status=exited -f name=postgis)" ]; then
@@ -42,12 +47,12 @@ else echo "postgis container already running"
 fi
 
 ### Setup database
-docker run -it --rm --net gis img-postgis:0.9 psql -h postgis -U postgres \
+docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres \
     -c "DROP DATABASE IF EXISTS ${dbname};" >/dev/null \
     -c "COMMIT;" 2>&1 >/dev/null \
     -c "CREATE DATABASE ${dbname} WITH ENCODING='UTF8' CONNECTION LIMIT=-1;"
 
-docker run -it --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
     -c "CREATE EXTENSION IF NOT EXISTS postgis;" \
     -c "CREATE EXTENSION IF NOT EXISTS postgis_topology;" \
     -c "CREATE EXTENSION IF NOT EXISTS postgis_sfcgal;" \
@@ -61,7 +66,53 @@ docker run --network gis --rm \
     jawg/imposm3 import \
         -mapping mapping.yaml \
         -read osmdata.osm.pbf \
-        -overwritecache -write -connection 'postgis://postgres@postgis/'${dbname}
+        -overwritecache -write -connection 'postgis://postgres@postgis/'${dbname}'?prefix=NONE'
 
-docker run -it --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
-    -c "SELECT pg_size_pretty(pg_database_size('${dbname}')) as db_size;" \
+
+### greate generalized tables
+# ref: https://www.cyberciti.biz/tips/bash-shell-parameter-substitution-2.html
+function generalize() {
+    local source=${1}
+    local target=${2}
+    local arealimit=${3:-0}
+    local tolerance=${4:-0}
+    docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+        -c "DROP TABLE IF EXISTS import.${target}" \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})) AS geometry, area, class, subclass, surface FROM import.${source} WHERE ST_Area(geometry)>${arealimit})" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}"
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
+
+function generalize_hull() {
+    local source=${1}
+    local target=${2}
+    local arealimit=${3:-0}
+    local tolerance=${4:-0}
+    local percent=${5:-0.99}
+    docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+        -c "DROP TABLE IF EXISTS import.${target}" \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_ConcaveHull(ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})), ${percent}) AS geometry, area, class, subclass, surface FROM import.${source} WHERE ST_Area(geometry)>${arealimit})" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}"
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
+
+generalize "landuse" "landuse_gen14" 1000 5 &
+generalize "landuse" "landuse_gen13" 2000 10 &
+wait
+
+generalize "landuse_gen13" "landuse_gen12" 5000 20 & 
+generalize "landuse_gen13" "landuse_gen11" 50000 50 &
+generalize "landuse_gen13" "landuse_gen10" 200000 100 &
+wait
+
+generalize_hull "landuse_gen10" "landuse_gen9" 2000000 200 0.95 &
+generalize_hull "landuse_gen10" "landuse_gen8" 5000000 500 0.98 &
+wait
+
+printf "generalize ${GREEN}done${NC}\n"
+
+### show resulting database size
+docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+    -c "SELECT pg_size_pretty(pg_database_size('${dbname}')) as db_size;"

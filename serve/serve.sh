@@ -41,6 +41,6 @@ docker run \
     --user "$(id -u):$(id -g)" \
     -v ${config}:/data/config.toml:ro \
     -v ${cache}:/cache \
-    -e TEGOLA_SQL_DEBUG=LAYER_SQL:EXECUTE_SQL \
+    -e TEGOLA_SQL_DEBUG=LAYER_SQL \
     tegola:master serve \
         --config /data/config.toml \

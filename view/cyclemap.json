@@ -26,7 +26,7 @@
       }
     },
     {
-      "id": "water",
+      "id": "water-ocean",
       "type": "fill",
       "source": "global",
       "source-layer": "water",
@@ -55,15 +55,18 @@
           "residential"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
       "paint": {
         "fill-color": {
           "stops": [
             [
-              14,
+              13,
               "rgba(204, 204, 204, 1)"
             ],
             [
-              15,
+              14,
               "rgba(204, 204, 204, 0.5)"
             ]
           ]
@@ -71,11 +74,11 @@
         "fill-outline-color": {
           "stops": [
             [
-              14,
+              13,
               "rgba(204, 204, 204, 1)"
             ],
             [
-              15,
+              14,
               "rgba(225, 224, 218, 1)"
             ]
           ]
@@ -83,7 +86,7 @@
       }
     },
     {
-      "id": "landuse-industrial-copy",
+      "id": "landuse-industrial",
       "type": "fill",
       "source": "local",
       "source-layer": "landuse",
@@ -98,9 +101,12 @@
           "aerodrome"
         ]
       ],
+      "layout": {
+        "visibility": "visible"
+      },
       "paint": {
         "fill-color": "rgba(212, 189, 182, 1)",
-        "fill-outline-color": "rgba(0, 0, 0, 0)"
+        "fill-outline-color": "rgba(212, 189, 182, 1)"
       }
     },
     {
@@ -175,6 +181,59 @@
       "paint": {
         "fill-color": "#ffe88b",
         "fill-outline-color": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "id": "water-way",
+      "type": "line",
+      "source": "local",
+      "source-layer": "waterway",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": [
+        "all",
+        [
+          "==",
+          "tunnel",
+          false
+        ],
+        [
+          "!in",
+          "layer",
+          -2,
+          -3,
+          "NaN"
+        ]
+      ],
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "rgba(31, 131, 188, 1)",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          9, ["match", ["get", "subclass"], "river", 2, "canal", 2, 0.2],
+          12, ["match", ["get", "subclass"], "river", 3, "canal", 3, "stream", 1, 0.2],
+          14, ["match", ["get", "subclass"], "river", 5, "canal", 5, "stream", 3, "ditch", 2, 0.2],
+          18, ["match", ["get", "subclass"], "river", 50, "canal", 50, "stream", 30, "ditch", 10, 0.2]
+        ]
+      }
+    },
+    {
+      "id": "water-area",
+      "type": "fill",
+      "source": "local",
+      "source-layer": "waterarea",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": [
+        "all"
+      ],
+      "layout": {},
+      "paint": {
+        "fill-color": "rgba(123, 171, 205, 1)",
+        "fill-outline-color": "rgba(31, 131, 188, 1)"
       }
     },
     {

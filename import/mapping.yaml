@@ -1,37 +1,74 @@
 ---
-generalized_tables:
+# generalized_tables:
     # FIXME: filter out unused subclasses
     # FIXME: find a way to generate valid geometries by simplifying the previous gen-level
     # FIXME: add generalized buildings
-  landuse_gen8:
-    source: landuse
-    sql_filter: ST_Area(geometry)>20000000.0
-    tolerance: 500.0    
-  landuse_gen9:
-    source: landuse
-    sql_filter: ST_Area(geometry)>2000000.0
-    tolerance: 200.0    
-  landuse_gen10:
-    source: landuse
-    sql_filter: ST_Area(geometry)>200000.0
-    tolerance: 100.0    
-  landuse_gen11:
-    source: landuse
-    sql_filter: ST_Area(geometry)>50000.0
-    tolerance: 50.0    
-  landuse_gen12:
-    source: landuse
-    sql_filter: ST_Area(geometry)>5000.0
-    tolerance: 20.0    
-  landuse_gen13:
-    source: landuse
-    sql_filter: ST_Area(geometry)>2000.0
-    tolerance: 10.0    
-  landuse_gen14:
-    source: landuse
-    sql_filter: ST_Area(geometry)>1000.0
-    tolerance: 5.0    
+  # landuse_gen8:
+  #   source: landuse_gen9
+  #   sql_filter: ST_Area(geometry)>5000000.0
+  #   tolerance: 500.0    
+  # landuse_gen9:
+  #   source: landuse_gen10
+  #   sql_filter: ST_Area(geometry)>2000000.0
+  #   tolerance: 200.0    
+  # landuse_gen10:
+  #   source: landuse_gen11
+  #   sql_filter: ST_Area(geometry)>200000.0
+  #   tolerance: 100.0    
+  # landuse_gen11:
+  #   source: landuse_gen12
+  #   sql_filter: ST_Area(geometry)>50000.0
+  #   tolerance: 50.0    
+  # landuse_gen12:
+  #   source: landuse_gen13
+  #   sql_filter: ST_Area(geometry)>5000.0
+  #   tolerance: 20.0    
+  # landuse_gen13:
+  #   source: landuse_gen14
+  #   sql_filter: ST_Area(geometry)>2000.0
+  #   tolerance: 10.0    
+  # landuse_gen14:
+  #   source: landuse
+  #   sql_filter: ST_Area(geometry)>1000.0
+  #   tolerance: 5.0    
 tables:
+  waterarea:
+    type: polygon
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: area
+      type: area
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    mapping:
+      natural: [water, pond]
+      landuse: [reservoir, basin]
+      waterway: [riverbank, pond]
+
+  waterway:
+    type: linestring
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    - name: tunnel
+      type: bool
+      key: tunnel
+    - name: layer
+      type: integer
+      key: layer
+    mapping:
+      waterway: [river, canal, stream, ditch]
 
   landuse:
   # FIXME: remove unused columns
