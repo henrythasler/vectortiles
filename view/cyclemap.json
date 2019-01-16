@@ -6,13 +6,13 @@
     "global": {
       "type": "vector",
       "tiles": [
-        "http://localhost:8080/maps/global/{z}/{x}/{y}.pbf?debug=true"
+        "http://localhost:8080/maps/global/{z}/{x}/{y}.pbf"
       ]
     },
     "local": {
       "type": "vector",
       "tiles": [
-        "http://localhost:8080/maps/local/{z}/{x}/{y}.pbf"
+        "http://localhost:8080/maps/local/{z}/{x}/{y}.pbf?debug=true"
       ]
     }
   },
@@ -191,19 +191,23 @@
       "minzoom": 7,
       "maxzoom": 24,
       "filter": [
-        "all",
-        [
-          "==",
-          "tunnel",
-          false
+        "any",
+        ["all",
+          [">=", ["zoom"], 14],
+          ["match", ["get", "subclass"], ["ditch"], true, false],
+          ["!=", ["get", "tunnel"], true]
         ],
-        [
-          "!in",
-          "layer",
-          -2,
-          -3,
-          "NaN"
+        ["all",
+          [">=", ["zoom"], 12],
+          ["match", ["get", "subclass"], ["stream"], true, false],
+          ["!=", ["get", "tunnel"], true]
+        ],
+        ["all",
+          [">=", ["zoom"], 9],
+          ["match", ["get", "subclass"], ["river", "canal"], true, false],
+          ["!=", ["get", "tunnel"], true]
         ]
+
       ],
       "layout": {
         "line-join": "round",
@@ -213,10 +217,10 @@
         "line-color": "rgba(31, 131, 188, 1)",
         "line-width": [
           "interpolate", ["exponential", 2], ["zoom"],
-          9, ["match", ["get", "subclass"], "river", 2, "canal", 2, 0.2],
-          12, ["match", ["get", "subclass"], "river", 3, "canal", 3, "stream", 1, 0.2],
-          14, ["match", ["get", "subclass"], "river", 5, "canal", 5, "stream", 3, "ditch", 2, 0.2],
-          18, ["match", ["get", "subclass"], "river", 50, "canal", 50, "stream", 30, "ditch", 10, 0.2]
+          9, ["match", ["get", "subclass"], "river", 2, "canal", 2, 1],
+          12, ["match", ["get", "subclass"], "river", 3, "canal", 3, "stream", 1, 1],
+          14, ["match", ["get", "subclass"], "river", 5, "canal", 5, "stream", 3, "ditch", 2, 1],
+          18, ["match", ["get", "subclass"], "river", 50, "canal", 50, "stream", 30, "ditch", 10, 1]
         ]
       }
     },
@@ -282,7 +286,35 @@
           ]
         }
       }
-    }
+    },
+    {
+      "id": "debug-tile-outline",
+      "type": "line",
+      "source": "local",
+      "source-layer": "debug-tile-outline",
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "line-color": "#ff0000"
+      }
+    },
+    {
+      "id": "debug-tile-center",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "debug-tile-center",
+      "minzoom": 0,
+      "maxzoom": 24,
+      "filter": [
+        "all"
+      ],
+      "paint": {"text-color": "#ff0000"},
+      "layout": {
+        "visibility": "none",
+        "text-field": "{zxy}"
+      }
+    }       
   ],
   "id": "cndhwdkjr"
 }
