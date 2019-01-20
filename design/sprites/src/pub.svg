@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="12"
+   height="12"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="pub.svg">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="8"
+     inkscape:cx="47.538431"
+     inkscape:cy="-17.314974"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1151"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:snap-global="true">
+    <inkscape:grid
+       snapvisiblegridlinesonly="true"
+       enabled="true"
+       visible="true"
+       empspacing="5"
+       id="grid2994"
+       type="xygrid" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4">
+    <filter
+       id="filter3028"
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       inkscape:label="Lightness-Contrast"
+       inkscape:menu="Color"
+       inkscape:menu-tooltip="Increase or decrease lightness and contrast"
+       color-interpolation-filters="sRGB">
+      <feFlood
+         id="feFlood3030"
+         result="result1"
+         flood-opacity="0"
+         flood-color="rgb(128,128,128)" />
+      <feBlend
+         id="feBlend3032"
+         in2="SourceGraphic"
+         mode="normal"
+         result="result2" />
+      <feComposite
+         id="feComposite3034"
+         in2="SourceGraphic"
+         k2="1"
+         operator="arithmetic"
+         result="result3" />
+      <feComposite
+         id="feComposite3036"
+         in2="SourceGraphic"
+         operator="in" />
+    </filter>
+    <filter
+       id="filter3055"
+       inkscape:label="Lightness-Contrast"
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       inkscape:menu="Color"
+       inkscape:menu-tooltip="Increase or decrease lightness and contrast"
+       color-interpolation-filters="sRGB">
+      <feColorMatrix
+         id="feColorMatrix3057"
+         type="saturate"
+         values="0"
+         result="fbSourceGraphic" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix3079" />
+      <feFlood
+         id="feFlood3081"
+         result="result1"
+         flood-opacity="0"
+         flood-color="rgb(128,128,128)"
+         in="fbSourceGraphic" />
+      <feBlend
+         id="feBlend3083"
+         in2="fbSourceGraphic"
+         mode="normal"
+         result="result2" />
+      <feComposite
+         id="feComposite3085"
+         in2="fbSourceGraphic"
+         k2="1"
+         operator="arithmetic"
+         result="result3" />
+      <feComposite
+         id="feComposite3087"
+         in2="fbSourceGraphic"
+         operator="in" />
+    </filter>
+    <inkscape:perspective
+       id="perspective12"
+       inkscape:persp3d-origin="290 : 193.33333 : 1"
+       inkscape:vp_z="580 : 290 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 290 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective12-1"
+       inkscape:persp3d-origin="290 : 193.33333 : 1"
+       inkscape:vp_z="580 : 290 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 290 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(4.8596183e-7,-1040.3622)"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <path
+       id="rect4334"
+       d="m 3,0 6,0 c 1.662,0 3,1.338 3,3 l 0,6 c 0,1.662 -1.338,3 -3,3 L 3,12 C 1.338,12 0,10.662 0,9 L 0,3 C 0,1.338 1.338,0 3,0 z"
+       style="fill:#734a08;fill-opacity:1;stroke:none"
+       transform="translate(-4.8596183e-7,1040.3622)" />
+    <g
+       id="text3782"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path3000"
+       d=""
+       style="fill:#000000" />
+    <path
+       style="fill:#ffffff"
+       d="M 6 1.5 C 5.0509957 1.5 4.1920265 1.55265 3.5625 1.59375 C 3.2477367 1.61425 2.9972945 1.62905 2.8125 1.65625 C 2.7201028 1.66995 2.6262574 1.6686 2.5625 1.6875 C 2.5306213 1.697 2.5060765 1.728 2.46875 1.75 C 2.4500867 1.761 2.4310747 1.75225 2.40625 1.78125 C 2.3814253 1.81035 2.34375 1.8749 2.34375 1.9375 A 0.20568222 0.20568222 0 0 0 2.34375 1.96875 L 3.4375 10.125 A 0.20568222 0.20568222 0 0 0 3.46875 10.15625 C 3.5037802 10.25475 3.5645604 10.26635 3.59375 10.28125 C 3.6229396 10.29625 3.6319902 10.3056 3.65625 10.3125 C 3.7047696 10.3264 3.7474772 10.33385 3.8125 10.34375 C 3.9425457 10.36345 4.1296933 10.39135 4.34375 10.40625 C 4.7718635 10.43625 5.3514785 10.46875 6 10.46875 C 6.6485628 10.46875 7.2281541 10.43635 7.65625 10.40625 C 7.8702979 10.39125 8.0575194 10.36335 8.1875 10.34375 C 8.2524903 10.33385 8.295336 10.3263 8.34375 10.3125 C 8.367957 10.3056 8.3771491 10.29615 8.40625 10.28125 C 8.4353509 10.26645 8.4957972 10.25515 8.53125 10.15625 A 0.20568222 0.20568222 0 0 0 8.5625 10.125 L 9.625 1.96875 A 0.20568222 0.20568222 0 0 0 9.625 1.9375 A 0.20568222 0.20568222 0 0 0 9.59375 1.90625 A 0.20568222 0.20568222 0 0 0 9.59375 1.875 C 9.5662008 1.7635 9.5032467 1.7683 9.46875 1.75 C 9.4342533 1.7317 9.4067316 1.6966 9.375 1.6875 C 9.3115369 1.6694 9.2483003 1.66985 9.15625 1.65625 C 8.9721493 1.62915 8.7164831 1.61435 8.40625 1.59375 C 7.7857839 1.55245 6.9405389 1.5 6 1.5 z M 7.8125 3.21875 C 7.987508 3.20245 8.1857808 3.21775 8.375 3.21875 L 7.46875 9.3125 C 7.3803415 9.3157 7.2668531 9.311 7.125 9.3125 C 6.8155022 9.3158 6.4100864 9.3164 6 9.3125 C 5.5899136 9.3086 5.1532879 9.29045 4.84375 9.28125 C 4.6889811 9.27675 4.558726 9.28665 4.46875 9.28125 L 3.53125 3.40625 C 4.3227803 3.81525 5.060558 3.7827 5.78125 3.625 C 6.4086916 3.4877 7.0541321 3.28915 7.8125 3.21875 z "
+       transform="translate(-4.8596183e-7,1040.3622)"
+       id="path3197" />
+  </g>
+</svg>

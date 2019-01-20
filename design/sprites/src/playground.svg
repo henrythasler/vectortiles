@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="12"
+   height="12"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="parking.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="44.8"
+     inkscape:cx="2.9241071"
+     inkscape:cy="8.2456753"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1151"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:snap-global="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2994"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(4.8596183e-7,-1040.3622)">
+    <path
+       transform="translate(-4.8596183e-7,1040.3622)"
+       style="fill:#339933;fill-opacity:1;stroke:none"
+       d="m 3,0 6,0 c 1.662,0 3,1.338 3,3 l 0,6 c 0,1.662 -1.338,3 -3,3 L 3,12 C 1.338,12 0,10.662 0,9 L 0,3 C 0,1.338 1.338,0 3,0 z"
+       id="rect4334" />
+    <g
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+       id="text3782" />
+    <g
+       id="g3837"
+       transform="matrix(0.61471503,0,0,0.61471503,11.025381,388.65134)"
+       style="fill:#ffffff">
+      <path
+         id="path3798"
+         d="m -8.868075,1071.0433 c -0.043,-0.814 -0.131,-1.625 -0.275,-2.426 0.008,-0.118 -0.011,-0.237 -0.066,-0.354 -0.018,-0.089 -0.039,-0.18 -0.059,-0.269 0.817,-1.473 1.813,-2.81 3.065,-3.979 0.865,-0.806 -0.432,-2.097 -1.294,-1.292 -1.09,1.015 -2.015,2.164 -2.797,3.408 -0.526,-0.229 -1.175,-0.13 -1.635,0.208 -1.131,-0.571 -2.345,-0.972 -3.629,-1.168 -1.154,-0.177 -1.65,1.585 -0.488,1.763 1.305,0.2 2.545,0.606 3.682,1.228 0.312,1.188 0.444,2.374 0.476,3.596 -0.48,1.755 -1.096,3.477 -1.779,5.16 -0.589,1.459 1.771,2.088 2.354,0.648 0.519,-1.283 1,-2.588 1.413,-3.91 1.036,1.33 2.07,2.659 3.105,3.99 0.964,1.241 2.678,-0.497 1.725,-1.727 -1.267,-1.624 -2.533,-3.251 -3.798,-4.876 z"
+         inkscape:connector-curvature="0"
+         style="fill:#ffffff" />
+      <circle
+         transform="translate(-18.166075,1037.9383)"
+         id="circle3800"
+         r="1.791"
+         cy="25.431999"
+         cx="6.4369998"
+         sodipodi:cx="6.4369998"
+         sodipodi:cy="25.431999"
+         sodipodi:rx="1.791"
+         sodipodi:ry="1.791"
+         style="fill:#ffffff"
+         d="m 8.2279998,25.431999 c 0,0.989142 -0.801858,1.791 -1.791,1.791 -0.989142,0 -1.791,-0.801858 -1.791,-1.791 0,-0.989142 0.801858,-1.791 1.791,-1.791 0.989142,0 1.791,0.801858 1.791,1.791 z" />
+    </g>
+    <circle
+       d="m 29.415,37.541 c 0,0.98859 -0.80141,1.79 -1.79,1.79 -0.98859,0 -1.79,-0.80141 -1.79,-1.79 0,-0.988589 0.80141,-1.79 1.79,-1.79 0.98859,0 1.79,0.801411 1.79,1.79 z"
+       style="fill:#ffffff"
+       sodipodi:ry="1.79"
+       sodipodi:rx="1.79"
+       sodipodi:cy="37.541"
+       sodipodi:cx="27.625"
+       cx="27.625"
+       cy="37.541"
+       r="1.79"
+       id="circle3854"
+       transform="matrix(0.8060112,0,0,0.8060112,-12.586978,1017.4579)" />
+  </g>
+</svg>
