@@ -56,7 +56,7 @@ tables:
     - name: osm_id
       type: id      
     - name: geometry
-      type: geometry
+      type: validated_geometry
     - name: class
       type: mapping_key
     - name: subclass
@@ -84,15 +84,44 @@ tables:
       type: mapping_key
     - name: subclass
       type: mapping_value
+    mappings:
+      landuse:
+        mapping:
+          landuse: [residential, commercial, retail, cemetery, industrial]
+          leisure: [playground, pitch, golf_course]
+          aeroway: [aerodrome]
+      military:
+        mapping:
+          landuse: [military]
+          military: [danger_area]      
+      leisure:
+        mapping:
+          leisure: [nature_reserve]
+
+  landcover:
+  # FIXME: remove unused columns
+    type: polygon
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: area
+      type: area
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
     - name: surface
       type: string
       key: surface
-    mapping:
-      landuse: [residential, commercial, retail, forest, military, recreation_ground, grass, cemetery, industrial]
-      leisure: [park, playground, pitch, golf_course]
-      aeroway: [aerodrome]
-      natural: [wood, scrub, beach]
-      
+    mappings:
+      landuse:
+        mapping:
+          landuse: [forest, recreation_ground, grass]
+          leisure: [park]
+          natural: [wood, scrub, beach, wetland, glacier]
+
   shiproute:
     type: linestring
     columns:
@@ -121,6 +150,9 @@ tables:
     columns:
     - name: geometry
       type: geometry
+    - name: number
+      type: string
+      key: addr:housenumber
     mapping:
       building: [__any__]
 

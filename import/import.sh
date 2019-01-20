@@ -60,59 +60,105 @@ docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbnam
     -c "ALTER DATABASE ${dbname} SET postgis.backend = sfcgal;"
 
 ### Import OSM-data
-docker run --network gis --rm \
-    -v ${osmpath}${osmfile}:/opt/imposm3/osmdata.osm.pbf:ro \
-    -v ${mappingfile}:/opt/imposm3/mapping.yaml:ro \
-    jawg/imposm3 import \
-        -mapping mapping.yaml \
-        -read osmdata.osm.pbf \
-        -overwritecache -write -connection 'postgis://postgres@postgis/'${dbname}'?prefix=NONE'
-
+if [ -f ${osmpath}${osmfile} ]; then 
+    docker run --network gis --rm \
+        -v ${osmpath}${osmfile}:/opt/imposm3/osmdata.osm.pbf:ro \
+        -v ${mappingfile}:/opt/imposm3/mapping.yaml:ro \
+        jawg/imposm3 import \
+            -mapping mapping.yaml \
+            -read osmdata.osm.pbf \
+            -overwritecache -write -optimize -connection 'postgis://postgres@postgis/'${dbname}'?prefix=NONE'
+    OUT=$?
+else
+    printf "${RED}ERROR${NC}: ${osmpath}${osmfile} not found.\n" 
+    exit 1
+fi
 
 ### greate generalized tables
 # ref: https://www.cyberciti.biz/tips/bash-shell-parameter-substitution-2.html
 function generalize() {
     local source=${1}
     local target=${2}
-    local arealimit=${3:-0}
-    local tolerance=${4:-0}
+    local tolerance=${3}
+    local columns=${4:-""}
+    local filter=${5:-""}
+    printf "start import.${target}...\n"
     docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
-        -c "DROP TABLE IF EXISTS import.${target}" \
-        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})) AS geometry, area, class, subclass, surface FROM import.${source} WHERE ST_Area(geometry)>${arealimit})" \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
         -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
         -c "ANALYZE import.${target}"
     printf "import.${target} ${GREEN}done${NC}\n"
 }
+
 
 function generalize_hull() {
     local source=${1}
     local target=${2}
-    local arealimit=${3:-0}
-    local tolerance=${4:-0}
-    local percent=${5:-0.99}
+    local tolerance=${3}
+    local columns=${4:-""}
+    local filter=${5:-""}
+    local percent=${6:-0.99}
+    printf "start import.${target}...\n"
     docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
-        -c "DROP TABLE IF EXISTS import.${target}" \
-        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_ConcaveHull(ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})), ${percent}) AS geometry, area, class, subclass, surface FROM import.${source} WHERE ST_Area(geometry)>${arealimit})" \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_ConcaveHull(ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})), ${percent}, false) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
         -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
         -c "ANALYZE import.${target}"
     printf "import.${target} ${GREEN}done${NC}\n"
 }
 
-generalize "landuse" "landuse_gen14" 1000 5 &
-generalize "landuse" "landuse_gen13" 2000 10 &
-wait
 
-generalize "landuse_gen13" "landuse_gen12" 5000 20 & 
-generalize "landuse_gen13" "landuse_gen11" 50000 50 &
-generalize "landuse_gen13" "landuse_gen10" 200000 100 &
-wait
+# OUT=0
+if [ $OUT -eq 0 ];then
+    # landuse
+    generalize "landuse" "landuse_gen14" 5 ", class, subclass" "ST_Area(geometry)>1000" &
+    generalize "landuse" "landuse_gen13" 10 ", class, subclass" "ST_Area(geometry)>2000" &
+    wait
 
-generalize_hull "landuse_gen10" "landuse_gen9" 2000000 200 0.95 &
-generalize_hull "landuse_gen10" "landuse_gen8" 5000000 500 0.98 &
-wait
+    generalize "landuse_gen13" "landuse_gen12" 20 ", class, subclass" "ST_Area(geometry)>5000" &
+    generalize "landuse_gen13" "landuse_gen11" 50 ", class, subclass" "ST_Area(geometry)>50000" &
+    generalize "landuse_gen13" "landuse_gen10" 100 ", class, subclass" "ST_Area(geometry)>200000" &
 
-printf "generalize ${GREEN}done${NC}\n"
+    generalize "landuse_gen13" "landuse_gen9" 200 ", class, subclass" "ST_Area(geometry)>2000000" &
+    generalize "landuse_gen13" "landuse_gen8" 300 ", class, subclass" "ST_Area(geometry)>4000000" &
+    wait
 
-### show resulting database size
-docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
-    -c "SELECT pg_size_pretty(pg_database_size('${dbname}')) as db_size;"
+    # landcover
+    generalize "landcover" "landcover_gen14" 5 ", class, subclass, surface" "ST_Area(geometry)>1000" &
+    generalize "landcover" "landcover_gen13" 10 ", class, subclass, surface" "ST_Area(geometry)>2000" &
+    wait
+
+    generalize "landcover_gen13" "landcover_gen12" 20 ", class, subclass, surface" "ST_Area(geometry)>5000" &
+    generalize "landcover_gen13" "landcover_gen11" 50 ", class, subclass, surface" "ST_Area(geometry)>50000" &
+    generalize "landcover_gen13" "landcover_gen10" 100 ", class, subclass, surface" "ST_Area(geometry)>200000" &
+    generalize "landcover_gen13" "landcover_gen9" 200 ", class, subclass, surface" "ST_Area(geometry)>2000000" 0.90 &
+    generalize "landcover_gen13" "landcover_gen8" 300 ", class, subclass, surface" "ST_Area(geometry)>5000000" 0.90 &
+    wait
+
+    # waterarea
+    generalize "waterarea" "waterarea_gen14" 5 ", class, subclass" "ST_Area(geometry)>1000" &
+    generalize "waterarea" "waterarea_gen13" 10 ", class, subclass" "ST_Area(geometry)>2000" &
+    wait
+
+    generalize "waterarea_gen13" "waterarea_gen12" 20 ", class, subclass" "ST_Area(geometry)>5000" &
+    generalize "waterarea_gen13" "waterarea_gen11" 50 ", class, subclass" "ST_Area(geometry)>50000" &
+    generalize "waterarea_gen13" "waterarea_gen10" 100 ", class, subclass" "ST_Area(geometry)>200000" &
+    generalize "waterarea_gen13" "waterarea_gen9" 200 ", class, subclass" "ST_Area(geometry)>2000000" &
+    generalize "waterarea_gen13" "waterarea_gen8" 250 ", class, subclass" "ST_Area(geometry)>5000000" &
+    wait
+
+    # waterway
+    generalize "waterway" "waterway_gen12" 20 ", class, subclass, tunnel, layer" "ST_Length(geometry)>50" &
+    generalize "waterway" "waterway_gen10" 50 ", class, subclass, tunnel, layer" "ST_Length(geometry)>100" &
+    generalize "waterway" "waterway_gen8" 100 ", class, subclass, tunnel, layer" "ST_Length(geometry)>200" &
+    wait
+
+    printf "generalize ${GREEN}done${NC}\n"
+
+    ### show resulting database size
+    docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+        -c "SELECT pg_size_pretty(pg_database_size('${dbname}')) as db_size;"
+else
+   printf "${RED}ERROR${NC}\n"
+fi

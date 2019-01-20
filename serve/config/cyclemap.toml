@@ -70,10 +70,18 @@ srid = 3857             # The default srid for this provider. If not provided it
     fields = "ref, name"
 
     [[providers.layers]]
+    name = "buildings-large"
+    sql= """
+    select id as gid, ST_AsBinary(geometry) as geom from import.buildings WHERE (ST_Area(geometry)>10000) AND (geometry && !BBOX!) 
+    """
+
+    [[providers.layers]]
     name = "buildings"
-    tablename = "import.buildings"
-    geometry_fieldname = "geometry"
-    id_fieldname = "id"
+    sql= """
+    select id as gid, ST_AsBinary(geometry) as geom from import.buildings WHERE 15 > !ZOOM! AND (ST_Area(geometry)>80) AND (geometry && !BBOX!) 
+    union all
+    select id as gid, ST_AsBinary(geometry) as geom from import.buildings WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
+    """
 
     [[providers.layers]]
     name = "admin"
@@ -83,39 +91,82 @@ srid = 3857             # The default srid for this provider. If not provided it
     fields = "ref, level"
 
     [[providers.layers]]
-    # FIXME: remove unused columns
     name = "landuse"
     sql= """
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.landuse_gen8 WHERE 8 >= !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen8 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.landuse_gen9 WHERE 8 < !ZOOM! AND 9 >= !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen9 WHERE 9 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.landuse_gen10 WHERE 9 < !ZOOM! AND 10 >= !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen10 WHERE 10 <= !ZOOM! AND 11 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.landuse_gen11 WHERE 10 < !ZOOM! AND 11 >= !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen11 WHERE 11 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.landuse_gen12 WHERE 11 < !ZOOM! AND 12 >= !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen12 WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.landuse_gen13 WHERE 12 < !ZOOM! AND 13 >= !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen13 WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.landuse_gen14 WHERE 13 < !ZOOM! AND 14 >= !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, surface, area from import.landuse WHERE 14 < !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
     """
 
     [[providers.layers]]
+    name = "landcover"
+    sql= """
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen8 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen9 WHERE 9 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen10 WHERE 10 <= !ZOOM! AND 11 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen11 WHERE 11 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen12 WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen13 WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
+    """
+
+
+    [[providers.layers]]
     name = "waterway"
-    tablename = "import.waterway"
-    geometry_fieldname = "geometry"
-    id_fieldname = "osm_id"
-    fields = "class, subclass, tunnel, layer"
+    # tablename = "import.waterway"
+    # geometry_fieldname = "geometry"
+    # id_fieldname = "osm_id"
+    # fields = "class, subclass, tunnel, layer"
+    sql= """
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, tunnel, layer from import.waterway_gen8 WHERE 10 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, tunnel, layer from import.waterway_gen10 WHERE 10 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, tunnel, layer from import.waterway_gen12 WHERE 12 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, tunnel, layer from import.waterway WHERE 14 <= !ZOOM! AND (geometry && !BBOX!) 
+    """
+
 
     [[providers.layers]]
     name = "waterarea"
-    tablename = "import.waterarea"
-    geometry_fieldname = "geometry"
-    id_fieldname = "osm_id"
-    fields = "class, subclass, area"
+    sql= """
+    select osm_id as gid, ST_AsBinary(geometry) as geom from import.waterarea_gen8 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom from import.waterarea_gen9 WHERE 9 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom from import.waterarea_gen10 WHERE 10 <= !ZOOM! AND 11 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom from import.waterarea_gen11 WHERE 11 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom from import.waterarea_gen12 WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom from import.waterarea_gen13 WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom from import.waterarea_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom from import.waterarea WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
+    """
 
 [[maps]]
 name = "local"
@@ -125,16 +176,25 @@ name = "local"
     min_zoom = 7
 
     [[maps.layers]]
-    provider_layer = "osm.cycleroute"
-    min_zoom = 11
+    provider_layer = "osm.landcover"
+    min_zoom = 7
+
+    # [[maps.layers]]
+    # provider_layer = "osm.cycleroute"
+    # min_zoom = 11
+
+    [[maps.layers]]
+    provider_layer = "osm.buildings-large"
+    min_zoom = 13
+    max_zoom = 15
 
     [[maps.layers]]
     provider_layer = "osm.buildings"
-    min_zoom = 13
+    min_zoom = 14
 
-    [[maps.layers]]
-    provider_layer = "osm.admin"
-    min_zoom = 6
+    # [[maps.layers]]
+    # provider_layer = "osm.admin"
+    # min_zoom = 6
 
     [[maps.layers]]
     provider_layer = "osm.waterway"
