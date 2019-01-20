@@ -14,8 +14,13 @@
       "tiles": [
         "http://localhost:8080/maps/local/{z}/{x}/{y}.pbf?debug=true"
       ]
-    }
+    },
+    "mapbox-terrain-rgb": {
+      "type": "raster-dem",
+      "url": "mapbox://mapbox.terrain-rgb"
+    }    
   },
+  "sprite": "http://localhost:8081/sprites/cyclemap",
   "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
   "layers": [
     {
@@ -62,25 +67,19 @@
         "fill-color": {
           "stops": [
             [
-              13,
+              14,
               "rgba(204, 204, 204, 1)"
             ],
             [
-              14,
-              "rgba(204, 204, 204, 0.5)"
+              15,
+              "rgba(225, 224, 218, 1)"
             ]
           ]
         },
         "fill-outline-color": {
           "stops": [
-            [
-              13,
-              "rgba(204, 204, 204, 1)"
-            ],
-            [
-              14,
-              "rgba(225, 224, 218, 1)"
-            ]
+            [14, "rgba(204, 204, 204, 1)"],
+            [15, "rgba(225, 224, 218, 1)"]
           ]
         }
       }
@@ -113,7 +112,7 @@
       "id": "landuse-grassland",
       "type": "fill",
       "source": "local",
-      "source-layer": "landuse",
+      "source-layer": "landcover",
       "minzoom": 10,
       "maxzoom": 24,
       "filter": [
@@ -139,7 +138,7 @@
       "id": "landuse-forest",
       "type": "fill",
       "source": "local",
-      "source-layer": "landuse",
+      "source-layer": "landcover",
       "minzoom": 7,
       "maxzoom": 24,
       "filter": [
@@ -161,7 +160,7 @@
       "id": "landuse-beach",
       "type": "fill",
       "source": "local",
-      "source-layer": "landuse",
+      "source-layer": "landcover",
       "minzoom": 11,
       "maxzoom": 24,
       "filter": [
@@ -194,16 +193,18 @@
         "any",
         ["all",
           [">=", ["zoom"], 14],
-          ["match", ["get", "subclass"], ["ditch"], true, false],
+          ["match", ["get", "subclass"], ["river", "canal", "stream", "ditch"], true, false],
           ["!=", ["get", "tunnel"], true]
         ],
         ["all",
           [">=", ["zoom"], 12],
-          ["match", ["get", "subclass"], ["stream"], true, false],
+          ["<", ["zoom"], 14],
+          ["match", ["get", "subclass"], ["river", "canal", "stream"], true, false],
           ["!=", ["get", "tunnel"], true]
         ],
         ["all",
-          [">=", ["zoom"], 9],
+          [">=", ["zoom"], 7],
+          ["<", ["zoom"], 12],
           ["match", ["get", "subclass"], ["river", "canal"], true, false],
           ["!=", ["get", "tunnel"], true]
         ]
@@ -217,6 +218,7 @@
         "line-color": "rgba(31, 131, 188, 1)",
         "line-width": [
           "interpolate", ["exponential", 2], ["zoom"],
+          7, ["match", ["get", "subclass"], "river", 1, "canal", 1, 1],
           9, ["match", ["get", "subclass"], "river", 2, "canal", 2, 1],
           12, ["match", ["get", "subclass"], "river", 3, "canal", 3, "stream", 1, 1],
           14, ["match", ["get", "subclass"], "river", 5, "canal", 5, "stream", 3, "ditch", 2, 1],
@@ -241,11 +243,164 @@
       }
     },
     {
-      "id": "buildings-body",
+      "id": "landuse-swamp-fill",
+      "type": "fill",
+      "source": "local",
+      "source-layer": "landcover",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": ["match", ["get", "subclass"], "wetland", true, false],
+      "layout": {},
+      "paint": {
+        "fill-opacity": 0.2,
+        "fill-color": "rgba(51, 153, 102, 1)",
+        "fill-outline-color": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "id": "landuse-swamp-pattern",
+      "type": "fill",
+      "source": "local",
+      "source-layer": "landcover",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": ["match", ["get", "subclass"], "wetland", true, false],
+      "layout": {},
+      "paint": {
+        "fill-opacity": 0.6,
+        "fill-pattern": "wetland"
+      }
+    },
+    {
+      "id": "landuse-glacier-fill",
+      "type": "fill",
+      "source": "local",
+      "source-layer": "landcover",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": ["match", ["get", "subclass"], "glacier", true, false],
+      "layout": {},
+      "paint": {
+        "fill-opacity": 0.5,
+        "fill-color": "rgba(255, 255, 255, 1)",
+        "fill-outline-color": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "id": "landuse-glacier-outline",
+      "type": "line",
+      "source": "local",
+      "source-layer": "landcover",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": ["match", ["get", "subclass"], "glacier", true, false],
+      "layout": {},
+      "paint": {
+        "line-opacity": 0.5,
+        "line-color": "rgba(173, 216, 230, 1)",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          10, 2,
+          16, 10
+        ]
+      }
+    },
+    {
+      "id": "landuse-military-pattern",
+      "type": "fill",
+      "source": "local",
+      "source-layer": "landuse",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": [
+        "all",
+          ["match", ["get", "subclass"], "military", true, false]
+      ],
+      "layout": {},
+      "paint": {
+        "fill-opacity": 0.2,
+        "fill-pattern": "stripes",
+        "fill-outline-color": "rgba(255, 0, 0, 1)"
+      }
+    },
+    {
+      "_comment": "FIXME: Add additional thick translucent line",
+      "id": "landuse-nature_reserve-outline-thin",
+      "type": "line",
+      "source": "local",
+      "source-layer": "landuse",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": ["match", ["get", "subclass"], "nature_reserve", true, false],
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-blur": 1,
+        "line-opacity": 0.6,
+        "line-color": "rgba(32, 128, 32, 1)",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          10, 6,
+          16, 10
+        ]
+      }
+    },
+    {
+      "id": "hillshading",
+      "source": "mapbox-terrain-rgb",
+      "type": "hillshade",
+      "maxzoom": 15,
+      "layout": {
+        "visibility": "visible"
+      },      
+      "paint": {
+        "hillshade-illumination-direction": 315,
+        "hillshade-exaggeration": 0.4,
+        "hillshade-shadow-color": {
+          "stops": [
+            [14, "rgba(0, 0, 0, 1)"],
+            [15, "rgba(0, 0, 0, 0)"]
+          ]
+        },
+        "hillshade-highlight-color": "rgba(255, 255, 255, 0)",
+        "hillshade-accent-color": "rgba(0, 0, 0, .5)"
+      }
+    },
+    {
+      "id": "buildings-large",
+      "type": "fill",
+      "source": "local",
+      "source-layer": "buildings-large",
+      "minzoom": 13,
+      "maxzoom": 15,
+      "filter": [
+        "all"
+      ],
+      "paint": {
+        "fill-color": "#444",
+        "fill-opacity": {
+          "base": 1,
+          "stops": [
+            [13, 0.1],
+            [14, 1]
+          ]
+        },
+        "fill-outline-color": {
+          "stops": [
+            [13, "rgba(204, 204, 204, 1)"],
+            [14, "rgba(68, 68, 68, 1)"]
+          ]
+        }
+      }
+    },
+    {
+      "id": "buildings",
       "type": "fill",
       "source": "local",
       "source-layer": "buildings",
-      "minzoom": 13,
+      "minzoom": 14,
       "maxzoom": 24,
       "filter": [
         "all"
@@ -255,34 +410,16 @@
         "fill-opacity": {
           "base": 1,
           "stops": [
-            [
-              13,
-              0
-            ],
-            [
-              14,
-              1
-            ]
+            [14, 0.1],
+            [15, 1]
           ]
         },
         "fill-outline-color": {
           "stops": [
-            [
-              13,
-              "rgba(204, 204, 204, 1)"
-            ],
-            [
-              14,
-              "rgba(68, 68, 68, 1)"
-            ],
-            [
-              16,
-              "rgba(68, 68, 68, 1)"
-            ],
-            [
-              17,
-              "rgba(102, 102, 102, 1)"
-            ]
+            [14, "rgba(204, 204, 204, 1)"],
+            [15, "rgba(68, 68, 68, 1)"],
+            [16, "rgba(68, 68, 68, 1)"],
+            [17, "rgba(102, 102, 102, 1)"]
           ]
         }
       }
