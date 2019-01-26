@@ -57,10 +57,24 @@ password = ""           # postgis database password
 srid = 3857             # The default srid for this provider. If not provided it will be WebMercator (3857)
 
     [[providers.layers]]
-    name = "shiproute"
-    tablename = "import.shiproute"
-    geometry_fieldname = "geometry"
-    id_fieldname = "id"
+    name = "transportation"
+    sql= """
+    select id as gid, ST_AsBinary(geometry) as geom, subclass from import.transportation WHERE (geometry && !BBOX!) 
+    """
+
+    [[providers.layers]]
+    name = "manmade"
+    sql= """
+    select id as gid, ST_AsBinary(geometry) as geom, class, subclass, ST_Length(geometry)::integer as length, ST_IsClosed(geometry) as polygon from import.manmade_lines WHERE (geometry && !BBOX!) 
+    UNION ALL
+    select id as gid, ST_AsBinary(geometry) as geom, class, subclass, ST_Perimeter(geometry)::integer as length, TRUE as polygon from import.manmade_polygons WHERE (geometry && !BBOX!) 
+    """
+
+    [[providers.layers]]
+    name = "piste"
+    sql= """
+    select id as gid, ST_AsBinary(geometry) as geom, difficulty from import.piste WHERE NOT ST_IsClosed(geometry) and (geometry && !BBOX!) 
+    """
 
     [[providers.layers]]
     name = "cycleroute"
@@ -170,6 +184,18 @@ srid = 3857             # The default srid for this provider. If not provided it
 
 [[maps]]
 name = "local"
+
+    [[maps.layers]]
+    provider_layer = "osm.transportation"
+    min_zoom = 10
+
+    [[maps.layers]]
+    provider_layer = "osm.manmade"
+    min_zoom = 14
+
+    [[maps.layers]]
+    provider_layer = "osm.piste"
+    min_zoom = 14
 
     [[maps.layers]]
     provider_layer = "osm.landuse"

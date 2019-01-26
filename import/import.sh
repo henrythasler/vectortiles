@@ -154,6 +154,12 @@ if [ $OUT -eq 0 ];then
     generalize "waterway" "waterway_gen8" 100 ", class, subclass, tunnel, layer" "ST_Length(geometry)>200" &
     wait
 
+    # transportation
+    generalize "transportation" "transportation_gen12" 20 ", class, subclass" "ST_Length(geometry)>50" &
+    generalize "transportation" "transportation_gen10" 50 ", class, subclass" "ST_Length(geometry)>100" &
+    generalize "transportation" "transportation_gen8" 100 ", class, subclass" "ST_Length(geometry)>200" &
+    wait
+
     printf "generalize ${GREEN}done${NC}\n"
 
     ### show resulting database size

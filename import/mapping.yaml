@@ -1,36 +1,6 @@
 ---
-# generalized_tables:
-    # FIXME: filter out unused subclasses
-    # FIXME: find a way to generate valid geometries by simplifying the previous gen-level
-    # FIXME: add generalized buildings
-  # landuse_gen8:
-  #   source: landuse_gen9
-  #   sql_filter: ST_Area(geometry)>5000000.0
-  #   tolerance: 500.0    
-  # landuse_gen9:
-  #   source: landuse_gen10
-  #   sql_filter: ST_Area(geometry)>2000000.0
-  #   tolerance: 200.0    
-  # landuse_gen10:
-  #   source: landuse_gen11
-  #   sql_filter: ST_Area(geometry)>200000.0
-  #   tolerance: 100.0    
-  # landuse_gen11:
-  #   source: landuse_gen12
-  #   sql_filter: ST_Area(geometry)>50000.0
-  #   tolerance: 50.0    
-  # landuse_gen12:
-  #   source: landuse_gen13
-  #   sql_filter: ST_Area(geometry)>5000.0
-  #   tolerance: 20.0    
-  # landuse_gen13:
-  #   source: landuse_gen14
-  #   sql_filter: ST_Area(geometry)>2000.0
-  #   tolerance: 10.0    
-  # landuse_gen14:
-  #   source: landuse
-  #   sql_filter: ST_Area(geometry)>1000.0
-  #   tolerance: 5.0    
+# areas:
+#   linear_tags: [man_made]
 tables:
   waterarea:
     type: polygon
@@ -49,6 +19,8 @@ tables:
       natural: [water, pond]
       landuse: [reservoir, basin]
       waterway: [riverbank, pond]
+      amenity: [swimming_pool]
+      leisure: [swimming_pool]
 
   waterway:
     type: linestring
@@ -122,13 +94,69 @@ tables:
           leisure: [park]
           natural: [wood, scrub, beach, wetland, glacier]
 
-  shiproute:
+  transportation:
+    type: linestring
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    mapping:
+      route: [ferry]
+      aerialway: [cable_car, chairlift, gondola, chair_lift, mixed_lift, goods]
+      railway: [funicular]
+      attraction: [summer_toboggan]
+  
+  manmade_lines:
     type: linestring
     columns:
     - name: geometry
       type: geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
     mapping:
-      route: [ferry]
+      waterway: [weir]
+      man_made: [pier]
+      barrier: [fence]
+      aeroway: [taxiway, runway]
+
+  manmade_polygons:
+    type: polygon
+    columns:
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    mapping:
+      man_made: [pier]
+
+  piste:
+    type: linestring
+    columns:
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    - name: ref
+      type: string
+      key: ref
+    - name: difficulty
+      type: enumerate
+      args:
+        values: [novice, easy, intermediate, advanced, expert, freeride, extreme]
+      key: piste:difficulty
+    mapping:
+      piste:type: [downhill]
 
   cycleroute:
     type: relation_member
@@ -169,3 +197,4 @@ tables:
       key: admin_level
     mapping:
       boundary: [administrative]
+

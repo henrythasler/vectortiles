@@ -18,7 +18,7 @@
     "mapbox-terrain-rgb": {
       "type": "raster-dem",
       "url": "mapbox://mapbox.terrain-rgb"
-    }    
+    }
   },
   "sprite": "http://localhost:8081/sprites/cyclemap",
   "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
@@ -222,7 +222,7 @@
           9, ["match", ["get", "subclass"], "river", 2, "canal", 2, 1],
           12, ["match", ["get", "subclass"], "river", 3, "canal", 3, "stream", 1, 1],
           14, ["match", ["get", "subclass"], "river", 5, "canal", 5, "stream", 3, "ditch", 2, 1],
-          18, ["match", ["get", "subclass"], "river", 50, "canal", 50, "stream", 30, "ditch", 10, 1]
+          20, ["match", ["get", "subclass"], "river", 50, "canal", 50, "stream", 30, "ditch", 10, 1]
         ]
       }
     },
@@ -368,6 +368,159 @@
         "hillshade-accent-color": "rgba(0, 0, 0, .5)"
       }
     },
+    {
+      "id": "weir",
+      "type": "line",
+      "source": "local",
+      "source-layer": "manmade",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["==", ["geometry-type"], "LineString"],
+        ["==", ["get", "polygon"], false],
+        ["==", ["get", "subclass"], "weir"]
+      ],
+      "layout": {},
+      "paint": {
+        "line-dasharray": [0.25, 0.25],        
+        "line-opacity": 0.5,
+        "line-color": "rgba(0, 0, 0, 1)",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          13, 8,
+          18, 40
+        ]
+      }
+    },    
+    {
+      "id": "pier-way",
+      "type": "line",
+      "source": "local",
+      "source-layer": "manmade",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["==", ["geometry-type"], "LineString"],
+        ["==", ["get", "polygon"], false],
+        ["==", ["get", "subclass"], "pier"]
+      ],
+      "layout": {        
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#f6f4e7",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          13, 1.2,
+          20, 14
+        ]
+      }
+    },    
+    {
+      "id": "pier-area",
+      "type": "fill",
+      "source": "local",
+      "source-layer": "manmade",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["==", ["geometry-type"], "Polygon"],
+        ["match", ["get", "subclass"], "pier", true, false]
+      ],
+      "layout": {},
+      "paint": {
+        "fill-color": "#f6f4e7"
+      }
+    },    
+    {
+      "id": "piste",
+      "type": "line",
+      "source": "local",
+      "source-layer": "piste",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": [">", ["get", "difficulty"], 0],
+      "layout": {        
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": 
+        ["case",
+          ["match", ["get", "difficulty"], [1, 2], true, false], "rgba(0, 0, 255, 0.5)",
+          ["match", ["get", "difficulty"], [3], true, false], "rgba(255, 0, 0, 0.5)", 
+          "rgba(0, 0, 0, 0.5)"
+        ],
+        "line-width": [
+          "interpolate", ["exponential", 1.2], ["zoom"],
+          14, 2,
+          18, 22
+        ]
+      }
+    },    
+    {
+      "id": "fence",
+      "type": "line",
+      "source": "local",
+      "source-layer": "manmade",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["==", ["geometry-type"], "LineString"],
+        ["==", ["get", "subclass"], "fence"],
+        ["any",
+          ["all",
+            [">=", ["zoom"], 14],
+            ["<", ["zoom"], 16],
+            [">", ["get", "length"], 400]
+          ],
+          ["all",
+            [">=", ["zoom"], 16],
+            ["<", ["zoom"], 18],
+            [">", ["get", "length"], 100]
+          ],
+          ["all",
+            [">=", ["zoom"], 18],
+            [">", ["get", "length"], 10]
+          ]
+        ]
+      ],
+      "layout": {        
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#444",
+        "line-dasharray": [3, 2, 0.1, 2],
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          14, 1.5,
+          18, 6
+        ]
+      }
+    },    
+    {
+      "id": "shiproute",
+      "type": "line",
+      "source": "local",
+      "source-layer": "transportation",
+      "minzoom": 10,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["match", ["get", "subclass"], "ferry", true, false]
+      ],
+      "layout": {},
+      "paint": {
+        "line-dasharray": [4, 4],
+        "line-color": "rgba(17, 17, 170, 1)",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          10, 1,
+          18, 16
+        ]
+      }
+    },    
     {
       "id": "buildings-large",
       "type": "fill",
