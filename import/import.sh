@@ -7,6 +7,7 @@ osmfile="slice.osm.pbf"
 #osmfile="oberbayern-latest.osm.pbf"
 # osmfile="germany-south.osm.pbf"
 dbname="slice"
+pgdocker="postgis"
 
 osmpath="/media/henry/Tools/map/data/"
 dbpath="/media/mapdata/pgdata_mvt"
@@ -23,15 +24,15 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 
 ### Start postgis-container 
-if [ ! "$(docker ps -q -f name=postgis)" ]; then
-    if [ "$(docker ps -aq -f status=exited -f name=postgis)" ]; then
-        echo "removing old postgis container"
-        docker rm postgis
+if [ ! "$(docker ps -q -f name=${pgdocker})" ]; then
+    if [ "$(docker ps -aq -f status=exited -f name=${pgdocker})" ]; then
+        echo "removing old ${pgdocker} container"
+        docker rm ${pgdocker}
     fi
     # run container as current user
-    echo "starting postgis container"
+    echo "starting ${pgdocker} container"
     docker run -d \
-        --name postgis \
+        --name ${pgdocker} \
         --network gis \
         -p 5432:5432 \
         --user "$(id -u):$(id -g)" \
@@ -43,16 +44,16 @@ if [ ! "$(docker ps -q -f name=postgis)" ]; then
     ### Wait until startup is complete
     # FIXME: fin some other solution to wait for completion
     sleep 3s
-else echo "postgis container already running"
+else echo "${pgdocker} container already running"
 fi
 
 ### Setup database
-docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres \
+docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres \
     -c "DROP DATABASE IF EXISTS ${dbname};" >/dev/null \
     -c "COMMIT;" 2>&1 >/dev/null \
     -c "CREATE DATABASE ${dbname} WITH ENCODING='UTF8' CONNECTION LIMIT=-1;"
 
-docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
     -c "CREATE EXTENSION IF NOT EXISTS postgis;" \
     -c "CREATE EXTENSION IF NOT EXISTS postgis_topology;" \
     -c "CREATE EXTENSION IF NOT EXISTS postgis_sfcgal;" \
@@ -67,7 +68,7 @@ if [ -f ${osmpath}${osmfile} ]; then
         jawg/imposm3 import \
             -mapping mapping.yaml \
             -read osmdata.osm.pbf \
-            -overwritecache -write -optimize -connection 'postgis://postgres@postgis/'${dbname}'?prefix=NONE'
+            -overwritecache -write -optimize -connection 'postgis://postgres@'${pgdocker}'/'${dbname}'?prefix=NONE'
     OUT=$?
 else
     printf "${RED}ERROR${NC}: ${osmpath}${osmfile} not found.\n" 
@@ -83,7 +84,7 @@ function generalize() {
     local columns=${4:-""}
     local filter=${5:-""}
     printf "start import.${target}...\n"
-    docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
         -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
         -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
         -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
@@ -98,7 +99,7 @@ function generalize_buffer() {
     local columns=${4:-""}
     local filter=${5:-""}
     printf "start import.${target}...\n"
-    docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
         -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
         -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(ST_Buffer(ST_Buffer(geometry,2*${tolerance}), -2*${tolerance}), ${tolerance})) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
         -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
@@ -115,7 +116,7 @@ function generalize_hull() {
     local filter=${5:-""}
     local percent=${6:-0.99}
     printf "start import.${target}...\n"
-    docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
         -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
         -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_ConcaveHull(ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})), ${percent}, false) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
         -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
@@ -178,7 +179,7 @@ if [ $OUT -eq 0 ];then
     printf "generalize ${GREEN}done${NC}\n"
 
     ### show resulting database size
-    docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
         -c "SELECT pg_size_pretty(pg_database_size('${dbname}')) as db_size;"
 else
    printf "${RED}ERROR${NC}\n"
