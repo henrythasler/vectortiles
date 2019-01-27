@@ -91,6 +91,21 @@ function generalize() {
     printf "import.${target} ${GREEN}done${NC}\n"
 }
 
+function generalize_buffer() {
+    local source=${1}
+    local target=${2}
+    local tolerance=${3}
+    local columns=${4:-""}
+    local filter=${5:-""}
+    printf "start import.${target}...\n"
+    docker run --rm --net gis img-postgis:0.9 psql -h postgis -U postgres -d ${dbname} \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(ST_Buffer(ST_Buffer(geometry,2*${tolerance}), -2*${tolerance}), ${tolerance})) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}"
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
+
 
 function generalize_hull() {
     local source=${1}
@@ -116,12 +131,12 @@ if [ $OUT -eq 0 ];then
     generalize "landuse" "landuse_gen13" 10 ", class, subclass" "ST_Area(geometry)>2000" &
     wait
 
-    generalize "landuse_gen13" "landuse_gen12" 20 ", class, subclass" "ST_Area(geometry)>5000" &
-    generalize "landuse_gen13" "landuse_gen11" 50 ", class, subclass" "ST_Area(geometry)>50000" &
-    generalize "landuse_gen13" "landuse_gen10" 100 ", class, subclass" "ST_Area(geometry)>200000" &
+    generalize_buffer "landuse_gen13" "landuse_gen12" 20 ", class, subclass" "ST_Area(geometry)>5000" &
+    generalize_buffer "landuse_gen13" "landuse_gen11" 50 ", class, subclass" "ST_Area(geometry)>50000" &
+    generalize_buffer "landuse_gen13" "landuse_gen10" 100 ", class, subclass" "ST_Area(geometry)>200000" &
 
-    generalize "landuse_gen13" "landuse_gen9" 200 ", class, subclass" "ST_Area(geometry)>2000000" &
-    generalize "landuse_gen13" "landuse_gen8" 300 ", class, subclass" "ST_Area(geometry)>4000000" &
+    generalize_buffer "landuse_gen13" "landuse_gen9" 150 ", class, subclass" "ST_Area(geometry)>2000000" &
+    generalize_buffer "landuse_gen13" "landuse_gen8" 200 ", class, subclass" "ST_Area(geometry)>4000000" &
     wait
 
     # landcover
@@ -129,11 +144,11 @@ if [ $OUT -eq 0 ];then
     generalize "landcover" "landcover_gen13" 10 ", class, subclass, surface" "ST_Area(geometry)>2000" &
     wait
 
-    generalize "landcover_gen13" "landcover_gen12" 20 ", class, subclass, surface" "ST_Area(geometry)>5000" &
-    generalize "landcover_gen13" "landcover_gen11" 50 ", class, subclass, surface" "ST_Area(geometry)>50000" &
-    generalize "landcover_gen13" "landcover_gen10" 100 ", class, subclass, surface" "ST_Area(geometry)>200000" &
-    generalize "landcover_gen13" "landcover_gen9" 200 ", class, subclass, surface" "ST_Area(geometry)>2000000" 0.90 &
-    generalize "landcover_gen13" "landcover_gen8" 300 ", class, subclass, surface" "ST_Area(geometry)>5000000" 0.90 &
+    generalize_buffer "landcover_gen13" "landcover_gen12" 20 ", class, subclass, surface" "ST_Area(geometry)>5000" &
+    generalize_buffer "landcover_gen13" "landcover_gen11" 50 ", class, subclass, surface" "ST_Area(geometry)>50000" &
+    generalize_buffer "landcover_gen13" "landcover_gen10" 100 ", class, subclass, surface" "ST_Area(geometry)>200000" &
+    generalize_buffer "landcover_gen13" "landcover_gen9" 150 ", class, subclass, surface" "ST_Area(geometry)>2000000" &
+    generalize_buffer "landcover_gen13" "landcover_gen8" 200 ", class, subclass, surface" "ST_Area(geometry)>5000000" &
     wait
 
     # waterarea

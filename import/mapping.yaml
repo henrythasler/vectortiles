@@ -198,3 +198,36 @@ tables:
     mapping:
       boundary: [administrative]
 
+  railway:
+    type: linestring
+    columns:
+    - name: geometry
+      type: geometry
+    - name: zorder
+      type: wayzorder
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    - name: tunnel
+      type: bool
+      key: tunnel
+    - name: bridge
+      type: bool
+      key: bridge
+    - name: service
+      type: string
+      key: service
+    - name: usage
+      type: enumerate
+      args:
+        values: [main, branch, tourism]
+      key: usage      
+    - name: attraction
+      type: string
+      key: attraction
+    - name: layer
+      type: integer
+      key: layer
+    mapping:
+      railway: [rail, light_rail, miniature, monorail, narrow_gauge, preserved, subway, tram]
