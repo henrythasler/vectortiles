@@ -2,6 +2,80 @@
 # areas:
 #   linear_tags: [man_made]
 tables:
+  roads:
+    type: linestring
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: validated_geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    - name: oneway
+      type: bool
+      key: oneway
+    - name: tracktype
+      type: enumerate
+      key: tracktype
+      args:
+          values:
+            - grade1
+            - grade2
+            - grade3
+            - grade4
+            - grade5
+    - name: service
+      type: bool
+      key: service
+    - name: bicycle
+      type: enumerate
+      key: bicycle
+      args:
+          values:
+            - 'no'
+            - 'yes'
+            - designated
+    - name: tunnel
+      type: bool
+      key: tunnel
+    - name: bridge
+      type: bool
+      key: bridge
+    - name: layer
+      type: integer
+      key: layer
+    - name: rank
+      type: enumerate
+      key: highway
+      args:
+          values:
+            - motorway
+            - trunk
+            - primary
+            - secondary
+            - tertiary
+            - motorway_link
+            - trunk_link
+            - primary_link
+            - secondary_link
+            - tertiary_link
+            - road
+            - unclassified
+            - residential
+            - pedestrian
+            - living_street
+            - service
+            - track
+            - path
+            - footway
+            - steps
+            - bridleway
+    mapping:
+      highway: [motorway, motorway_link, trunk, trunk_link, primary, primary_link, secondary, secondary_link, tertiary, tertiary_link, road, unclassified, residential, pedestrian, living_street, service, track, path, footway, steps, bridleway, cycleway]
+      bicycle: [designated]
+
   waterarea:
     type: polygon
     columns:

@@ -76,6 +76,12 @@ password = ""           # postgis database password
 srid = 3857             # The default srid for this provider. If not provided it will be WebMercator (3857)
 
     [[providers.layers]]
+    name = "roads"
+    sql= """
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle from import.roads WHERE (geometry && !BBOX!) ORDER BY rank DESC
+    """
+
+    [[providers.layers]]
     name = "railway"
     sql= """
     select id as gid, ST_AsBinary(geometry) as geom, class, subclass, zorder, bridge, tunnel, service from import.railway WHERE (subclass NOT IN('tram')) AND (geometry && !BBOX!)
@@ -209,6 +215,10 @@ srid = 3857             # The default srid for this provider. If not provided it
 
 [[maps]]
 name = "local"
+
+    [[maps.layers]]
+    provider_layer = "osm.roads"
+    min_zoom = 7
 
     [[maps.layers]]
     provider_layer = "osm.railway"
