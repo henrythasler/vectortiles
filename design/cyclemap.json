@@ -106,20 +106,7 @@
       "source-layer": "landcover",
       "minzoom": 10,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        [
-          "in",
-          "subclass",
-          "grass",
-          "park",
-          "playground",
-          "pitch",
-          "golf_course",
-          "recreation_ground",
-          "cemetery"
-        ]
-      ],
+      "filter": ["match", ["get", "subclass"], ["grass", "park", "playground", "pitch", "golf_course", "recreation_ground", "cemetery"], true, false],
       "paint": {
         "fill-color": "rgba(222, 233, 186, 1)",
         "fill-outline-color": "rgba(0, 0, 0, 0)"
@@ -438,7 +425,7 @@
         "line-width": [
           "interpolate", ["exponential", 2], ["zoom"],
           13, 1.2,
-          20, 14
+          20, 40
         ]
       }
     },    
@@ -655,8 +642,8 @@
         "line-color": 
           [
           "interpolate", ["linear"], ["zoom"],
-          13, "#666",
-          14, "#444"
+          12, "#666",
+          13, "#444"
           ]
         ,
         "line-width": [
@@ -696,7 +683,7 @@
       "type": "line",
       "source": "local",
       "source-layer": "roads",
-      "minzoom": 12,
+      "minzoom": 14,
       "maxzoom": 24,
       "filter": ["all",
         ["match", ["get", "subclass"], ["path", "footway", "steps", "bridleway"], true, false],
@@ -716,10 +703,7 @@
           ["==", ["get", "bicycle"], 2], "rgba(0, 128, 0, 0.2)",
           "rgba(255, 255, 255, 0.4)"
         ],
-        "line-width": [
-          "interpolate", ["exponential", 2], ["zoom"],
-          15, 8
-        ]
+        "line-width": 8
       }
     },    
     {
@@ -727,7 +711,7 @@
       "type": "line",
       "source": "local",
       "source-layer": "roads",
-      "minzoom": 12,
+      "minzoom": 13,
       "maxzoom": 24,
       "filter": ["all",
         ["match", ["get", "subclass"], ["path", "footway", "steps", "bridleway"], true, false],
@@ -741,9 +725,15 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#000",
+        "line-color": 
+        [
+          "interpolate", ["linear"], ["zoom"],
+          13, "#444",
+          14, "#000"
+          ],        
         "line-width": [
           "interpolate", ["exponential", 2], ["zoom"],
+          13, 1.2,
           15, 3
         ]
       }
@@ -753,7 +743,7 @@
       "type": "line",
       "source": "local",
       "source-layer": "roads",
-      "minzoom": 8,
+      "minzoom": 5,
       "maxzoom": 24,
       "filter": ["all",
         ["!=", ["get", "bridge"], true],
@@ -769,9 +759,37 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#000",
+        "line-color": 
+        ["step", ["zoom"],
+        ["case",
+          ["match", ["get", "subclass"], ["road", "unclassified", "residential", "pedestrian", "living_street", "track", "service"], true, false], 
+          "#808080",
+          "#000"
+        ],
+        15, "#000"
+        ],
         "line-width": [
           "interpolate", ["exponential", 2], ["zoom"],
+          8, 
+            ["match", ["get", "subclass"], 
+              ["motorway", "trunk"], 6, 
+              ["primary", "primary_link", "trunk_link", "secondary", "secondary_link", "tertiary", "tertiary_link"], 5,
+              ["motorway_link"], 4, 
+            1],
+          12, 
+            ["match", ["get", "subclass"], 
+              ["motorway", "trunk"], 11, 
+              ["primary", "primary_link", "trunk_link", "secondary", "secondary_link", "tertiary", "tertiary_link"], 8,
+              ["motorway_link"], 6, 
+              ["road", "unclassified", "residential", "pedestrian", "living_street", "track", "service"], 1.8, 
+            1],
+          14, 
+            ["match", ["get", "subclass"], 
+              ["motorway", "trunk"], 16, 
+              ["primary", "primary_link", "trunk_link", "secondary", "secondary_link", "tertiary", "tertiary_link"], 12,
+              ["motorway_link"], 7, 
+              ["road", "unclassified", "residential", "pedestrian", "living_street", "track", "service"], 6, 
+            1],
           15, 
             ["match", ["get", "subclass"], 
               ["motorway", "trunk"], 20, 
@@ -787,7 +805,7 @@
               ["primary", "primary_link", "trunk_link", "secondary", "secondary_link", "tertiary", "tertiary_link"], 126,
               ["road", "unclassified", "residential", "pedestrian", "living_street", "track"], 86, 
               ["service"], 46, 
-            0]
+            1]
 
         ]
       }
@@ -797,7 +815,7 @@
       "type": "line",
       "source": "local",
       "source-layer": "roads",
-      "minzoom": 10,
+      "minzoom": 6,
       "maxzoom": 24,
       "filter": ["all",
         ["!=", ["get", "bridge"], true],
@@ -822,6 +840,26 @@
         ],
         "line-width": [
           "interpolate", ["exponential", 2], ["zoom"],
+          8, 
+            ["match", ["get", "subclass"], 
+              ["motorway", "trunk"], 4, 
+              ["primary", "primary_link", "trunk_link", "secondary", "secondary_link", "tertiary", "tertiary_link"], 3,
+              ["motorway_link"], 2, 
+            0],
+          12, 
+            ["match", ["get", "subclass"], 
+              ["motorway", "trunk"], 8, 
+              ["primary", "primary_link", "trunk_link", "secondary", "secondary_link", "tertiary", "tertiary_link"], 6,
+              ["motorway_link"], 3, 
+              ["road", "unclassified", "residential", "pedestrian", "living_street", "track", "service"], -6, 
+            0],
+          14, 
+            ["match", ["get", "subclass"], 
+              ["motorway", "trunk"], 12, 
+              ["primary", "primary_link", "trunk_link", "secondary", "secondary_link", "tertiary", "tertiary_link"], 9,
+              ["motorway_link", "road", "unclassified", "residential", "pedestrian", "living_street", "track"], 3, 
+              ["service"], 4, 
+            0],
           15, 
             ["match", ["get", "subclass"], 
               ["motorway", "trunk"], 16, 
@@ -844,11 +882,12 @@
       "type": "line",
       "source": "local",
       "source-layer": "roads",
-      "minzoom": 12,
+      "minzoom": 14,
       "maxzoom": 24,
       "filter": ["all",
         ["==", ["get", "subclass"], "track"],
         ["!=", ["get", "tracktype"], 1],
+        ["!=", ["get", "subclass"], "cycleway"],
         ["!=", ["get", "bridge"], true],
         ["!=", ["get", "tunnel"], true]
       ],
@@ -879,6 +918,7 @@
       "filter": ["all",
         ["==", ["get", "subclass"], "track"],
         [">=", ["get", "tracktype"], 4],
+        ["<", ["get", "bicycle"], 3],
         ["!=", ["get", "bridge"], true],
         ["!=", ["get", "tunnel"], true]
       ],
@@ -886,10 +926,14 @@
       },
       "paint": {
         "line-dasharray": [1, 1.5],
-        "line-color": "#885b03",
+        "line-color": 
+        ["step", ["zoom"],
+          "#753701",
+          14, "#885b03"
+        ],
         "line-width": [
-          "interpolate", ["exponential", 2], ["zoom"],
-          15, 3,
+          "interpolate", ["exponential", 1.4], ["zoom"],
+          12, 1.2,
           20, 15
         ]
       }
@@ -906,6 +950,7 @@
         ["==", ["get", "subclass"], "track"],
         ["!=", ["get", "tracktype"], 1],
         ["<=", ["get", "tracktype"], 3],
+        ["<", ["get", "bicycle"], 3],
         ["!=", ["get", "bridge"], true],
         ["!=", ["get", "tunnel"], true]
       ],
@@ -913,10 +958,14 @@
       },
       "paint": {
         "line-dasharray": [4, 2],
-        "line-color": "#885b03",
+        "line-color": 
+        ["step", ["zoom"],
+          "#753701",
+          14, "#885b03"
+        ],
         "line-width": [
-          "interpolate", ["exponential", 2], ["zoom"],
-          15, 3,
+          "interpolate", ["exponential", 1.4], ["zoom"],
+          12, 1.2,
           20, 15
         ]
       }
@@ -944,8 +993,8 @@
         "line-dasharray": [3, 3],
         "line-color": "#0000ff",
         "line-width": [
-          "interpolate", ["exponential", 2], ["zoom"],
-          15, 4,
+          "interpolate", ["exponential", 1.4], ["zoom"],
+          12, 1.2,
           20, 20
         ]
       }

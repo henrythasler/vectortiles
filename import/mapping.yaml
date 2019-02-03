@@ -13,6 +13,18 @@ tables:
       type: mapping_key
     - name: subclass
       type: mapping_value
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name
+    - name: ref
+      type: string  
+      key: ref
     - name: oneway
       type: bool
       key: oneway
@@ -27,8 +39,12 @@ tables:
             - grade4
             - grade5
     - name: service
-      type: bool
+      type: enumerate
       key: service
+      args:
+          values:
+            - parking_aisle
+            - driveway
     - name: bicycle
       type: enumerate
       key: bicycle
@@ -37,6 +53,9 @@ tables:
             - 'no'
             - 'yes'
             - designated
+    - name: scale
+      type: integer
+      key: mtb:scale
     - name: tunnel
       type: bool
       key: tunnel
@@ -66,12 +85,16 @@ tables:
             - residential
             - pedestrian
             - living_street
-            - service
+            - cycleway
             - track
             - path
+            - service
             - footway
             - steps
             - bridleway
+    filters:
+      reject_regexp:
+        'mtb:scale': '^\D+.*$'
     mapping:
       highway: [motorway, motorway_link, trunk, trunk_link, primary, primary_link, secondary, secondary_link, tertiary, tertiary_link, road, unclassified, residential, pedestrian, living_street, service, track, path, footway, steps, bridleway, cycleway]
       bicycle: [designated]
@@ -133,8 +156,7 @@ tables:
     mappings:
       landuse:
         mapping:
-          landuse: [residential, commercial, retail, cemetery, industrial]
-          leisure: [playground, pitch, golf_course]
+          landuse: [residential, commercial, retail, industrial]
           aeroway: [aerodrome]
       military:
         mapping:
@@ -164,8 +186,8 @@ tables:
     mappings:
       landuse:
         mapping:
-          landuse: [forest, recreation_ground, grass]
-          leisure: [park]
+          landuse: [forest, recreation_ground, grass, cemetery]
+          leisure: [park, playground, pitch, golf_course]
           natural: [wood, scrub, beach, wetland, glacier]
 
   transportation:
