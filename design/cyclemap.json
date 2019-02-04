@@ -18,7 +18,11 @@
     "mapbox-terrain-rgb": {
       "type": "raster-dem",
       "url": "mapbox://mapbox.terrain-rgb"
-    }
+    },
+    "contour-lines": {
+      "type": "vector",
+      "url": "mapbox://mapbox.mapbox-terrain-v2"
+      }    
   },
   "sprite": "http://localhost:8081/sprites/cyclemap",
   "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
@@ -380,6 +384,30 @@
         "hillshade-accent-color": "rgba(0, 0, 0, .5)"
       }
     },
+    {
+      "id": "contour-lines",
+      "type": "line",
+      "source": "contour-lines",
+      "source-layer": "contour",
+      "minzoom": 13,
+      "filter": ["any",
+        ["all",
+          ["<", ["zoom"], 15],
+          ["match", ["get", "index"], [5, 10], true, false]
+        ],
+        ["all",
+          [">=", ["zoom"], 15],
+          ["<", ["zoom"], 16],
+          ["match", ["get", "index"], [2, 10], true, false]
+        ],
+        [">=", ["zoom"], 16]
+      ],
+
+      "paint": {
+        "line-color": "rgba(127, 51, 0, 0.25)",
+        "line-width": 1
+      }      
+    },       
     {
       "id": "weir",
       "type": "line",
