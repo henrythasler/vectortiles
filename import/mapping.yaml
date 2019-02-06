@@ -210,6 +210,8 @@ tables:
   manmade_lines:
     type: linestring
     columns:
+    - name: osm_id
+      type: id      
     - name: geometry
       type: geometry
     - name: class
@@ -225,6 +227,8 @@ tables:
   manmade_polygons:
     type: polygon
     columns:
+    - name: osm_id
+      type: id      
     - name: geometry
       type: geometry
     - name: class

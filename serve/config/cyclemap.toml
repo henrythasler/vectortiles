@@ -111,9 +111,11 @@ srid = 3857             # The default srid for this provider. If not provided it
     [[providers.layers]]
     name = "manmade"
     sql= """
-    select id as gid, ST_AsBinary(geometry) as geom, class, subclass, ST_Length(geometry)::integer as length, ST_IsClosed(geometry) as polygon from import.manmade_lines WHERE (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, ST_Length(geometry)::integer as length, ST_IsClosed(geometry) as polygon from import.manmade_lines_gen13 WHERE 14 > !ZOOM! AND (geometry && !BBOX!) 
     UNION ALL
-    select id as gid, ST_AsBinary(geometry) as geom, class, subclass, ST_Perimeter(geometry)::integer as length, TRUE as polygon from import.manmade_polygons WHERE (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, ST_Length(geometry)::integer as length, ST_IsClosed(geometry) as polygon from import.manmade_lines WHERE 14 <= !ZOOM! AND (geometry && !BBOX!) 
+    UNION ALL
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, ST_Perimeter(geometry)::integer as length, TRUE as polygon from import.manmade_polygons WHERE (geometry && !BBOX!) 
     """
 
     [[providers.layers]]
@@ -245,7 +247,7 @@ name = "local"
 
     [[maps.layers]]
     provider_layer = "osm.manmade"
-    min_zoom = 14
+    min_zoom = 10
 
     [[maps.layers]]
     provider_layer = "osm.piste"
