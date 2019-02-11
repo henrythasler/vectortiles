@@ -4,9 +4,13 @@
 
 # change the input file here
 osmfile="slice.osm.pbf"
+dbname="slice"
+
+#osmfile="legend.osm.pbf"
+#dbname="legend"
+
 #osmfile="oberbayern-latest.osm.pbf"
 # osmfile="germany-south.osm.pbf"
-dbname="slice"
 pgdocker="postgis"
 
 osmpath="/media/henry/Tools/map/data/"
@@ -177,7 +181,7 @@ if [ $OUT -eq 0 ];then
     wait
 
     # roads
-    generalize "roads" "roads_gen15" 5 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "(service <=1) OR (ST_Length(geometry) > 200)" &
+    generalize "roads" "roads_gen15" 3 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "(service <=1) OR (ST_Length(geometry) > 50)" &
     generalize "roads" "roads_gen14" 5 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=15 OR (subclass IN ('path', 'track', 'footway', 'bridleway', 'service', 'cycleway') AND ST_Length(geometry) > 100)" &
     generalize "roads" "roads_gen13" 10 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=15 OR (subclass IN ('path', 'track', 'footway', 'bridleway', 'service', 'cycleway') AND ST_Length(geometry) > 200)" &
     generalize "roads" "roads_gen12" 20 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=15 OR (subclass='path' AND bicycle >= 3) OR (subclass IN ('track', 'service', 'cycleway') AND ST_Length(geometry) > 500)" &
