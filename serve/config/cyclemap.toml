@@ -116,6 +116,8 @@ srid = 3857             # The default srid for this provider. If not provided it
     select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, ST_Length(geometry)::integer as length, ST_IsClosed(geometry) as polygon from import.manmade_lines WHERE 14 <= !ZOOM! AND (geometry && !BBOX!) 
     UNION ALL
     select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, ST_Perimeter(geometry)::integer as length, TRUE as polygon from import.manmade_polygons WHERE (geometry && !BBOX!) 
+    UNION ALL
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, 0 as length, FALSE as polygon from import.manmade_points WHERE (geometry && !BBOX!) 
     """
 
     [[providers.layers]]

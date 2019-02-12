@@ -701,6 +701,59 @@
         ]
       }
     },    
+    {
+      "id": "railway-service-tunnel",
+      "type": "line",
+      "source": "local",
+      "source-layer": "railway",
+      "minzoom": 15,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["!=", ["get", "service"], ""],
+        ["!=", ["get", "bridge"], true],
+        ["==", ["get", "tunnel"], true]
+      ],
+      "layout": {
+      },
+      "paint": {
+        "line-dasharray": [4, 4],
+        "line-color": "#888",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          15, 3,
+          18, 6
+        ]
+      }
+    },    
+    {
+      "id": "railway-tunnel",
+      "type": "line",
+      "source": "local",
+      "source-layer": "railway",
+      "minzoom": 13,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["==", ["get", "service"], ""],
+        ["!=", ["get", "bridge"], true],
+        ["==", ["get", "tunnel"], true]
+      ],
+      "layout": {
+      },
+      "paint": {
+        "line-dasharray": [5, 5],
+        "line-color": 
+          [
+          "interpolate", ["linear"], ["zoom"],
+          12, "#666",
+          13, "#444"
+          ],
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          13, 4,
+          18, 8
+        ]
+      }
+    },    
 
     {
       "id": "buildings-large",
@@ -1049,7 +1102,11 @@
       "source-layer": "railway",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": ["!=", ["get", "service"], ""],
+      "filter": ["all",
+        ["!=", ["get", "service"], ""],
+        ["!=", ["get", "bridge"], true],
+        ["!=", ["get", "tunnel"], true]
+      ],
       "paint": { 
         "line-color": "#888",
         "line-width": [
@@ -1066,7 +1123,11 @@
       "source-layer": "railway",
       "minzoom": 15,
       "maxzoom": 24,
-      "filter": ["!=", ["get", "service"], ""],
+      "filter": ["all",
+        ["!=", ["get", "service"], ""],
+        ["!=", ["get", "bridge"], true],
+        ["!=", ["get", "tunnel"], true]
+      ],
       "layout": {
       },
       "paint": {
@@ -1706,6 +1767,41 @@
           "interpolate", ["exponential", 1.4], ["zoom"],
           12, 1.2,
           20, 20
+        ]
+      }
+    },    
+    {
+      "id": "power-tower",
+      "type": "circle",
+      "source": "local",
+      "source-layer": "manmade",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["==", ["geometry-type"], "Point"],
+        ["==", ["get", "class"], "power"]
+      ],
+      "paint": {
+        "circle-radius": 3.5
+      }
+    },    
+    {
+      "id": "power-line",
+      "type": "line",
+      "source": "local",
+      "source-layer": "manmade",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["==", ["geometry-type"], "LineString"],
+        ["==", ["get", "class"], "power"]
+      ],
+      "layout": {},
+      "paint": {
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          13, 1,
+          18, 4
         ]
       }
     },    

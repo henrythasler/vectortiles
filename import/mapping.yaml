@@ -112,6 +112,15 @@ tables:
       type: mapping_key
     - name: subclass
       type: mapping_value
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name      
     mapping:
       natural: [water, pond]
       landuse: [reservoir, basin]
@@ -153,6 +162,15 @@ tables:
       type: mapping_key
     - name: subclass
       type: mapping_value
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name      
     mappings:
       landuse:
         mapping:
@@ -183,6 +201,15 @@ tables:
     - name: surface
       type: string
       key: surface
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name
     mappings:
       landuse:
         mapping:
@@ -206,7 +233,21 @@ tables:
       aerialway: [cable_car, chairlift, gondola, chair_lift, mixed_lift, goods]
       railway: [funicular]
       attraction: [summer_toboggan]
-  
+
+  manmade_points:
+    type: point
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    mapping:
+      power: [tower, station, sub_station]
+
   manmade_lines:
     type: linestring
     columns:
@@ -223,6 +264,7 @@ tables:
       man_made: [pier]
       barrier: [fence]
       aeroway: [taxiway, runway]
+      power: [line, minor_line]
 
   manmade_polygons:
     type: polygon
