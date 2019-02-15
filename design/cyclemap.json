@@ -547,9 +547,7 @@
       "source-layer": "transportation",
       "minzoom": 10,
       "maxzoom": 24,
-      "filter": ["all",
-        ["match", ["get", "subclass"], "ferry", true, false]
-      ],
+      "filter": ["==", ["get", "subclass"], "ferry"],
       "layout": {},
       "paint": {
         "line-dasharray": [4, 4],
@@ -730,7 +728,7 @@
       "type": "line",
       "source": "local",
       "source-layer": "railway",
-      "minzoom": 13,
+      "minzoom": 9,
       "maxzoom": 24,
       "filter": ["all",
         ["==", ["get", "service"], ""],
@@ -738,9 +736,11 @@
         ["==", ["get", "tunnel"], true]
       ],
       "layout": {
+        "line-join": "round",
+        "line-cap": "round"
       },
       "paint": {
-        "line-dasharray": [5, 5],
+        "line-dasharray": [1, 2],
         "line-color": 
           [
           "interpolate", ["linear"], ["zoom"],
@@ -749,8 +749,9 @@
           ],
         "line-width": [
           "interpolate", ["exponential", 2], ["zoom"],
-          13, 4,
-          18, 8
+          9, 1,
+          13, 7,
+          18, 14
         ]
       }
     },    
@@ -1752,9 +1753,7 @@
         ["any",
           ["==", ["get", "subclass"], "cycleway"],
           ["==", ["get", "bicycle"], 3]
-        ],
-        ["!=", ["get", "bridge"], true],
-        ["!=", ["get", "tunnel"], true]
+        ]
       ],
       "layout": {
         "line-join": "round",
@@ -1767,6 +1766,38 @@
           "interpolate", ["exponential", 1.4], ["zoom"],
           12, 1.2,
           20, 20
+        ]
+      }
+    },    
+    {
+      "id": "aerialway",
+      "type": "line",
+      "source": "local",
+      "source-layer": "transportation",
+      "minzoom": 12,
+      "maxzoom": 24,
+      "filter": ["any",
+        ["all",
+          ["<", ["zoom"], 14],
+          ["match", ["get", "subclass"], ["cable_car", "chairlift", "gondola", "chair_lift", "mixed_lift", "funicular"], true, false]
+        ],
+        ["all",
+          [">=", ["zoom"], 14],
+          ["match", ["get", "subclass"], ["cable_car", "chairlift", "gondola", "chair_lift", "mixed_lift", "funicular", "summer_toboggan", "goods"], true, false]
+        ]          
+      ],
+      "layout": {},
+      "paint": {
+        "line-dasharray": [3.5, 2],        
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          12, 2,
+          14, ["match", ["get", "subclass"], 
+                ["funicular", "summer_toboggan", "goods"], 2, 
+              4],
+          16, ["match", ["get", "subclass"], 
+                ["funicular", "summer_toboggan", "goods"], 2, 
+              8]
         ]
       }
     },    

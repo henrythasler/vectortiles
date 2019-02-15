@@ -99,13 +99,13 @@ srid = 3857             # The default srid for this provider. If not provided it
     [[providers.layers]]
     name = "railway"
     sql= """
-    select id as gid, ST_AsBinary(geometry) as geom, class, subclass, zorder, bridge, tunnel, service from import.railway WHERE (subclass NOT IN('tram')) AND (geometry && !BBOX!)
+    select id as gid, ST_AsBinary(geometry) as geom, class, subclass, zorder, bridge, tunnel, service from import.railway WHERE subclass NOT IN('tram') AND (attraction <> '') IS NOT TRUE AND (geometry && !BBOX!)
     """
 
     [[providers.layers]]
     name = "transportation"
     sql= """
-    select id as gid, ST_AsBinary(geometry) as geom, subclass from import.transportation WHERE (geometry && !BBOX!) 
+    select id as gid, ST_AsBinary(geometry) as geom, class, subclass from import.transportation WHERE NOT ST_IsClosed(geometry) AND (geometry && !BBOX!) 
     """
 
     [[providers.layers]]
