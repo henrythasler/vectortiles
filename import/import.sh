@@ -25,17 +25,6 @@ shift $((OPTIND-1))
 [ "${1:-}" = "--" ] && shift
 
 ### Configure names, folders, etc.
-
-# change the input file here
-osmfile="slice.osm.pbf"
-dbname="slice"
-
-#osmfile="legend.osm.pbf"
-#dbname="legend"
-
-#osmfile="oberbayern-latest.osm.pbf"
-# osmfile="germany-south.osm.pbf"
-
 pgdocker="postgis11"
 
 if ${SERVER}
@@ -43,10 +32,16 @@ then
     printf "using server configuration"
     osmpath="$(pwd)/../data/pbf/"
     dbpath="vectortiles_db"
+
+    osmfile="bayern-latest.osm.pbf"
+    dbname="slice"
 else
     # localhost
     osmpath="/media/henry/Tools/map/data/"
     dbpath="/media/mapdata/pgdata_mvt"
+
+    osmfile="slice.osm.pbf"
+    dbname="slice"
 fi
 # server
 
