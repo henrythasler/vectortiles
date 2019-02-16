@@ -6,15 +6,15 @@ config="$(pwd)/config/cyclemap.toml"
 cache="$(pwd)/.cache"
 
 ### Start postgis-container 
-if [ ! "$(docker ps -q -f name=postgis)" ]; then
-    if [ "$(docker ps -aq -f status=exited -f name=postgis)" ]; then
-        echo "removing old postgis container"
-        docker rm postgis
+if [ ! "$(docker ps -q -f name=${pgdocker})" ]; then
+    if [ "$(docker ps -aq -f status=exited -f name=${pgdocker})" ]; then
+        echo "removing old ${pgdocker} container"
+        docker rm ${pgdocker}
     fi
     # run container as current user
-    echo "starting postgis container"
+    echo "starting ${pgdocker} container"
     docker run -d \
-        --name postgis \
+        --name ${pgdocker} \
         --network gis \
         -p 5432:5432 \
         --user "$(id -u):$(id -g)" \
@@ -26,7 +26,7 @@ if [ ! "$(docker ps -q -f name=postgis)" ]; then
     ### Wait until startup is complete
     # FIXME: fin some other solution to wait for completion
     sleep 3s
-else echo "postgis container already running"
+else echo "${pgdocker} container already running"
 fi
 
 mkdir -p ${cache}

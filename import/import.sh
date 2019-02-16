@@ -1,5 +1,29 @@
 #!/bin/bash
 
+# Eval command line arguments
+# https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
+
+# A POSIX variable
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+
+# Initialize our own variables:
+SERVER=false
+
+while getopts "h?s" opt; do
+    case "$opt" in
+    h|\?)
+        printf " -s for server version"
+        exit 0
+        ;;
+    s)  SERVER=true
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "${1:-}" = "--" ] && shift
+
 ### Configure names, folders, etc.
 
 # change the input file here
@@ -11,10 +35,20 @@ dbname="slice"
 
 #osmfile="oberbayern-latest.osm.pbf"
 # osmfile="germany-south.osm.pbf"
-pgdocker="postgis"
 
-osmpath="/media/henry/Tools/map/data/"
-dbpath="/media/mapdata/pgdata_mvt"
+pgdocker="postgis11"
+
+if ${SERVER}
+then
+    printf "using server configuration"
+    osmpath="$(pwd)/../data/pbf/"
+    dbpath="vectortiles_db"
+else
+    # localhost
+    osmpath="/media/henry/Tools/map/data/"
+    dbpath="/media/mapdata/pgdata_mvt"
+fi
+# server
 
 # auto-generate database-name from input-file (remove '.' and '-' characters)
 # dbname=${osmfile%%.*}
@@ -28,27 +62,30 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 
 ### Start postgis-container 
-if [ ! "$(docker ps -q -f name=${pgdocker})" ]; then
-    if [ "$(docker ps -aq -f status=exited -f name=${pgdocker})" ]; then
-        echo "removing old ${pgdocker} container"
-        docker rm ${pgdocker}
-    fi
-    # run container as current user
-    echo "starting ${pgdocker} container"
-    docker run -d \
-        --name ${pgdocker} \
-        --network gis \
-        -p 5432:5432 \
-        --user "$(id -u):$(id -g)" \
-        -v ${dbpath}:/pgdata \
-        -v $(pwd)/postgis-import.conf:/etc/postgresql/postgresql.conf \
-        -e PGDATA=/pgdata \
-        img-postgis:0.9 -c 'config_file=/etc/postgresql/postgresql.conf'
+if ! ${SERVER}
+then
+    if [ ! "$(docker ps -q -f name=${pgdocker})" ]; then
+        if [ "$(docker ps -aq -f status=exited -f name=${pgdocker})" ]; then
+            echo "removing old ${pgdocker} container"
+            docker rm ${pgdocker}
+        fi
+        # run container as current user
+        echo "starting ${pgdocker} container"
+        docker run -d \
+            --name ${pgdocker} \
+            --network gis \
+            -p 5432:5432 \
+            --user "$(id -u):$(id -g)" \
+            -v ${dbpath}:/pgdata \
+            -v $(pwd)/postgis-import.conf:/etc/postgresql/postgresql.conf \
+            -e PGDATA=/pgdata \
+            img-postgis:0.9 -c 'config_file=/etc/postgresql/postgresql.conf'
 
-    ### Wait until startup is complete
-    # FIXME: fin some other solution to wait for completion
-    sleep 3s
-else echo "${pgdocker} container already running"
+        ### Wait until startup is complete
+        # FIXME: fin some other solution to wait for completion
+        sleep 3s
+    else echo "${pgdocker} container already running"
+    fi
 fi
 
 ### Setup database
