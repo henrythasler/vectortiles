@@ -813,6 +813,25 @@
       }
     },
     {
+      "id": "housenumbers",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "housenumbers",
+      "minzoom": 18,
+      "maxzoom": 24,
+      "layout": {
+        "text-field": "{number}",
+        "text-size": 16,
+        "text-letter-spacing": 0.1
+      },
+      "paint": {
+        "text-color": "#fff",
+        "text-halo-color": "#444",
+        "text-halo-width": 3,
+        "text-halo-blur": 0
+      }
+    },    
+    {
       "id": "aeroway-casing",
       "type": "line",
       "source": "local",
@@ -823,18 +842,18 @@
         "any",
         ["all",
           [">=", ["zoom"], 14],
-          ["==", ["get", "subclass"], "runway"]
+          ["match", ["get", "subclass"], ["runway", "taxiway"], true, false]
         ],
         ["all",
           [">=", ["zoom"], 13],
           ["<", ["zoom"], 14],
-          ["==", ["get", "subclass"], "runway"],
+          ["match", ["get", "subclass"], ["runway", "taxiway"], true, false],
           [">", ["get", "length"], 500]
         ],
         ["all",
           [">=", ["zoom"], 12],
           ["<", ["zoom"], 13],
-          ["==", ["get", "subclass"], "runway"],
+          ["match", ["get", "subclass"], ["runway", "taxiway"], true, false],
           [">", ["get", "length"], 1000]
         ],
         ["all",
@@ -848,10 +867,19 @@
         "line-color": "#666",
         "line-width": [
           "interpolate", ["exponential", 1.6], ["zoom"],
-          10, 6,
-          13, 17,
-          16, 60
-        ]
+          10, ["match", ["get", "subclass"], 
+              ["runway"], 6, 
+              ["taxiway"], -5, 
+            1],
+          13, ["match", ["get", "subclass"], 
+              ["runway"], 17, 
+              ["taxiway"], 7, 
+            1],
+          16, ["match", ["get", "subclass"], 
+            ["runway"], 60, 
+            ["taxiway"], 20, 
+            1]
+      ]
       }
     },    
     {
@@ -1858,7 +1886,7 @@
       ],
       "paint": {"text-color": "#ff0000"},
       "layout": {
-        "visibility": "none",
+        "visibility": "visible",
         "text-field": "{zxy}"
       }
     }       

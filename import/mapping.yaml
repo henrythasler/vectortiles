@@ -2,6 +2,50 @@
 # areas:
 #   linear_tags: [man_made]
 tables:
+  housenumbers_temp:
+    type: point
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: number
+      type: string
+      key: addr:housenumber
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name
+    mapping:
+      addr:housenumber: [__any__]
+
+  buildings_temp:
+    type: polygon
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: number
+      type: string
+      key: addr:housenumber
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name
+    mapping:
+      building: [__any__]
+
   roads:
     type: linestring
     columns:
@@ -320,9 +364,6 @@ tables:
     columns:
     - name: geometry
       type: geometry
-    - name: number
-      type: string
-      key: addr:housenumber
     mapping:
       building: [__any__]
 
