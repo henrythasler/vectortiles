@@ -22,7 +22,7 @@ tables:
       type: string
       key: name
     mapping:
-      addr:housenumber: [__any__]
+      entrance: [__any__]
 
   buildings_temp:
     type: polygon
