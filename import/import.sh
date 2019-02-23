@@ -1,5 +1,87 @@
 #!/bin/bash
 
+### greate generalized tables
+# ref: https://www.cyberciti.biz/tips/bash-shell-parameter-substitution-2.html
+function generalize() {
+    local source=${1}
+    local target=${2}
+    local tolerance=${3}
+    local columns=${4:-""}
+    local filter=${5:-""}
+    printf "start import.${target}...\n"
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}"
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
+
+function generalize_buffer() {
+    local source=${1}
+    local target=${2}
+    local tolerance=${3}
+    local columns=${4:-""}
+    local filter=${5:-""}
+    printf "start import.${target}...\n"
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(ST_Buffer(ST_Buffer(geometry,2*${tolerance}), -2*${tolerance}), ${tolerance})) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}"
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
+
+
+function generalize_hull() {
+    local source=${1}
+    local target=${2}
+    local tolerance=${3}
+    local columns=${4:-""}
+    local filter=${5:-""}
+    local percent=${6:-0.99}
+    printf "start import.${target}...\n"
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_ConcaveHull(ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})), ${percent}, false) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}"
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
+
+
+function merge_to_point() {
+    local source1=${1}
+    local source2=${2}
+    local target=${3}
+    local columns=${4:-""}
+    local filter=${5:-"TRUE"}
+    printf "start import.${target}...\n"
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_PointOnSurface(geometry) AS geometry${columns} FROM import.${source1} WHERE ${filter} UNION ALL SELECT osm_id, geometry${columns} FROM import.${source2} WHERE ${filter})" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}" \
+        -c "DROP TABLE IF EXISTS XXXimport.${source1}" 2>&1 >/dev/null \
+        -c "DROP TABLE IF EXISTS XXXimport.${source2}" 2>&1 >/dev/null
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
+
+
+function filter() {
+    local source=${1}
+    local target=${2}
+    local columns=${3:-""}
+    local filter=${4:-"TRUE"}
+    printf "start import.${target}...\n"
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, geometry${columns} FROM import.${source} WHERE ${filter})" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}"
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
+
 # Eval command line arguments
 # https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
 
@@ -59,33 +141,33 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 
 ### Start postgis-container 
-if ! ${SERVER}
-then
-    if [ ! "$(docker ps -q -f name=${pgdocker})" ]; then
-        if [ "$(docker ps -aq -f status=exited -f name=${pgdocker})" ]; then
-            echo "removing old ${pgdocker} container"
-            docker rm ${pgdocker}
-        fi
-        # run container as current user
-        echo "starting ${pgdocker} container"
-        docker run -d \
-            --name ${pgdocker} \
-            --network gis \
-            -p 5432:5432 \
-            --user "$(id -u):$(id -g)" \
-            -v ${dbpath}:/pgdata \
-            -v $(pwd)/postgis-import.conf:/etc/postgresql/postgresql.conf \
-            -e PGDATA=/pgdata \
-            img-postgis:0.9 -c 'config_file=/etc/postgresql/postgresql.conf'
+# if ! ${SERVER}
+# then
+#     if [ ! "$(docker ps -q -f name=${pgdocker})" ]; then
+#         if [ "$(docker ps -aq -f status=exited -f name=${pgdocker})" ]; then
+#             echo "removing old ${pgdocker} container"
+#             docker rm ${pgdocker}
+#         fi
+#         # run container as current user
+#         echo "starting ${pgdocker} container"
+#         docker run -d \
+#             --name ${pgdocker} \
+#             --network gis \
+#             -p 5432:5432 \
+#             --user "$(id -u):$(id -g)" \
+#             -v ${dbpath}:/pgdata \
+#             -v $(pwd)/postgis-import.conf:/etc/postgresql/postgresql.conf \
+#             -e PGDATA=/pgdata \
+#             img-postgis:0.9 -c 'config_file=/etc/postgresql/postgresql.conf'
 
-        ### Wait until startup is complete
-        # FIXME: fin some other solution to wait for completion
-        sleep 3s
-    else echo "${pgdocker} container already running"
-    fi
-fi
+#         ### Wait until startup is complete
+#         # FIXME: fin some other solution to wait for completion
+#         sleep 3s
+#     else echo "${pgdocker} container already running"
+#     fi
+# fi
 
-### Setup database
+# ### Setup database
 # docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres \
 #     -c "DROP DATABASE IF EXISTS ${dbname};" >/dev/null \
 #     -c "COMMIT;" 2>&1 >/dev/null \
@@ -113,75 +195,8 @@ fi
 #     exit 1
 # fi
 
-### greate generalized tables
-# ref: https://www.cyberciti.biz/tips/bash-shell-parameter-substitution-2.html
-function generalize() {
-    local source=${1}
-    local target=${2}
-    local tolerance=${3}
-    local columns=${4:-""}
-    local filter=${5:-""}
-    printf "start import.${target}...\n"
-    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
-        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
-        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
-        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
-        -c "ANALYZE import.${target}"
-    printf "import.${target} ${GREEN}done${NC}\n"
-}
 
-function generalize_buffer() {
-    local source=${1}
-    local target=${2}
-    local tolerance=${3}
-    local columns=${4:-""}
-    local filter=${5:-""}
-    printf "start import.${target}...\n"
-    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
-        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
-        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(ST_Buffer(ST_Buffer(geometry,2*${tolerance}), -2*${tolerance}), ${tolerance})) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
-        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
-        -c "ANALYZE import.${target}"
-    printf "import.${target} ${GREEN}done${NC}\n"
-}
-
-
-function generalize_hull() {
-    local source=${1}
-    local target=${2}
-    local tolerance=${3}
-    local columns=${4:-""}
-    local filter=${5:-""}
-    local percent=${6:-0.99}
-    printf "start import.${target}...\n"
-    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
-        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
-        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_ConcaveHull(ST_MakeValid(ST_SimplifyPreserveTopology(geometry, ${tolerance})), ${percent}, false) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
-        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
-        -c "ANALYZE import.${target}"
-    printf "import.${target} ${GREEN}done${NC}\n"
-}
-
-
-function merge_to_point() {
-    local source1=${1}
-    local source2=${2}
-    local target=${3}
-    local columns=${4:-""}
-    local filter=${5:-""}
-    printf "start import.${target}...\n"
-    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
-        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
-        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_PointOnSurface(geometry) AS geometry${columns} FROM import.${source1} WHERE ${filter} UNION ALL SELECT osm_id, geometry${columns} FROM import.${source2} WHERE ${filter})" \
-        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
-        -c "ANALYZE import.${target}" \
-        -c "DROP TABLE IF EXISTS import.${source1}" 2>&1 >/dev/null \
-        -c "DROP TABLE IF EXISTS import.${source2}" 2>&1 >/dev/null
-    printf "import.${target} ${GREEN}done${NC}\n"
-}
-
-
- OUT=0
+OUT=0
 if [ $OUT -eq 0 ];then
     # # landuse
     # generalize "landuse" "landuse_gen14" 5 ", class, subclass" "ST_Area(geometry)>1000" &
@@ -246,10 +261,17 @@ if [ $OUT -eq 0 ];then
     # generalize "manmade_lines" "manmade_lines_gen13" 10 ", class, subclass" "subclass IN('taxiway', 'runway')" &
     # wait
 
-    # housenumbers
-    merge_to_point "buildings_temp" "housenumbers_temp" "housenumbers" ", number, name_de, name_en, name" "(number <> '') IS NOT FALSE"
+    # # poi merge
+    # merge_to_point "buildings_temp" "housenumbers_temp" "housenumbers" ", number, name_de, name_en, name" "(number <> '') IS NOT FALSE" &
+    merge_to_point "poi_polygon" "poi_points" "poi" ", class, subclass, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name, ele, pop" &
     wait
 
+    # poi filter
+    filter "poi" "poi_gen14" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
+    filter "poi" "poi_gen12" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet')" &
+    filter "poi" "poi_gen9" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'peak')" &
+    filter "poi" "poi_gen0" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'town', 'peak')" &
+    wait
 
     printf "generalize ${GREEN}done${NC}\n"
 

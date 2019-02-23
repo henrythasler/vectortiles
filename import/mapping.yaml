@@ -2,6 +2,69 @@
 # areas:
 #   linear_tags: [man_made]
 tables:
+
+  poi_points:
+    type: point
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name
+    - name: ele
+      type: integer
+      key: ele
+    - name: pop
+      type: integer
+      key: population
+    mapping:
+      natural: [peak]
+      highway: [bus_stop]
+      place: [city, town, village, hamlet, suburb]
+
+  poi_polygon:
+    type: polygon
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name
+    - name: ele
+      type: integer
+      key: ele
+    - name: pop
+      type: integer
+      key: population
+    mapping:
+      natural: [peak]
+      highway: [bus_stop]
+      place: [city, town, village, hamlet, suburb]
+
   housenumbers_temp:
     type: point
     columns:

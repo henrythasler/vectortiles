@@ -813,25 +813,6 @@
       }
     },
     {
-      "id": "housenumbers",
-      "type": "symbol",
-      "source": "local",
-      "source-layer": "housenumbers",
-      "minzoom": 18,
-      "maxzoom": 24,
-      "layout": {
-        "text-field": "{number}",
-        "text-size": 16,
-        "text-letter-spacing": 0.1
-      },
-      "paint": {
-        "text-color": "#fff",
-        "text-halo-color": "#444",
-        "text-halo-width": 3,
-        "text-halo-blur": 0
-      }
-    },    
-    {
       "id": "aeroway-casing",
       "type": "line",
       "source": "local",
@@ -1862,7 +1843,63 @@
         ]
       }
     },    
-   {
+    {
+      "id": "label-housenumber",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "housenumbers",
+      "minzoom": 18,
+      "maxzoom": 24,
+      "layout": {
+        "text-field": "{number}",
+        "text-size": 16,
+        "text-letter-spacing": 0.1
+      },
+      "paint": {
+        "text-color": "#fff",
+        "text-halo-color": "#444",
+        "text-halo-width": 3,
+        "text-halo-blur": 0
+      }
+    },    
+    {
+      "id": "label-peak",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "poi",
+      "minzoom": 12,
+      "maxzoom": 24,
+      "filter": ["==", ["get", "subclass"], "peak"],
+      "layout": {
+        "icon-image": "triangle",
+        "icon-size": ["interpolate", ["exponential", 2], ["zoom"],
+        12, 0.5,
+        14, 1
+        ],
+        "text-anchor": "top",
+        "text-field": ["step", ["zoom"],
+        "",
+        14, ["format",
+          ["case", 
+            [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
+            ["concat", ["get", "ele"]]
+          ], 
+        {}]
+        ],
+        "text-font": ["Open Sans Bold Italic"],
+        "text-offset": [0, 0.5],
+        "text-size": 18,
+        "text-letter-spacing": 0
+      },
+      "paint": {
+        "text-color": "#222",
+        "text-halo-color": "rgba(255, 255, 255, 0.8)",
+        "text-halo-width": 2.5,
+        "text-halo-blur": 1
+      }
+    },    
+
+    {
       "id": "debug-tile-outline",
       "type": "line",
       "source": "local",

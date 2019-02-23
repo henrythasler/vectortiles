@@ -239,6 +239,21 @@ srid = 3857             # The default srid for this provider. If not provided it
     select osm_id as gid, ST_AsBinary(geometry) as geom, number, name from import.housenumbers WHERE geometry && !BBOX!
     """
 
+    [[providers.layers]]
+    name = "poi"
+    sql= """
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.poi_gen0 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.poi_gen9 WHERE 9 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.poi_gen12 WHERE 12 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.poi_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.poi WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
+    """
+
+
 [[maps]]
 name = "local"
 tile_buffer = 256
@@ -299,3 +314,7 @@ tile_buffer = 256
     [[maps.layers]]
     provider_layer = "osm.housenumbers"
     min_zoom = 18
+
+    [[maps.layers]]
+    provider_layer = "osm.poi"
+    min_zoom = 7
