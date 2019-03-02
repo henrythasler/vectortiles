@@ -1898,6 +1898,52 @@
         "text-halo-blur": 1
       }
     },    
+    {
+      "id": "label-place",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "poi",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": ["==", ["get", "class"], "place"],
+      "layout": {
+        "text-anchor": "top",
+        "text-field": ["step", ["zoom"],
+        "",
+        12, ["case", 
+              ["match", ["get", "subclass"], ["village"], true, false], ["format", ["get", "name"],{"font-scale": 0.9 }],
+              ["match", ["get", "subclass"], ["town"], true, false], ["format",["get", "name"],{"text-font": ["literal", ["Open Sans Bold"]]}],
+              ""
+            ],
+        13, ["case", 
+              ["match", ["get", "subclass"], ["town"], true, false], ["format",["get", "name"],{"text-font": ["literal", ["Open Sans Bold"]]}],
+              ["match", ["get", "subclass"], ["village", "suburb"], true, false], ["format", ["get", "name"],{}],
+              ["match", ["get", "subclass"], ["hamlet"], true, false], ["format",["get", "name"],{"font-scale": 0.8 }],
+              ""
+            ],
+        14, ["case", 
+              ["match", ["get", "subclass"], ["village", "suburb"], true, false], ["format", ["get", "name"],{}],
+              ["match", ["get", "subclass"], ["hamlet"], true, false], ["format",["get", "name"],{"font-scale": 0.8 }],
+              ""
+            ],
+        15, ["case", 
+          ["match", ["get", "subclass"], ["village", "suburb"], true, false], ["format", ["get", "name"],{}],
+          ["match", ["get", "subclass"], ["hamlet"], true, false], ["format",["get", "name"],{"font-scale": 0.8 }],
+          ""
+        ]
+        ],
+        "text-font": ["Open Sans Regular"],
+        "text-offset": [0, 0.5],
+        "text-size": 22,
+        "text-letter-spacing": 0
+      },
+      "paint": {
+        "text-color": "#222",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 2.5,
+        "text-halo-blur": 1
+      }
+    },    
 
     {
       "id": "debug-tile-outline",
@@ -1923,7 +1969,7 @@
       ],
       "paint": {"text-color": "#ff0000"},
       "layout": {
-        "visibility": "none",
+        "visibility": "visible",
         "text-field": "{zxy}"
       }
     }       

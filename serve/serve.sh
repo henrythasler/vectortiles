@@ -88,8 +88,7 @@ else
         --user "$(id -u):$(id -g)" \
         -v ${config}:/data/config.toml:ro \
         -v ${cache}:/cache \
-        -e TEGOLA_SQL_DEBUG=LAYER_SQL \
-        tegola:henry serve \
+        tegola:testing serve \
             --config /data/config.toml
 fi
 
