@@ -88,7 +88,7 @@ else
         --user "$(id -u):$(id -g)" \
         -v ${config}:/data/config.toml:ro \
         -v ${cache}:/cache \
-        tegola:testing serve \
+        tegola:henry serve \
             --config /data/config.toml
 fi
 

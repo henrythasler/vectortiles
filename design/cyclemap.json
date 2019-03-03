@@ -1558,6 +1558,51 @@
       }
     },   
     {
+      "id": "railway-service-casing-bridge",
+      "type": "line",
+      "source": "local",
+      "source-layer": "railway",
+      "minzoom": 15,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["!=", ["get", "service"], ""],
+        ["==", ["get", "bridge"], true],
+        ["!=", ["get", "tunnel"], true]
+      ],
+      "paint": { 
+        "line-color": "#888",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          15, 5,
+          18, 12
+        ]
+      }
+    },    
+    {
+      "id": "railway-service-line-bridge",
+      "type": "line",
+      "source": "local",
+      "source-layer": "railway",
+      "minzoom": 15,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["!=", ["get", "service"], ""],
+        ["==", ["get", "bridge"], true],
+        ["!=", ["get", "tunnel"], true]
+      ],
+      "layout": {
+      },
+      "paint": {
+        "line-dasharray": [4, 4],
+        "line-color": "#fff",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          15, 3,
+          18, 6
+        ]
+      }
+    },    
+    {
       "id": "railway-casing-bridge",
       "type": "line",
       "source": "local",
@@ -1969,7 +2014,7 @@
       ],
       "paint": {"text-color": "#ff0000"},
       "layout": {
-        "visibility": "visible",
+        "visibility": "none",
         "text-field": "{zxy}"
       }
     }       
