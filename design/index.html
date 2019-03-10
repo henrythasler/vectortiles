@@ -19,8 +19,8 @@
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
 
-  <script src='http://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.min.js'></script>
-  <link href='http://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.css' rel='stylesheet' />  
+  <script src='https://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.min.js'></script>
+  <link href='https://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.css' rel='stylesheet' />
   <title>CycleMap</title>
 </head>
 
@@ -46,7 +46,7 @@
       var myStyle = JSON.parse(response);
 
       // TODO: Enter your mapbox gl access token on the line below
-      mapboxgl.accessToken = ''
+      mapboxgl.accessToken = 'pk.eyJ1IjoibXljeWNsZW1hcCIsImEiOiJjaXJhYnoxcGEwMDRxaTlubnk3cGZpbTBmIn0.TEO9UhyyX1nFKDTwO4K1xg'
       var map = new mapboxgl.Map({
         container: 'map',
         style: myStyle,
@@ -63,7 +63,11 @@
       }));
       map.addControl(nav, 'top-right');
 
+      var scale = new mapboxgl.ScaleControl();
+      map.addControl(scale);
+
       map.on('load', function () {
+
       });
     });
   </script>

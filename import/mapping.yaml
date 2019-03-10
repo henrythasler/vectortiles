@@ -26,15 +26,81 @@ tables:
     - name: ele
       type: integer
       key: ele
+    - name: access
+      type: string
+      key: access
+    mapping:
+      natural: [peak]
+      highway: [bus_stop]
+      amenity: [pub, fast_food, restaurant, bar, biergarten, hospital, parking, shelter]
+      tourism: [alpine_hut, hotel]
+      shop: [bicycle, supermarket]
+      railway: [station, halt, tram_stop]
+
+  poi_polygon:
+    type: polygon
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name
+    - name: ele
+      type: integer
+      key: ele
+    - name: access
+      type: string
+      key: access
+    mapping:
+      natural: [peak]
+      highway: [bus_stop]
+      amenity: [pub, fast_food, restaurant, bar, biergarten, hospital, parking, shelter]
+      tourism: [alpine_hut, hotel]
+      shop: [bicycle, supermarket]
+      railway: [station, halt, tram_stop]
+
+  label_points:
+    type: point
+    columns:
+    - name: osm_id
+      type: id      
+    - name: geometry
+      type: geometry
+    - name: class
+      type: mapping_key
+    - name: subclass
+      type: mapping_value
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name
+    - name: ele
+      type: integer
+      key: ele
     - name: pop
       type: integer
       key: population
     mapping:
-      natural: [peak]
-      highway: [bus_stop]
       place: [city, town, village, hamlet, suburb]
 
-  poi_polygon:
+  label_polygon:
     type: polygon
     columns:
     - name: osm_id
@@ -61,9 +127,8 @@ tables:
       type: integer
       key: population
     mapping:
-      natural: [peak]
-      highway: [bus_stop]
       place: [city, town, village, hamlet, suburb]
+
 
   housenumbers_temp:
     type: point
@@ -109,7 +174,7 @@ tables:
     mapping:
       building: [__any__]
 
-  roads:
+  roads_temp:
     type: linestring
     columns:
     - name: osm_id

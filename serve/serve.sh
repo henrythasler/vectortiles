@@ -54,6 +54,7 @@ else
     dbpath="/media/mapdata/pgdata_mvt"
 
     rm -rf ${cache}/local 
+    rm -rf ${cache}/cluster 
 
     ### Start postgis-container 
     if [ ! "$(docker ps -q -f name=${pgdocker})" ]; then
@@ -87,6 +88,7 @@ else
         -p 8080:8080 \
         --user "$(id -u):$(id -g)" \
         -v ${config}:/data/config.toml:ro \
+        -e TEGOLA_SQL_DEBUG=LAYER_SQL \
         -v ${cache}:/cache \
         tegola:henry serve \
             --config /data/config.toml

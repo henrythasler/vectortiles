@@ -62,8 +62,8 @@ function merge_to_point() {
         -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_PointOnSurface(geometry) AS geometry${columns} FROM import.${source1} WHERE ${filter} UNION ALL SELECT osm_id, geometry${columns} FROM import.${source2} WHERE ${filter})" \
         -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
         -c "ANALYZE import.${target}" \
-        -c "DROP TABLE IF EXISTS XXXimport.${source1}" 2>&1 >/dev/null \
-        -c "DROP TABLE IF EXISTS XXXimport.${source2}" 2>&1 >/dev/null
+        -c "DROP TABLE IF EXISTS import.${source1}" 2>&1 >/dev/null \
+        -c "DROP TABLE IF EXISTS import.${source2}" 2>&1 >/dev/null
     printf "import.${target} ${GREEN}done${NC}\n"
 }
 
@@ -80,6 +80,12 @@ function filter() {
         -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
         -c "ANALYZE import.${target}"
     printf "import.${target} ${GREEN}done${NC}\n"
+}
+
+function drop() {
+    local table=${1}
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
+        -c "DROP TABLE IF EXISTS import.${table}" 2>&1 >/dev/null
 }
 
 # Eval command line arguments
@@ -247,7 +253,11 @@ if [ $OUT -eq 0 ];then
     generalize "transportation" "transportation_gen8" 100 ", class, subclass" "ST_Length(geometry)>200" &
     wait
 
-    # roads
+    # roads - prepare
+    filter "roads_temp" "roads" ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" 
+    drop "roads_temp"
+
+    # roads - generalize
     generalize "roads" "roads_gen15" 3 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "(service <=1) OR (ST_Length(geometry) > 50)" &
     generalize "roads" "roads_gen14" 5 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=15 OR (subclass IN ('path', 'track', 'footway', 'bridleway', 'service', 'cycleway') AND ST_Length(geometry) > 100)" &
     generalize "roads" "roads_gen13" 10 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=15 OR (subclass IN ('path', 'track', 'footway', 'bridleway', 'service', 'cycleway') AND ST_Length(geometry) > 200)" &
@@ -263,15 +273,16 @@ if [ $OUT -eq 0 ];then
 
     # poi merge
     merge_to_point "buildings_temp" "housenumbers_temp" "housenumbers" ", number, name_de, name_en, name" "(number <> '') IS NOT FALSE" &
-    merge_to_point "poi_polygon" "poi_points" "poi" ", class, subclass, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name, ele, pop" &
+    merge_to_point "label_polygon" "label_points" "label" ", class, subclass, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name, ele, pop" &
+    merge_to_point "poi_polygon" "poi_points" "poi" ", class, subclass, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name, ele, access" &
     wait
 
     # poi filter
-    filter "poi" "poi_gen14" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
-    filter "poi" "poi_gen12" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
-    filter "poi" "poi_gen9" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'peak')" &
-    filter "poi" "poi_gen0" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'town', 'peak')" &
-    wait
+    # filter "poi" "poi_gen14" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
+    # filter "poi" "poi_gen12" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
+    # filter "poi" "poi_gen9" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'peak')" &
+    # filter "poi" "poi_gen0" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'town', 'peak')" &
+    # wait
 
     printf "generalize ${GREEN}done${NC}\n"
 

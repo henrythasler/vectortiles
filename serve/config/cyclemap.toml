@@ -67,6 +67,50 @@ name = "global"
 
 
 [[providers]]
+name = "cluster"        # provider name is referenced from map layers
+type = "postgis"        # the type of data provider. currently only supports postgis
+host = "postgis11"      # postgis database host
+port = 5432             # postgis database port
+database = "slice"      # postgis database name
+user = "postgres"       # postgis database user
+password = ""           # postgis database password
+srid = 3857             # The default srid for this provider. If not provided it will be WebMercator (3857)
+
+    [[providers.layers]]
+    name = "poi"
+    # https://stackoverflow.com/questions/164319/is-there-any-difference-between-group-by-and-distinct
+    sql= """
+    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 5000) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi WHERE 9 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
+    UNION ALL
+    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 800) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
+        WHERE 9 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
+    UNION ALL
+    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 500) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
+        WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
+    UNION ALL
+    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 300) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
+        WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
+    UNION ALL
+    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 150) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
+        WHERE 15 <= !ZOOM! AND 16 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
+    UNION ALL
+    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 100) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
+        WHERE 16 <= !ZOOM! AND 17 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
+    UNION ALL
+    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 50) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
+        WHERE 17 <= !ZOOM! AND 18 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
+    UNION ALL
+    SELECT osm_id as gid, ST_AsBinary(geometry) as geom, geometry as snapped, 1 as count, class, subclass, name, ele, access FROM import.poi WHERE 18 <= !ZOOM! AND (geometry && !BBOX!)
+    """
+
+[[maps]]
+name = "cluster"
+
+    [[maps.layers]]
+    provider_layer = "cluster.poi"
+
+
+[[providers]]
 name = "osm"            # provider name is referenced from map layers
 type = "postgis"        # the type of data provider. currently only supports postgis
 host = "postgis11"        # postgis database host
@@ -79,21 +123,21 @@ srid = 3857             # The default srid for this provider. If not provided it
     [[providers.layers]]
     name = "roads"
     sql= """
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale from import.roads_gen8 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, NULL as name from import.roads_gen8 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
     UNION ALL
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale from import.roads_gen9 WHERE 9 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, NULL as name from import.roads_gen9 WHERE 9 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
     UNION ALL
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale from import.roads_gen10 WHERE 10 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, NULL as name from import.roads_gen10 WHERE 10 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
     UNION ALL
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale from import.roads_gen12 WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!)
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, NULL as name from import.roads_gen12 WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!)
     UNION ALL
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale from import.roads_gen13 WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!)
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, NULL as name from import.roads_gen13 WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!)
     UNION ALL
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale from import.roads_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!)
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, NULL as name from import.roads_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!)
     UNION ALL
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale from import.roads_gen15 WHERE 15 <= !ZOOM! AND 16 > !ZOOM! AND (geometry && !BBOX!)
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, NULL as name from import.roads_gen15 WHERE 15 <= !ZOOM! AND 16 > !ZOOM! AND (geometry && !BBOX!)
     UNION ALL
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale from import.roads WHERE 16 <= !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, name from import.roads WHERE 16 <= !ZOOM! AND (geometry && !BBOX!) 
     ORDER BY rank DESC
     """
 
@@ -240,17 +284,11 @@ srid = 3857             # The default srid for this provider. If not provided it
     """
 
     [[providers.layers]]
-    name = "poi"
+    name = "label"
+    # It is expected that identical names within a tile describe the same feature. => DISTINCT-Statement prevents duplicates for point, area
+    # Sorting by `pop` priorizes labels for larger settlements
     sql= """
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.poi_gen0 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
-    union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.poi_gen9 WHERE 9 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
-    union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.poi_gen12 WHERE 12 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
-    union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.poi_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) 
-    union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.poi WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
+    select DISTINCT ON(pop, name) row_number() over (ORDER by pop desc NULLS LAST) as gid, ST_AsBinary(geometry) as geom, class, subclass, name, ele, pop from import.label WHERE (geometry && !BBOX!) ORDER BY pop DESC NULLS LAST, name
     """
 
 
@@ -316,5 +354,5 @@ tile_buffer = 256
     min_zoom = 18
 
     [[maps.layers]]
-    provider_layer = "osm.poi"
+    provider_layer = "osm.label"
     min_zoom = 7
