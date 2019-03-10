@@ -173,10 +173,10 @@ srid = 3857             # The default srid for this provider. If not provided it
 
     [[providers.layers]]
     name = "cycleroute"
-    tablename = "import.cycleroute"
-    geometry_fieldname = "geometry"
-    id_fieldname = "id"
-    fields = "ref, name"
+    sql="""
+    select row_number() over () as gid, ref, name, ST_AsBinary(ST_LineMerge(ST_Collect(geometry))) as geom from import.cycleroute where (geometry && !BBOX!) AND ST_GeometryType(geometry)='ST_LineString' group by ref, name order by ref desc NULLS last, name desc NULLS last
+    -- select row_number() over () as gid, ST_AsBinary(ST_LineMerge(ST_Collect(geometry))) as geom from import.cycleroute where (geometry && !BBOX!) AND ST_GeometryType(geometry)='ST_LineString'    
+    """
 
     [[providers.layers]]
     name = "buildings-large"
@@ -324,9 +324,9 @@ tile_buffer = 256
     provider_layer = "osm.landcover"
     min_zoom = 7
 
-    # [[maps.layers]]
-    # provider_layer = "osm.cycleroute"
-    # min_zoom = 11
+    [[maps.layers]]
+    provider_layer = "osm.cycleroute"
+    min_zoom = 11
 
     [[maps.layers]]
     provider_layer = "osm.buildings-large"

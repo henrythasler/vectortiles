@@ -1832,6 +1832,33 @@
       }
     },    
     {
+      "id": "cycleroute",
+      "type": "line",
+      "source": "local",
+      "source-layer": "cycleroute",
+      "minzoom": 12,
+      "maxzoom": 24,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#00f",
+        "line-opacity": 0.2,
+        "line-blur": [
+          "interpolate", ["exponential", 1], ["zoom"],
+          12, 2,
+          16, 7
+        ],
+        "line-width": [
+          "interpolate", ["exponential", 1], ["zoom"],
+          12, 8,
+          16, 28
+        ]
+      }
+    },    
+
+    {
       "id": "aerialway",
       "type": "line",
       "source": "local",
@@ -1928,8 +1955,8 @@
       "layout": {
         "icon-image": "triangle",
         "icon-size": ["interpolate", ["exponential", 2], ["zoom"],
-        12, 0.125,
-        14, 0.25
+        12, 0.5,
+        14, 1
         ],
         "text-anchor": "top",
         "text-field": ["step", ["zoom"],
@@ -2063,7 +2090,7 @@
             ],
         17, ""
         ],
-        "text-font": ["Open Sans Regular"],
+        "text-font": ["Open Sans Semibold"],
         "text-offset": [0, 0.5],
         "text-size": 24,
         "text-letter-spacing": 0
@@ -2095,6 +2122,28 @@
       },
       "paint": {
         "text-color": "#222",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 2.5,
+        "text-halo-blur": 1
+      }
+    },    
+    {
+      "id": "label-cycleroute",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "cycleroute",
+      "minzoom": 13,
+      "maxzoom": 15,
+      "layout": {
+        "text-field": "{name}",
+        "text-font": ["Open Sans Regular"],
+        "symbol-placement": "line",
+        "text-offset": [0, 0],
+        "text-max-angle": 30,
+        "text-size": 16
+      },
+      "paint": {
+        "text-color": "#228",
         "text-halo-color": "rgba(255, 255, 255, 1)",
         "text-halo-width": 2.5,
         "text-halo-blur": 1
