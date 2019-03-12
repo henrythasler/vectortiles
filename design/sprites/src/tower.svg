@@ -11,10 +11,10 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg3109"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   width="9"
-   height="13"
-   sodipodi:docname="turm.png">
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   width="10.925"
+   height="18.235748"
+   sodipodi:docname="tower.svg">
   <metadata
      id="metadata3115">
     <rdf:RDF>
@@ -42,20 +42,25 @@
      inkscape:window-height="1010"
      id="namedview3111"
      showgrid="false"
-     inkscape:zoom="52.217116"
-     inkscape:cx="4.3529437"
-     inkscape:cy="6.1329877"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:zoom="4"
+     inkscape:cx="-0.51681719"
+     inkscape:cy="-18.385981"
+     inkscape:window-x="51"
+     inkscape:window-y="27"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg3109" />
+     inkscape:current-layer="svg3109"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
   <path
-     style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-opacity:1"
-     d="m 7.6645834,8.53125 c 0,1.735095 -1.406572,3.141667 -3.1416666,3.141667 -1.7350946,0 -3.1416667,-1.406572 -3.1416667,-3.141667 0,-1.7350946 1.4065721,-3.1416667 3.1416667,-3.1416667 1.7350946,0 3.1416666,1.4065721 3.1416666,3.1416667 z"
-     id="path3119" />
+     style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-opacity:1"
+     d="m 10.175,12.773247 c 0,2.602643 -2.1098581,4.712501 -4.7125,4.712501 -2.6026419,0 -4.7125,-2.109858 -4.7125,-4.712501 0,-2.602641 2.1098581,-4.7124996 4.7125,-4.7124996 2.6026419,0 4.7125,2.1098576 4.7125,4.7124996 z"
+     id="path3119"
+     inkscape:connector-curvature="0" />
   <path
-     style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="m 4.50044,5.4545814 0,-5.43882968"
+     style="fill:none;stroke:#000000;stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 5.4287848,8.1582445 V 0"
      id="path3889"
      inkscape:connector-curvature="0" />
 </svg>

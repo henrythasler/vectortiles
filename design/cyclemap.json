@@ -2118,7 +2118,14 @@
         "text-field": "{name}",
         "text-font": ["Open Sans Regular"],
         "symbol-placement": "line",
-        "text-size": 16
+        "symbol-spacing" : ["interpolate", ["linear"], ["zoom"],
+        15, 250, 
+        18, 500
+      ],
+        "text-size": ["interpolate", ["exponential", 2], ["zoom"],
+        15, 16, 
+        18, 24
+      ]
       },
       "paint": {
         "text-color": "#222",
@@ -2149,7 +2156,40 @@
         "text-halo-blur": 1
       }
     },    
-
+    {
+      "id": "label-road-shields",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "roads",
+      "minzoom": 10,
+      "maxzoom": 16,
+      "filter": ["all",
+        ["match", ["get", "subclass"], ["motorway", "trunk", "primary", "secondary"], true, false],
+        ["!=",  ["get", "ref"], ""],
+        ["<=", ["length", ["get", "ref"]], 7]
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "symbol-spacing" : ["interpolate", ["linear"], ["zoom"],
+          10, 250, 
+          16, 500
+        ],
+        "text-field": "{ref}",
+        "text-font": ["Open Sans Regular"],
+        "text-rotation-alignment": "viewport",
+        "text-size": ["interpolate", ["exponential", 2], ["zoom"],
+          10, 16, 
+          16, 20
+        ],
+        "icon-image": "shield-3.yellow",
+        "icon-text-fit": "both",
+        "icon-text-fit-padding": [3,5,3,5],
+        "icon-rotation-alignment": "viewport"
+      },
+      "paint": {
+        "text-color": "#000"
+      }
+    },    
     {
       "id": "debug-tile-outline",
       "type": "line",

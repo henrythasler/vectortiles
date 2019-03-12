@@ -254,17 +254,17 @@ if [ $OUT -eq 0 ];then
     wait
 
     # roads - prepare
-    filter "roads_temp" "roads" ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" 
-    drop "roads_temp"
+    filter "roads_temp" "roads" ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" 
+    #drop "roads_temp"
 
     # roads - generalize
-    generalize "roads" "roads_gen15" 3 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "(service <=1) OR (ST_Length(geometry) > 50)" &
-    generalize "roads" "roads_gen14" 5 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=15 OR (subclass IN ('path', 'track', 'footway', 'bridleway', 'service', 'cycleway') AND ST_Length(geometry) > 100)" &
-    generalize "roads" "roads_gen13" 10 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=15 OR (subclass IN ('path', 'track', 'footway', 'bridleway', 'service', 'cycleway') AND ST_Length(geometry) > 200)" &
-    generalize "roads" "roads_gen12" 20 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=15 OR (subclass='path' AND bicycle >= 3) OR (subclass IN ('track', 'service', 'cycleway') AND ST_Length(geometry) > 500)" &
-    generalize "roads" "roads_gen10" 50 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=10" &
-    generalize "roads" "roads_gen9" 100 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=4" &
-    generalize "roads" "roads_gen8" 200 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale" "rank<=3" &
+    generalize "roads" "roads_gen15" 3 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref" "(service <=1) OR (ST_Length(geometry) > 50)" &
+    generalize "roads" "roads_gen14" 5 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref" "rank<=15 OR (subclass IN ('path', 'track', 'footway', 'bridleway', 'service', 'cycleway') AND ST_Length(geometry) > 100)" &
+    generalize "roads" "roads_gen13" 10 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref" "rank<=15 OR (subclass IN ('path', 'track', 'footway', 'bridleway', 'service', 'cycleway') AND ST_Length(geometry) > 200)" &
+    generalize "roads" "roads_gen12" 20 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref" "rank<=15 OR (subclass='path' AND bicycle >= 3) OR (subclass IN ('track', 'service', 'cycleway') AND ST_Length(geometry) > 500)" &
+    generalize "roads" "roads_gen10" 50 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref" "rank<=10" &
+    generalize "roads" "roads_gen9" 100 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref" "rank<=4" &
+    generalize "roads" "roads_gen8" 200 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref" "rank<=3" &
     wait
 
     # manmade_lines
