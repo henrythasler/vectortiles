@@ -2165,29 +2165,26 @@
       "maxzoom": 16,
       "filter": ["all",
         ["match", ["get", "subclass"], ["motorway", "trunk", "primary", "secondary"], true, false],
-        ["!=",  ["get", "ref"], ""],
-        ["<=", ["length", ["get", "ref"]], 7]
+        ["!=",  ["get", "ref_num"], ""],
+        ["<=", ["length", ["get", "ref_num"]], 3]
       ],
       "layout": {
         "symbol-placement": "line",
         "symbol-spacing" : ["interpolate", ["linear"], ["zoom"],
-          10, 250, 
-          16, 500
+          10, 400, 
+          16, 800
         ],
-        "text-field": "{ref}",
-        "text-font": ["Open Sans Regular"],
+        "text-field": "{ref_num}",
+        "text-font": ["Open Sans Semibold"],
         "text-rotation-alignment": "viewport",
-        "text-size": ["interpolate", ["exponential", 2], ["zoom"],
-          10, 16, 
-          16, 20
-        ],
-        "icon-image": "shield-3.yellow",
-        "icon-text-fit": "both",
+        "text-size": 16,
+        "icon-image": ["match", ["get", "subclass"], "motorway", "shield-3.blue", ["trunk", "primary"], "shield-3.yellow", ""],
+        "icon-text-fit": "none",
         "icon-text-fit-padding": [3,5,3,5],
         "icon-rotation-alignment": "viewport"
       },
       "paint": {
-        "text-color": "#000"
+        "text-color": ["match", ["get", "subclass"], "motorway", "#fff", "#000"]
       }
     },    
     {

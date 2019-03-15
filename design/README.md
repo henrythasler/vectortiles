@@ -9,4 +9,12 @@
 
 ## Generalized data
 
+## Sprites
 
+```
+cd design/sprites
+docker run --rm -ti -v $(pwd):/sprites afrith/node-mapnik:latest bash
+ npm install -g @mapbox/spritezero-cli
+ cd /sprites
+ spritezero cyclemap src/
+```
