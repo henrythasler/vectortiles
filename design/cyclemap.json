@@ -833,23 +833,27 @@
         "any",
         ["all",
           [">=", ["zoom"], 14],
+          ["==", ["get", "polygon"], false],
           ["match", ["get", "subclass"], ["runway", "taxiway"], true, false]
         ],
         ["all",
           [">=", ["zoom"], 13],
           ["<", ["zoom"], 14],
+          ["==", ["get", "polygon"], false],
           ["match", ["get", "subclass"], ["runway", "taxiway"], true, false],
           [">", ["get", "length"], 500]
         ],
         ["all",
           [">=", ["zoom"], 12],
           ["<", ["zoom"], 13],
+          ["==", ["get", "polygon"], false],
           ["match", ["get", "subclass"], ["runway", "taxiway"], true, false],
           [">", ["get", "length"], 1000]
         ],
         ["all",
           [">=", ["zoom"], 10],
           ["<", ["zoom"], 12],
+          ["==", ["get", "polygon"], false],
           ["==", ["get", "subclass"], "runway"],
           [">", ["get", "length"], 2000]
         ]
@@ -884,23 +888,27 @@
         "any",
         ["all",
           [">=", ["zoom"], 14],
+          ["==", ["get", "polygon"], false],
           ["==", ["get", "subclass"], "runway"]
         ],
         ["all",
           [">=", ["zoom"], 13],
           ["<", ["zoom"], 14],
+          ["==", ["get", "polygon"], false],
           ["==", ["get", "subclass"], "runway"],
           [">", ["get", "length"], 500]
         ],
         ["all",
           [">=", ["zoom"], 12],
           ["<", ["zoom"], 13],
+          ["==", ["get", "polygon"], false],
           ["==", ["get", "subclass"], "runway"],
           [">", ["get", "length"], 1000]
         ],
         ["all",
           [">=", ["zoom"], 10],
           ["<", ["zoom"], 12],
+          ["==", ["get", "polygon"], false],
           ["==", ["get", "subclass"], "runway"],
           [">", ["get", "length"], 2000]
         ]
@@ -1926,6 +1934,38 @@
       }
     },    
     {
+      "id": "label-road",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "roads",
+      "minzoom": 15,
+      "maxzoom": 24,
+      "filter": ["any",
+          ["==", ["get", "tracktype"], 1],
+          ["match", ["get", "subclass"], 
+            ["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link", "secondary", "secondary_link", "tertiary", "tertiary_link", "road", "unclassified", "residential", "pedestrian", "living_street", "service"], true, false]
+        ],
+      "layout": {
+        "text-field": "{name}",
+        "text-font": ["Open Sans Regular"],
+        "symbol-placement": "line",
+        "symbol-spacing" : ["interpolate", ["linear"], ["zoom"],
+        15, 250, 
+        18, 500
+      ],
+        "text-size": ["interpolate", ["exponential", 2], ["zoom"],
+        15, 16, 
+        18, 24
+      ]
+      },
+      "paint": {
+        "text-color": "#222",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 2.5,
+        "text-halo-blur": 1
+      }
+    },        
+    {
       "id": "label-housenumber",
       "type": "symbol",
       "source": "local",
@@ -1995,39 +2035,16 @@
         "text-halo-blur": 1
       },
       "layout": {
-        "visibility": "none",
-        "icon-allow-overlap": true,
+        "visibility": "visible",
+        "icon-allow-overlap": false,
         "icon-ignore-placement": false,
-        "text-allow-overlap": true,
+        "text-allow-overlap": false,
         "text-ignore-placement": false,
-        "icon-image": ["step", ["zoom"],
-        "",
-        12, ["case", 
-              ["match", ["get", "subclass"], ["restaurant"], true, false], "restaurant",
-              ""
-            ],
-        13, ["case", 
-              ["match", ["get", "subclass"], ["restaurant"], true, false], "restaurant",
-              ""
-            ],
-        14, ["case", 
-              ["match", ["get", "subclass"], ["bus_stop"], true, false], "bus_stop",
-              ["match", ["get", "subclass"], ["parking"], true, false], "parking",
-              ["match", ["get", "subclass"], ["restaurant"], true, false], "restaurant",
-              ""
-            ],
-        15, ["case", 
-              ["match", ["get", "subclass"], ["bus_stop"], true, false], "bus_stop",
-              ["match", ["get", "subclass"], ["parking"], true, false], "parking",
-              ["match", ["get", "subclass"], ["restaurant"], true, false], "restaurant",
-              ["match", ["get", "subclass"], ["supermarket"], true, false], "shop2",
-              ""
-            ]
-        ],
+        "icon-image": ["get", "subclass"],
         "icon-size": ["interpolate", ["exponential", 2], ["zoom"],
-          12, 0.25, 
-          14, 0.38,
-          18, 0.5
+          12, 0.75, 
+          14, 1,
+          18, 1
         ],
         "text-field": "{count}",
         "text-font": ["Open Sans Regular"],
@@ -2050,44 +2067,44 @@
         "text-padding": 1,
         "text-field": ["step", ["zoom"],
         "",
-        7, ["case", 
-              ["match", ["get", "subclass"], ["city"], true, false], ["format",["upcase",["get", "name"]],{"font-scale": 0.8, "text-font": ["literal", ["Open Sans Bold"]]}],
-              ["match", ["get", "subclass"], ["town"], true, false], ["format", ["get", "name"],{"font-scale": 0.6, "text-font": ["literal", ["Open Sans Bold"]]}],
-              ""
-            ],
-        10, ["case", 
-              ["match", ["get", "subclass"], ["city"], true, false], ["format",["upcase",["get", "name"]],{"text-font": ["literal", ["Open Sans Bold"]]}],
-              ["match", ["get", "subclass"], ["town"], true, false], ["format", ["get", "name"],{"font-scale": 0.7, "text-font": ["literal", ["Open Sans Bold"]]}],
-              ""
-            ],
-        11, ["case", 
-              ["match", ["get", "subclass"], ["city"], true, false], ["format",["upcase",["get", "name"]],{"text-font": ["literal", ["Open Sans Bold"]]}],
-              ["match", ["get", "subclass"], ["town"], true, false], ["format", ["get", "name"],{"font-scale": 0.8, "text-font": ["literal", ["Open Sans Bold"]]}],
-              ["match", ["get", "subclass"], ["village", "suburb"], true, false], ["format", ["get", "name"],{"font-scale": 0.7}],
-              ""
-            ],
-        12, ["case", 
-              ["match", ["get", "subclass"], ["city"], true, false], ["format",["upcase",["get", "name"]],{"font-scale": 1.1, "text-font": ["literal", ["Open Sans Bold"]]}],
-              ["match", ["get", "subclass"], ["town"], true, false], ["format", ["get", "name"],{"font-scale": 0.9, "text-font": ["literal", ["Open Sans Bold"]]}],
-              ["match", ["get", "subclass"], ["village", "suburb"], true, false], ["format", ["get", "name"],{"font-scale": 0.8}],
-              ""
-            ],
-        13, ["case", 
-              ["match", ["get", "subclass"], ["town"], true, false], ["format",["get", "name"],{"text-font": ["literal", ["Open Sans Bold"]]}],
-              ["match", ["get", "subclass"], ["village", "suburb"], true, false], ["format", ["get", "name"],{"font-scale": 0.9}],
-              ""
-            ],
-        14, ["case", 
-              ["match", ["get", "subclass"], ["town"], true, false], ["format",["get", "name"],{"text-font": ["literal", ["Open Sans Bold"]]}],
-              ["match", ["get", "subclass"], ["village", "suburb"], true, false], ["format", ["get", "name"],{"font-scale": 0.9}],
-              ["match", ["get", "subclass"], ["hamlet"], true, false], ["format",["get", "name"],{"font-scale": 0.8 }],
-              ""
-            ],
-        15, ["case", 
-              ["match", ["get", "subclass"], ["village", "suburb"], true, false], ["format", ["get", "name"],{"font-scale": 0.9}],
-              ["match", ["get", "subclass"], ["hamlet"], true, false], ["format",["get", "name"],{"font-scale": 0.8 }],
-              ""
-            ],
+        7, ["match", 
+              ["get", "subclass"], 
+                "city", ["format",["upcase",["get", "name"]],{"font-scale": 0.8, "text-font": ["literal", ["Open Sans Bold"]]}], 
+                "town", ["format", ["get", "name"],{"font-scale": 0.6, "text-font": ["literal", ["Open Sans Bold"]]}], 
+              ""],
+        10, ["match", 
+              ["get", "subclass"], 
+                "city", ["format",["upcase",["get", "name"]],{"text-font": ["literal", ["Open Sans Bold"]]}], 
+                "town", ["format", ["get", "name"],{"font-scale": 0.7, "text-font": ["literal", ["Open Sans Bold"]]}], 
+              ""],
+        11, ["match", 
+              ["get", "subclass"], 
+                "city", ["format",["upcase",["get", "name"]],{"text-font": ["literal", ["Open Sans Bold"]]}], 
+                "town", ["format", ["get", "name"],{"font-scale": 0.8, "text-font": ["literal", ["Open Sans Bold"]]}], 
+                ["village", "suburb"], ["format", ["get", "name"],{"font-scale": 0.7}], 
+              ""],
+        12, ["match", 
+              ["get", "subclass"], 
+                "city", ["format",["upcase",["get", "name"]],{"font-scale": 1.1, "text-font": ["literal", ["Open Sans Bold"]]}], 
+                "town", ["format", ["get", "name"],{"font-scale": 0.9, "text-font": ["literal", ["Open Sans Bold"]]}], 
+                ["village", "suburb"], ["format", ["get", "name"],{"font-scale": 0.8}], 
+              ""],
+        13, ["match", 
+              ["get", "subclass"], 
+                "town", ["format", ["get", "name"],{"text-font": ["literal", ["Open Sans Bold"]]}], 
+                ["village", "suburb"], ["format", ["get", "name"],{"font-scale": 0.9}], 
+              ""],
+        14, ["match", 
+              ["get", "subclass"], 
+                "town", ["format", ["get", "name"],{"text-font": ["literal", ["Open Sans Bold"]]}], 
+                ["village", "suburb"], ["format", ["get", "name"],{"font-scale": 0.9}], 
+                "hamlet", ["format", ["get", "name"],{"font-scale": 0.8}], 
+              ""],
+        15, ["match", 
+              ["get", "subclass"], 
+                ["village", "suburb"], ["format", ["get", "name"],{"font-scale": 0.9}], 
+                "hamlet", ["format", ["get", "name"],{"font-scale": 0.8}], 
+              ""],
         17, ""
         ],
         "text-font": ["Open Sans Semibold"],
@@ -2102,38 +2119,7 @@
         "text-halo-blur": 1
       }
     },    
-    {
-      "id": "label-road",
-      "type": "symbol",
-      "source": "local",
-      "source-layer": "roads",
-      "minzoom": 15,
-      "maxzoom": 24,
-      "filter": ["any",
-          ["==", ["get", "tracktype"], 1],
-          ["match", ["get", "subclass"], 
-            ["motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link", "secondary", "secondary_link", "tertiary", "tertiary_link", "road", "unclassified", "residential", "pedestrian", "living_street", "service"], true, false]
-        ],
-      "layout": {
-        "text-field": "{name}",
-        "text-font": ["Open Sans Regular"],
-        "symbol-placement": "line",
-        "symbol-spacing" : ["interpolate", ["linear"], ["zoom"],
-        15, 250, 
-        18, 500
-      ],
-        "text-size": ["interpolate", ["exponential", 2], ["zoom"],
-        15, 16, 
-        18, 24
-      ]
-      },
-      "paint": {
-        "text-color": "#222",
-        "text-halo-color": "rgba(255, 255, 255, 1)",
-        "text-halo-width": 2.5,
-        "text-halo-blur": 1
-      }
-    },    
+
     {
       "id": "label-cycleroute",
       "type": "symbol",
@@ -2165,6 +2151,7 @@
       "maxzoom": 16,
       "filter": ["all",
         ["match", ["get", "subclass"], ["motorway", "trunk", "primary", "secondary"], true, false],
+        ["match", ["get", "ref_prefix"], ["A", "B"], true, false],
         ["!=",  ["get", "ref_num"], ""],
         ["<=", ["length", ["get", "ref_num"]], 3]
       ],
@@ -2177,10 +2164,8 @@
         "text-field": "{ref_num}",
         "text-font": ["Open Sans Semibold"],
         "text-rotation-alignment": "viewport",
-        "text-size": 16,
+        "text-size": 18,
         "icon-image": ["match", ["get", "subclass"], "motorway", "shield-3.blue", ["trunk", "primary"], "shield-3.yellow", ""],
-        "icon-text-fit": "none",
-        "icon-text-fit-padding": [3,5,3,5],
         "icon-rotation-alignment": "viewport"
       },
       "paint": {
