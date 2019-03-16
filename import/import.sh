@@ -274,15 +274,26 @@ if [ $OUT -eq 0 ];then
     # poi merge
     merge_to_point "buildings_temp" "housenumbers_temp" "housenumbers" ", number, name_de, name_en, name" "(number <> '') IS NOT FALSE" &
     merge_to_point "label_polygon" "label_points" "label" ", class, subclass, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name, ele, pop" &
-    merge_to_point "poi_polygon" "poi_points" "poi" ", class, subclass, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name, ele, access" &
+    merge_to_point "poi_polygon" "poi_points" "poi" ", class, subclass, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name, ele, access, parking, station, religion" &
     wait
 
+    # label filter
+    filter "label" "label_gen15" ", class, subclass, name, ele, pop" "subclass NOT IN('city', 'town')" &
+    filter "label" "label_gen14" ", class, subclass, name, ele, pop" "subclass NOT IN('city')" &
+    filter "label" "label_gen13" ", class, subclass, name, ele, pop" "subclass NOT IN('city', 'hamlet')" &
+    filter "label" "label_gen12" ", class, subclass, name, ele, pop" "subclass NOT IN('hamlet')" &
+    filter "label" "label_gen11" ", class, subclass, name, ele, pop" "subclass NOT IN('hamlet')" &
+    filter "label" "label_gen10" ", class, subclass, name, ele, pop" "subclass NOT IN('village', 'suburb', 'hamlet')" &
+    filter "label" "label_gen8" ", class, subclass, name, ele, pop" "subclass NOT IN('town', 'village', 'suburb', 'hamlet')" &
+    wait
+    
     # poi filter
+    # filter "poi" "poi_gen16" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
     # filter "poi" "poi_gen14" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
     # filter "poi" "poi_gen12" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
-    # filter "poi" "poi_gen9" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'peak')" &
-    # filter "poi" "poi_gen0" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'town', 'peak')" &
-    # wait
+#    filter "poi" "poi_gen9" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'peak')" &
+#    filter "poi" "poi_gen0" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'town', 'peak')" &
+    wait
 
     printf "generalize ${GREEN}done${NC}\n"
 

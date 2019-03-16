@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="12"
-   height="12"
+   width="18"
+   height="18"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="parking.svg">
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="playground.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -24,16 +24,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="44.8"
-     inkscape:cx="2.9241071"
-     inkscape:cy="8.2456753"
+     inkscape:zoom="31.678384"
+     inkscape:cx="-0.78387839"
+     inkscape:cy="6.0304302"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1151"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:window-width="1869"
+     inkscape:window-height="1145"
+     inkscape:window-x="51"
+     inkscape:window-y="27"
      inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -46,7 +46,9 @@
        empspacing="5"
        visible="true"
        enabled="true"
-       snapvisiblegridlinesonly="true" />
+       snapvisiblegridlinesonly="true"
+       originx="-1.1197363e-16"
+       originy="0" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -64,18 +66,18 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(4.8596183e-7,-1040.3622)">
+     transform="translate(4.8596183e-7,-1034.3622)">
     <path
-       transform="translate(-4.8596183e-7,1040.3622)"
-       style="fill:#339933;fill-opacity:1;stroke:none"
-       d="m 3,0 6,0 c 1.662,0 3,1.338 3,3 l 0,6 c 0,1.662 -1.338,3 -3,3 L 3,12 C 1.338,12 0,10.662 0,9 L 0,3 C 0,1.338 1.338,0 3,0 z"
-       id="rect4334" />
+       style="fill:#339933;fill-opacity:1;stroke:none;stroke-width:1.5"
+       d="M 4.4999995,1034.3622 H 13.5 c 2.493,0 4.5,2.007 4.5,4.5 v 9 c 0,2.493 -2.007,4.5 -4.5,4.5 H 4.4999995 c -2.493,0 -4.49999998596183,-2.007 -4.49999998596183,-4.5 v -9 c 0,-2.493 2.00699998596183,-4.5 4.49999998596183,-4.5 z"
+       id="rect4334"
+       inkscape:connector-curvature="0" />
     <g
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
        id="text3782" />
     <g
        id="g3837"
-       transform="matrix(0.61471503,0,0,0.61471503,11.025381,388.65134)"
+       transform="matrix(0.92207255,0,0,0.92207255,16.538072,56.79591)"
        style="fill:#ffffff">
       <path
          id="path3798"
@@ -88,24 +90,13 @@
          r="1.791"
          cy="25.431999"
          cx="6.4369998"
-         sodipodi:cx="6.4369998"
-         sodipodi:cy="25.431999"
-         sodipodi:rx="1.791"
-         sodipodi:ry="1.791"
-         style="fill:#ffffff"
-         d="m 8.2279998,25.431999 c 0,0.989142 -0.801858,1.791 -1.791,1.791 -0.989142,0 -1.791,-0.801858 -1.791,-1.791 0,-0.989142 0.801858,-1.791 1.791,-1.791 0.989142,0 1.791,0.801858 1.791,1.791 z" />
+         style="fill:#ffffff" />
     </g>
     <circle
-       d="m 29.415,37.541 c 0,0.98859 -0.80141,1.79 -1.79,1.79 -0.98859,0 -1.79,-0.80141 -1.79,-1.79 0,-0.988589 0.80141,-1.79 1.79,-1.79 0.98859,0 1.79,0.801411 1.79,1.79 z"
-       style="fill:#ffffff"
-       sodipodi:ry="1.79"
-       sodipodi:rx="1.79"
-       sodipodi:cy="37.541"
-       sodipodi:cx="27.625"
-       cx="27.625"
-       cy="37.541"
-       r="1.79"
-       id="circle3854"
-       transform="matrix(0.8060112,0,0,0.8060112,-12.586978,1017.4579)" />
+       style="fill:#ffffff;stroke-width:1.2090168"
+       cx="14.518622"
+       cy="1045.3934"
+       r="2.16414"
+       id="circle3854" />
   </g>
 </svg>

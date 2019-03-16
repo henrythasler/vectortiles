@@ -27,15 +27,38 @@ tables:
       type: integer
       key: ele
     - name: access
-      type: string
+      type: enumerate
       key: access
+      args:
+          values:
+            - private
+    - name: parking
+      type: enumerate
+      key: parking
+      args:
+          values:
+            - multi-storey
+            - underground
+    - name: station
+      type: enumerate
+      key: station
+      args:
+          values:
+            - subway
+    - name: religion
+      type: enumerate
+      key: religion
+      args:
+          values:
+            - christian
     mapping:
       natural: [peak]
       highway: [bus_stop]
-      amenity: [pub, fast_food, restaurant, bar, biergarten, hospital, parking, shelter]
+      amenity: [pub, fast_food, restaurant, bar, biergarten, hospital, parking, shelter, place_of_worship]
       tourism: [alpine_hut, hotel]
       shop: [bicycle, supermarket]
       railway: [station, halt, tram_stop]
+      man_made: [mast, tower, communications_tower, antenna]
 
   poi_polygon:
     type: polygon
@@ -61,15 +84,38 @@ tables:
       type: integer
       key: ele
     - name: access
-      type: string
+      type: enumerate
       key: access
+      args:
+          values:
+            - private
+    - name: parking
+      type: enumerate
+      key: parking
+      args:
+          values:
+            - multi-storey
+            - underground
+    - name: station
+      type: enumerate
+      key: station
+      args:
+          values:
+            - subway
+    - name: religion
+      type: enumerate
+      key: religion
+      args:
+          values:
+            - christian
     mapping:
       natural: [peak]
       highway: [bus_stop]
-      amenity: [pub, fast_food, restaurant, bar, biergarten, hospital, parking, shelter]
+      amenity: [pub, fast_food, restaurant, bar, biergarten, hospital, parking, shelter, place_of_worship]
       tourism: [alpine_hut, hotel]
       shop: [bicycle, supermarket]
       railway: [station, halt, tram_stop]
+      man_made: [mast, tower, communications_tower, antenna]
 
   label_points:
     type: point
