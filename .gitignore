@@ -4,3 +4,4 @@ exploration/node-mapnik/data/
 exploration/node-mapnik/out/
 exploration/node-mapnik/package-lock.json
 design/maputnik/
+serve/trace.log

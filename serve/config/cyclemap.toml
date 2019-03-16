@@ -80,79 +80,149 @@ srid = 3857             # The default srid for this provider. If not provided it
     name = "poi"
     # https://stackoverflow.com/questions/164319/is-there-any-difference-between-group-by-and-distinct
     sql= """
---    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 5000) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
---        WHERE 9 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
---    UNION ALL
---    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 800) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
---        WHERE 9 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
---   UNION ALL
---    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 500) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
---        WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
---    UNION ALL
---    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 300) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
---        WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
---    UNION ALL
---    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 150) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
---        WHERE 15 <= !ZOOM! AND 16 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
---    UNION ALL
---    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 100) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
---        WHERE 16 <= !ZOOM! AND 17 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
---    UNION ALL
---    SELECT ((array_agg(osm_id))[1]) as gid, ST_AsBinary(ST_Centroid(ST_Union(geometry))) as geom, ST_SnapToGrid(geometry, 50) as snapped, count(osm_id) as count, class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] AS access FROM import.poi 
---        WHERE 17 <= !ZOOM! AND 18 > !ZOOM! AND (geometry && !BBOX!) GROUP BY snapped, class, subclass
---   UNION ALL
---    SELECT osm_id as gid, ST_AsBinary(geometry) as geom, geometry as snapped, 1 as count, class, subclass, name, ele, access FROM import.poi WHERE 18 <= !ZOOM! AND (geometry && !BBOX!)
-    SELECT (array_agg(osm_id))[1] as gid,
-        ST_AsBinary(ST_Centroid(ST_Union(geom))) as geom,
-        count(osm_id) AS count,
-        class, 
-        subclass,
-        (array_remove(array_agg(name), ''))[1] as name,
-        (array_agg(ele))[1] as ele, 
-        (array_agg(access))[1] AS access    
-    FROM 
-        (SELECT
-            osm_id,
-            name,
-            class,
+        SELECT (array_agg(osm_id))[1] as gid,
+            ST_AsBinary(ST_Centroid(ST_Union(geom))) as geom,
+            count(osm_id) AS count,
+            class, 
             subclass,
-            ele,
-            access,
-            ST_ClusterDBSCAN(geometry, 200, 1) OVER () AS cluster_id,
-            --ST_ClusterKMeans(geometry, 5) OVER () AS cluster_id,
-            geometry as geom
-        FROM import.poi
-        WHERE 13 <= !ZOOM! AND 17 > !ZOOM! AND (geometry && !BBOX!)
-        ) cluster
-    GROUP BY
-        class, subclass, cluster_id
+            (array_remove(array_agg(name), ''))[1] as name,
+            (array_agg(ele))[1] as ele, 
+            (array_agg(access))[1] AS access    
+        FROM 
+            (SELECT
+                osm_id,
+                name,
+                class,
+                subclass,
+                ele,
+                access,
+                ST_ClusterDBSCAN(geometry, 160, 1) OVER () AS cluster_id,
+                geometry as geom
+            FROM import.poi
+            WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!)
+            ) cluster
+        GROUP BY class, subclass, cluster_id
     UNION ALL
-    SELECT (array_agg(osm_id))[1] as gid,
-        ST_AsBinary(ST_Centroid(ST_Union(geom))) as geom,
-        count(osm_id) AS count,
-        class, 
-        subclass,
-        (array_remove(array_agg(name), ''))[1] as name,
-        (array_agg(ele))[1] as ele, 
-        (array_agg(access))[1] AS access    
-    FROM 
-        (SELECT
-            osm_id,
-            name,
-            class,
+        SELECT (array_agg(osm_id))[1] as gid,
+            ST_AsBinary(ST_Centroid(ST_Union(geom))) as geom,
+            count(osm_id) AS count,
+            class, 
             subclass,
-            ele,
-            access,
-            ST_ClusterDBSCAN(geometry, 10, 1) OVER () AS cluster_id,
-            --ST_ClusterKMeans(geometry, 5) OVER () AS cluster_id,
-            geometry as geom
+            (array_remove(array_agg(name), ''))[1] as name,
+            (array_agg(ele))[1] as ele, 
+            (array_agg(access))[1] AS access    
+        FROM 
+            (SELECT
+                osm_id,
+                name,
+                class,
+                subclass,
+                ele,
+                access,
+                ST_ClusterDBSCAN(geometry, 160, 1) OVER () AS cluster_id,
+                geometry as geom
+            FROM import.poi
+            WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!)
+            ) cluster
+        GROUP BY class, subclass, cluster_id
+    UNION ALL
+        SELECT (array_agg(osm_id))[1] as gid,
+            ST_AsBinary(ST_Centroid(ST_Union(geom))) as geom,
+            count(osm_id) AS count,
+            class, 
+            subclass,
+            (array_remove(array_agg(name), ''))[1] as name,
+            (array_agg(ele))[1] as ele, 
+            (array_agg(access))[1] AS access    
+        FROM 
+            (SELECT
+                osm_id,
+                name,
+                class,
+                subclass,
+                ele,
+                access,
+                ST_ClusterDBSCAN(geometry, 120, 1) OVER () AS cluster_id,
+                geometry as geom
+            FROM import.poi
+            WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!)
+            ) cluster
+        GROUP BY class, subclass, cluster_id
+    UNION ALL
+        SELECT (array_agg(osm_id))[1] as gid,
+            ST_AsBinary(ST_Centroid(ST_Union(geom))) as geom,
+            count(osm_id) AS count,
+            class, 
+            subclass,
+            (array_remove(array_agg(name), ''))[1] as name,
+            (array_agg(ele))[1] as ele, 
+            (array_agg(access))[1] AS access    
+        FROM 
+            (SELECT
+                osm_id,
+                name,
+                class,
+                subclass,
+                ele,
+                access,
+                ST_ClusterDBSCAN(geometry, 80, 1) OVER () AS cluster_id,
+                geometry as geom
+            FROM import.poi
+            WHERE 15 <= !ZOOM! AND 16 > !ZOOM! AND (geometry && !BBOX!)
+            ) cluster
+        GROUP BY class, subclass, cluster_id
+    UNION ALL
+        SELECT (array_agg(osm_id))[1] as gid,
+            ST_AsBinary(ST_Centroid(ST_Union(geom))) as geom,
+            count(osm_id) AS count,
+            class, 
+            subclass,
+            (array_remove(array_agg(name), ''))[1] as name,
+            (array_agg(ele))[1] as ele, 
+            (array_agg(access))[1] AS access    
+        FROM 
+            (SELECT
+                osm_id,
+                name,
+                class,
+                subclass,
+                ele,
+                access,
+                ST_ClusterDBSCAN(geometry, 40, 1) OVER () AS cluster_id,
+                geometry as geom
+            FROM import.poi
+            WHERE 16 <= !ZOOM! AND 17 > !ZOOM! AND (geometry && !BBOX!)
+            ) cluster
+        GROUP BY class, subclass, cluster_id
+    UNION ALL
+        SELECT (array_agg(osm_id))[1] as gid,
+            ST_AsBinary(ST_Centroid(ST_Union(geom))) as geom,
+            count(osm_id) AS count,
+            class, 
+            subclass,
+            (array_remove(array_agg(name), ''))[1] as name,
+            (array_agg(ele))[1] as ele, 
+            (array_agg(access))[1] AS access    
+        FROM 
+            (SELECT
+                osm_id,
+                name,
+                class,
+                subclass,
+                ele,
+                access,
+                ST_ClusterDBSCAN(geometry, 20, 1) OVER () AS cluster_id,
+                geometry as geom
+            FROM import.poi
+            WHERE 17 <= !ZOOM! AND 18 > !ZOOM! AND (geometry && !BBOX!)
+            ) cluster
+        GROUP BY class, subclass, cluster_id
+    UNION ALL
+        SELECT
+            osm_id as gid, ST_AsBinary(geometry) as geom, 1 as count, class, subclass, name, ele, access
         FROM import.poi
-        WHERE 17 <= !ZOOM! AND 18 > !ZOOM! AND (geometry && !BBOX!)
-        ) cluster
-    GROUP BY
-        class, subclass, cluster_id
-    ORDER BY
-        count DESC
+        WHERE (18 <= !ZOOM!) AND (geometry && !BBOX!)    
+    ORDER BY count DESC
     """
 
 [[maps]]
@@ -160,7 +230,7 @@ name = "cluster"
 
     [[maps.layers]]
     provider_layer = "cluster.poi"
-
+    min_zoom = 8
 
 [[providers]]
 name = "osm"            # provider name is referenced from map layers

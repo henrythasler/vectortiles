@@ -88,10 +88,10 @@ else
         -p 8080:8080 \
         --user "$(id -u):$(id -g)" \
         -v ${config}:/data/config.toml:ro \
-        -e TEGOLA_SQL_DEBUG=LAYER_SQL \
+        -e TEGOLA_SQL_DEBUG=LAYER_SQL:EXECUTE_SQL \
         -v ${cache}:/cache \
         tegola:henry serve \
-            --config /data/config.toml
+            --config /data/config.toml &> trace.log
 fi
 
 #        -e TEGOLA_SQL_DEBUG=LAYER_SQL:EXECUTE_SQL \

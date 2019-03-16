@@ -1993,6 +1993,7 @@
       "maxzoom": 24,
       "filter": ["==", ["get", "subclass"], "peak"],
       "layout": {
+        "visibility": "none",
         "icon-image": "triangle",
         "icon-size": ["interpolate", ["exponential", 2], ["zoom"],
         12, 0.5,
@@ -2021,13 +2022,13 @@
       }
     },    
     {
-      "id": "poi-restaurant",
+      "id": "poi",
       "type": "symbol",
       "source": "cluster",
       "source-layer": "poi",
       "minzoom": 10,
       "maxzoom": 24,
-      "filter": ["match", ["get", "subclass"], ["bus_stop", "parking", "restaurant"], true, false],
+      "inactive-filter": ["match", ["get", "subclass"], ["bus_stop", "parking", "restaurant"], true, false],
       "paint": {
         "text-color": "#222",
         "text-halo-color": "rgba(255, 255, 255, 0.8)",
@@ -2036,21 +2037,43 @@
       },
       "layout": {
         "visibility": "visible",
-        "icon-allow-overlap": false,
+        "icon-allow-overlap": true,
         "icon-ignore-placement": false,
-        "text-allow-overlap": false,
-        "text-ignore-placement": false,
-        "icon-image": ["get", "subclass"],
+        "icon-image": ["match", ["get", "subclass"], 
+          ["bus_stop", "parking", "restaurant"], ["get", "subclass"], 
+          "peak", "triangle", 
+          "place_of_worship", "church",
+          "square"],
         "icon-size": ["interpolate", ["exponential", 2], ["zoom"],
-          12, 0.75, 
-          14, 1,
-          18, 1
+          12, 0.5, 
+          14, 1
         ],
-        "text-field": "{count}",
-        "text-font": ["Open Sans Regular"],
+        "text-allow-overlap": true,
+        "text-ignore-placement": false,
         "text-anchor": "top",
-        "text-size": 12,
-        "text-offset": [0, 1]
+        "text-field": ["step", ["zoom"],
+          ["format", ["get", "count"], {}],
+          14, ["case", ["==", ["get", "count"], 1],
+                ["match", ["get", "subclass"], 
+                      ["peak"], ["format",
+                        ["case", 
+                          [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
+                          ["concat", ["get", "ele"]]
+                        ], {}], 
+                ["format", ["get", "name"], {}]
+              ],
+              ["format", ["get", "count"], {}]]
+        ],
+        "text-font": ["match", ["get", "subclass"], 
+          ["peak"], ["literal", ["Open Sans Bold Italic"]], 
+          ["literal",["Open Sans Regular"]]
+          ],
+        "text-anchor": "top",
+        "text-size": ["match", ["get", "subclass"], 
+          ["bus_stop", "parking", "restaurant"], 16, 
+          "peak", 18, 
+          12],
+        "text-offset": [0, 0.5]
       }      
     },    
     {
