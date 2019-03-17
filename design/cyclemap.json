@@ -2030,7 +2030,12 @@
       "maxzoom": 24,
       "inactive-filter": ["match", ["get", "subclass"], ["bus_stop", "parking", "restaurant"], true, false],
       "paint": {
-        "text-color": "#222",
+        "text-color": ["match", ["get", "subclass"], 
+          ["station", "halt"], "#008", 
+          ["bus_stop", "tram_stop"], "#053", 
+          ["restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar"], "#631",
+          ["supermarket", "bicycle"], "#505",
+          "#222"],
         "text-halo-color": "rgba(255, 255, 255, 0.8)",
         "text-halo-width": 2.5,
         "text-halo-blur": 1
@@ -2038,42 +2043,88 @@
       "layout": {
         "visibility": "visible",
         "icon-allow-overlap": true,
-        "icon-ignore-placement": false,
+        "icon-ignore-placement": true,
         "icon-image": ["match", ["get", "subclass"], 
-          ["bus_stop", "parking", "restaurant"], ["get", "subclass"], 
+          ["parking", "shelter", "supermarket", "bicycle", "hotel", "bar", "hospital"], ["get", "subclass"], 
           "peak", "triangle", 
-          "place_of_worship", "church",
-          "square"],
+          ["pub", "biergarten"], "pub",
+          ["bus_stop", "tram_stop"], "bus_stop",
+          ["tower", "antenna", "mast", "communications_tower"], "tower",
+          ["restaurant", "fast_food", "alpine_hut"], "restaurant",
+          ["station", "halt"], "station.red",
+          "place_of_worship", ["match", ["get", "religion"], 1, "church", ""],
+          "star.white"],
         "icon-size": ["interpolate", ["exponential", 2], ["zoom"],
           12, 0.5, 
           14, 1
         ],
-        "text-allow-overlap": true,
+        "text-allow-overlap": false,
         "text-ignore-placement": false,
+        "text-optional": true,
         "text-anchor": "top",
         "text-field": ["step", ["zoom"],
           ["format", ["get", "count"], {}],
-          14, ["case", ["==", ["get", "count"], 1],
-                ["match", ["get", "subclass"], 
-                      ["peak"], ["format",
-                        ["case", 
-                          [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
-                          ["concat", ["get", "ele"]]
-                        ], {}], 
-                ["format", ["get", "name"], {}]
-              ],
-              ["format", ["get", "count"], {}]]
+          12, ["match", ["get", "subclass"], ["station", "halt"], ["format", ["get", "name"], {}], ""],
+          14, ["case", 
+                ["==", ["get", "count"], 1],
+                  ["match", ["get", "subclass"], 
+                        ["station", "halt"], ["format", ["get", "name"], {}], 
+                        ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar"], ["format",
+                          ["case", 
+                            [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
+                            ["concat", ["get", "ele"]]
+                          ], {}], 
+                  ""
+                ],
+              ""],
+         16, ["match",
+                ["get", "count"], 
+                1, ["match", ["get", "subclass"], 
+                    ["station", "halt"], ["format", ["get", "name"], {}], 
+                    ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar"], ["format",
+                      ["case", 
+                        [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
+                        ["concat", ["get", "ele"]]
+                      ], {}], 
+                    ""
+                  ],
+                2, ["match", ["get", "subclass"], 
+                    ["station", "halt"], ["format", ["get", "name"], {}], 
+                    ""
+                  ],
+                ""
+                ],
+         17, ["match",
+                ["get", "count"], 
+                1, ["match", ["get", "subclass"], 
+                    ["station", "halt", "bus_stop", "tram_stop", "place_of_worship"], ["format", ["get", "name"], {}], 
+                    ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "supermarket", "bicycle"], ["format",
+                      ["case", 
+                        [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
+                        ["concat", ["get", "ele"]]
+                      ], {}], 
+                    ""
+                  ],
+                2, ["match", ["get", "subclass"], 
+                    ["station", "halt", "bus_stop", "tram_stop"], ["format", ["get", "name"], {}], 
+                    ""
+                  ],
+                ""
+                ]
+
         ],
         "text-font": ["match", ["get", "subclass"], 
-          ["peak"], ["literal", ["Open Sans Bold Italic"]], 
-          ["literal",["Open Sans Regular"]]
+          ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar"], ["literal", ["Open Sans Bold Italic"]], 
+          ["literal",["Open Sans Italic"]]
           ],
         "text-anchor": "top",
-        "text-size": ["match", ["get", "subclass"], 
-          ["bus_stop", "parking", "restaurant"], 16, 
-          "peak", 18, 
+        "text-size": ["match", 
+          ["get", "subclass"], 
+            ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar"], 18, 
+            ["station", "halt", "bus_stop", "tram_stop", "place_of_worship", "supermarket", "bicycle"], 16,
           12],
-        "text-offset": [0, 0.5]
+        "text-offset": [0, 0.7],
+        "text-max-width": 9
       }      
     },    
     {

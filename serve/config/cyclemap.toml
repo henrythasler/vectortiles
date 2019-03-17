@@ -87,7 +87,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             subclass,
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
-            (array_agg(access))[1] AS access    
+            (array_agg(access))[1] AS access,
+            (array_agg(religion))[1] AS religion    
         FROM 
             (SELECT
                 osm_id,
@@ -96,6 +97,32 @@ srid = 3857             # The default srid for this provider. If not provided it
                 subclass,
                 ele,
                 access,
+                religion,
+                ST_ClusterDBSCAN(geometry, 300, 1) OVER () AS cluster_id,
+                geometry as geom
+            FROM import.poi
+            WHERE 11 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!)
+            ) cluster
+        GROUP BY class, subclass, cluster_id
+    UNION ALL
+        SELECT (array_agg(osm_id))[1] as gid,
+            ST_AsBinary(ST_Centroid(ST_Union(geom))) as geom,
+            count(osm_id) AS count,
+            class, 
+            subclass,
+            (array_remove(array_agg(name), ''))[1] as name,
+            (array_agg(ele))[1] as ele, 
+            (array_agg(access))[1] AS access,
+            (array_agg(religion))[1] AS religion    
+        FROM 
+            (SELECT
+                osm_id,
+                name,
+                class,
+                subclass,
+                ele,
+                access,
+                religion,
                 ST_ClusterDBSCAN(geometry, 160, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi
@@ -110,7 +137,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             subclass,
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
-            (array_agg(access))[1] AS access    
+            (array_agg(access))[1] AS access,
+            (array_agg(religion))[1] AS religion    
         FROM 
             (SELECT
                 osm_id,
@@ -119,6 +147,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 subclass,
                 ele,
                 access,
+                religion,
                 ST_ClusterDBSCAN(geometry, 160, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi
@@ -133,7 +162,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             subclass,
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
-            (array_agg(access))[1] AS access    
+            (array_agg(access))[1] AS access,
+            (array_agg(religion))[1] AS religion    
         FROM 
             (SELECT
                 osm_id,
@@ -142,6 +172,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 subclass,
                 ele,
                 access,
+                religion,
                 ST_ClusterDBSCAN(geometry, 120, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi
@@ -156,7 +187,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             subclass,
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
-            (array_agg(access))[1] AS access    
+            (array_agg(access))[1] AS access,
+            (array_agg(religion))[1] AS religion    
         FROM 
             (SELECT
                 osm_id,
@@ -165,6 +197,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 subclass,
                 ele,
                 access,
+                religion,
                 ST_ClusterDBSCAN(geometry, 80, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi
@@ -179,7 +212,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             subclass,
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
-            (array_agg(access))[1] AS access    
+            (array_agg(access))[1] AS access,
+            (array_agg(religion))[1] AS religion    
         FROM 
             (SELECT
                 osm_id,
@@ -188,6 +222,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 subclass,
                 ele,
                 access,
+                religion,
                 ST_ClusterDBSCAN(geometry, 40, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi
@@ -202,7 +237,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             subclass,
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
-            (array_agg(access))[1] AS access    
+            (array_agg(access))[1] AS access,
+            (array_agg(religion))[1] AS religion    
         FROM 
             (SELECT
                 osm_id,
@@ -211,6 +247,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 subclass,
                 ele,
                 access,
+                religion,
                 ST_ClusterDBSCAN(geometry, 20, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi
@@ -219,7 +256,7 @@ srid = 3857             # The default srid for this provider. If not provided it
         GROUP BY class, subclass, cluster_id
     UNION ALL
         SELECT
-            osm_id as gid, ST_AsBinary(geometry) as geom, 1 as count, class, subclass, name, ele, access
+            osm_id as gid, ST_AsBinary(geometry) as geom, 1 as count, class, subclass, name, ele, access, religion
         FROM import.poi
         WHERE (18 <= !ZOOM!) AND (geometry && !BBOX!)    
     ORDER BY count DESC
