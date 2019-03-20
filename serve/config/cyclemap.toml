@@ -309,7 +309,7 @@ srid = 3857             # The default srid for this provider. If not provided it
     [[providers.layers]]
     name = "transportation"
     sql= """
-    select id as gid, ST_AsBinary(geometry) as geom, class, subclass from import.transportation WHERE NOT ST_IsClosed(geometry) AND (geometry && !BBOX!) 
+    select id as gid, ST_AsBinary(geometry) as geom, class, subclass, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name from import.transportation WHERE NOT ST_IsClosed(geometry) AND (geometry && !BBOX!) 
     """
 
     [[providers.layers]]

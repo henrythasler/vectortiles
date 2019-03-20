@@ -446,6 +446,15 @@ tables:
       type: mapping_key
     - name: subclass
       type: mapping_value
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name
     mapping:
       route: [ferry]
       aerialway: [cable_car, chairlift, gondola, chair_lift, mixed_lift, goods]
