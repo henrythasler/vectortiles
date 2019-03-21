@@ -483,92 +483,6 @@
         "fill-color": "#f6f4e7"
       }
     },    
-    {
-      "id": "piste",
-      "type": "line",
-      "source": "local",
-      "source-layer": "piste",
-      "minzoom": 14,
-      "maxzoom": 24,
-      "filter": [">", ["get", "difficulty"], 0],
-      "layout": {        
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      "paint": {
-        "line-color": 
-        ["case",
-          ["match", ["get", "difficulty"], [1, 2], true, false], "rgba(0, 0, 255, 0.5)",
-          ["match", ["get", "difficulty"], [3], true, false], "rgba(255, 0, 0, 0.5)", 
-          "rgba(0, 0, 0, 0.5)"
-        ],
-        "line-width": [
-          "interpolate", ["exponential", 1.2], ["zoom"],
-          14, 2,
-          18, 22
-        ]
-      }
-    },    
-    {
-      "id": "fence",
-      "type": "line",
-      "source": "local",
-      "source-layer": "manmade",
-      "minzoom": 14,
-      "maxzoom": 24,
-      "filter": ["all",
-        ["==", ["geometry-type"], "LineString"],
-        ["==", ["get", "subclass"], "fence"],
-        ["any",
-          ["all",
-            [">=", ["zoom"], 14],
-            ["<", ["zoom"], 16],
-            [">", ["get", "length"], 400]
-          ],
-          ["all",
-            [">=", ["zoom"], 16],
-            ["<", ["zoom"], 18],
-            [">", ["get", "length"], 100]
-          ],
-          ["all",
-            [">=", ["zoom"], 18],
-            [">", ["get", "length"], 10]
-          ]
-        ]
-      ],
-      "layout": {
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      "paint": {
-        "line-color": "#444",
-        "line-dasharray": [3, 2, 0.1, 2],
-        "line-width": [
-          "interpolate", ["exponential", 2], ["zoom"],
-          14, 1.5,
-          18, 6
-        ]
-      }
-    },    
-    {
-      "id": "shiproute",
-      "type": "line",
-      "source": "local",
-      "source-layer": "transportation",
-      "minzoom": 10,
-      "maxzoom": 24,
-      "filter": ["==", ["get", "subclass"], "ferry"],
-      "layout": {},
-      "paint": {
-        "line-dasharray": [4, 4],
-        "line-color": "rgba(17, 17, 170, 1)",
-        "line-width": [
-          "interpolate", ["exponential", 2], ["zoom"],
-          10, 1,
-          18, 16
-        ]
-      }
-    },    
 
     {
       "id": "roads-tunnel-casing",
@@ -765,7 +679,92 @@
         ]
       }
     },    
-
+    {
+      "id": "piste",
+      "type": "line",
+      "source": "local",
+      "source-layer": "piste",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": [">", ["get", "difficulty"], 0],
+      "layout": {        
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": 
+        ["case",
+          ["match", ["get", "difficulty"], [1, 2], true, false], "rgba(0, 0, 255, 0.5)",
+          ["match", ["get", "difficulty"], [3], true, false], "rgba(255, 0, 0, 0.5)", 
+          "rgba(0, 0, 0, 0.5)"
+        ],
+        "line-width": [
+          "interpolate", ["exponential", 1.2], ["zoom"],
+          14, 2,
+          18, 22
+        ]
+      }
+    },    
+    {
+      "id": "fence",
+      "type": "line",
+      "source": "local",
+      "source-layer": "manmade",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["==", ["geometry-type"], "LineString"],
+        ["==", ["get", "subclass"], "fence"],
+        ["any",
+          ["all",
+            [">=", ["zoom"], 14],
+            ["<", ["zoom"], 16],
+            [">", ["get", "length"], 400]
+          ],
+          ["all",
+            [">=", ["zoom"], 16],
+            ["<", ["zoom"], 18],
+            [">", ["get", "length"], 100]
+          ],
+          ["all",
+            [">=", ["zoom"], 18],
+            [">", ["get", "length"], 10]
+          ]
+        ]
+      ],
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#444",
+        "line-dasharray": [3, 2, 0.1, 2],
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          14, 1.5,
+          18, 6
+        ]
+      }
+    },    
+    {
+      "id": "shiproute",
+      "type": "line",
+      "source": "local",
+      "source-layer": "transportation",
+      "minzoom": 10,
+      "maxzoom": 24,
+      "filter": ["==", ["get", "subclass"], "ferry"],
+      "layout": {},
+      "paint": {
+        "line-dasharray": [4, 4],
+        "line-color": "rgba(17, 17, 170, 1)",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          10, 1,
+          18, 16
+        ]
+      }
+    },    
     {
       "id": "buildings-large",
       "type": "fill",
@@ -1933,6 +1932,28 @@
         ]
       }
     },    
+    {
+      "id": "path-difficulty",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "roads",
+      "minzoom": 14,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["match", ["get", "subclass"], ["path", "footway", "steps", "bridleway"], true, false],
+        ["!=", ["get", "tracktype"], 1],
+        ["<=", ["get", "bicycle"], 2],
+        ["!=", ["get", "bridge"], true],
+        ["!=", ["get", "tunnel"], true],
+        [">", ["get", "scale"], 0]
+      ],
+      "paint": {
+      },
+      "layout": {
+        "symbol-placement": "line-center",
+        "icon-image": "star.white"
+      }
+    },        
     {
       "id": "label-road",
       "type": "symbol",
