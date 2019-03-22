@@ -1951,7 +1951,7 @@
       },
       "layout": {
         "symbol-placement": "line-center",
-        "icon-image": "star.white"
+        "icon-image": ["match", ["get", "scale"], 2, "circle-red", [3, 4, 5, 6], "circle-black", "circle-blue"]
       }
     },        
     {
