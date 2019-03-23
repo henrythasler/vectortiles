@@ -121,7 +121,7 @@ then
     osmpath="$(pwd)/../data/pbf/"
     dbpath="vectortiles_db"
 
-    osmfile="bayern-latest.osm.pbf"
+    osmfile="niederbayern-latest.osm.pbf"
     dbname="slice"
 else
     # localhost
@@ -205,16 +205,18 @@ fi
 #OUT=0
 if [ $OUT -eq 0 ];then
     # landuse
-    generalize "landuse" "landuse_gen14" 5 ", class, subclass" "ST_Area(geometry)>1000" &
-    generalize "landuse" "landuse_gen13" 10 ", class, subclass" "ST_Area(geometry)>2000" &
+    filter "landuse_temp" "landuse" ", class, subclass, area, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name"
+    drop "landuse_temp"
+    generalize "landuse" "landuse_gen14" 5 ", class, subclass, name, area" "ST_Area(geometry)>1000" &
+    generalize "landuse" "landuse_gen13" 10 ", class, subclass, name, area" "ST_Area(geometry)>2000" &
     wait
 
-    generalize_buffer "landuse_gen13" "landuse_gen12" 20 ", class, subclass" "ST_Area(geometry)>5000" &
-    generalize_buffer "landuse_gen13" "landuse_gen11" 50 ", class, subclass" "ST_Area(geometry)>50000" &
-    generalize_buffer "landuse_gen13" "landuse_gen10" 100 ", class, subclass" "ST_Area(geometry)>200000" &
+    generalize_buffer "landuse_gen13" "landuse_gen12" 20 ", class, subclass, name, area" "ST_Area(geometry)>5000" &
+    generalize_buffer "landuse_gen13" "landuse_gen11" 50 ", class, subclass, name, area" "ST_Area(geometry)>50000" &
+    generalize_buffer "landuse_gen13" "landuse_gen10" 100 ", class, subclass, name, area" "ST_Area(geometry)>200000" &
 
-    generalize_buffer "landuse_gen13" "landuse_gen9" 150 ", class, subclass" "ST_Area(geometry)>2000000" &
-    generalize_buffer "landuse_gen13" "landuse_gen8" 200 ", class, subclass" "ST_Area(geometry)>4000000" &
+    generalize_buffer "landuse_gen13" "landuse_gen9" 150 ", class, subclass, name, area" "ST_Area(geometry)>2000000" &
+    generalize_buffer "landuse_gen13" "landuse_gen8" 200 ", class, subclass, name, area" "ST_Area(geometry)>4000000" &
     wait
 
     # landcover

@@ -366,8 +366,7 @@ tables:
     mapping:
       waterway: [river, canal, stream, ditch]
 
-  landuse:
-  # FIXME: remove unused columns
+  landuse_temp:
     type: polygon
     columns:
     - name: osm_id

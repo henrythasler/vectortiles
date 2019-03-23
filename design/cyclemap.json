@@ -65,9 +65,6 @@
       "minzoom": 10,
       "maxzoom": 24,
       "filter": ["match", ["get", "subclass"], ["commercial", "retail", "residential"], true, false],
-      "layout": {
-        "visibility": "visible"
-      },
       "paint": {
         "fill-color": {
           "stops": [
@@ -96,18 +93,7 @@
       "source-layer": "landuse",
       "minzoom": 10,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        [
-          "in",
-          "subclass",
-          "industrial",
-          "aerodrome"
-        ]
-      ],
-      "layout": {
-        "visibility": "visible"
-      },
+      "filter": ["match", ["get", "subclass"], ["industrial", "aerodrome"], true, false],
       "paint": {
         "fill-color": "rgba(212, 189, 182, 1)",
         "fill-outline-color": "rgba(212, 189, 182, 1)"
@@ -133,16 +119,7 @@
       "source-layer": "landcover",
       "minzoom": 7,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        [
-          "in",
-          "subclass",
-          "wood",
-          "scrub",
-          "forest"
-        ]
-      ],
+      "filter": ["match", ["get", "subclass"], ["forest", "wood", "scrub"], true, false], 
       "paint": {
         "fill-color": "rgba(176, 208, 144, 1)",
         "fill-outline-color": "rgba(0, 0, 0, 0)"
@@ -155,19 +132,9 @@
       "source-layer": "landcover",
       "minzoom": 11,
       "maxzoom": 24,
-      "filter": [
-        "all",
-        [
-          "in",
-          "subclass",
-          "beach"
-        ],
-        [
-          "in",
-          "surface",
-          "sand",
-          ""
-        ]
+      "filter": ["all",
+        ["==", ["get", "subclass"], "beach"],
+        ["==", ["get", "surface"], "sand"]
       ],
       "paint": {
         "fill-color": "#ffe88b",
@@ -181,26 +148,19 @@
       "source-layer": "waterway",
       "minzoom": 7,
       "maxzoom": 24,
-      "filter": [
-        "any",
-        ["all",
-          [">=", ["zoom"], 14],
-          ["match", ["get", "subclass"], ["river", "canal", "stream", "ditch"], true, false],
-          ["!=", ["get", "tunnel"], true]
+      "filter": ["step", ["zoom"],
+      ["all", 
+        ["!=", ["get", "tunnel"], true],
+        ["match", ["get", "subclass"], ["river", "canal"], true, false]
+      ],
+      12, ["all", 
+        ["!=", ["get", "tunnel"], true],
+        ["match", ["get", "subclass"], ["river", "canal", "stream"], true, false]
         ],
-        ["all",
-          [">=", ["zoom"], 12],
-          ["<", ["zoom"], 14],
-          ["match", ["get", "subclass"], ["river", "canal", "stream"], true, false],
-          ["!=", ["get", "tunnel"], true]
-        ],
-        ["all",
-          [">=", ["zoom"], 7],
-          ["<", ["zoom"], 12],
-          ["match", ["get", "subclass"], ["river", "canal"], true, false],
-          ["!=", ["get", "tunnel"], true]
+      14, ["all", 
+        ["!=", ["get", "tunnel"], true],
+        ["match", ["get", "subclass"], ["river", "canal", "stream", "ditch"], true, false]
         ]
-
       ],
       "layout": {
         "line-join": "round",
@@ -400,22 +360,14 @@
       "source": "contour-lines",
       "source-layer": "contour",
       "minzoom": 13,
-      "filter": ["any",
-        ["all",
-          ["<", ["zoom"], 15],
-          ["match", ["get", "index"], [5, 10], true, false]
-        ],
-        ["all",
-          [">=", ["zoom"], 15],
-          ["<", ["zoom"], 16],
-          ["match", ["get", "index"], [2, 10], true, false]
-        ],
-        [">=", ["zoom"], 16]
+      "filter": ["step", ["zoom"],
+      ["match", ["get", "index"], [5, 10], true, false],
+      15, ["match", ["get", "index"], [2, 10], true, false],
+      17, true
       ],
-
       "paint": {
         "line-color": "rgba(127, 51, 0, 0.25)",
-        "line-width": 1
+        "line-width": ["match", ["get", "index"], 10, 2, 1]
       }      
     },       
     {
@@ -424,28 +376,16 @@
       "source": "contour-lines",
       "source-layer": "contour",
       "minzoom": 13,
-      "filter": ["any",
-        ["all",
-          ["<", ["zoom"], 15],
-          ["match", ["get", "index"], [5, 10], true, false]
-        ],
-        ["all",
-          [">=", ["zoom"], 15],
-          ["<", ["zoom"], 16],
-          ["match", ["get", "index"], [2, 10], true, false]
-        ],
-        [">=", ["zoom"], 16]
+      "filter": ["step", ["zoom"],
+      ["match", ["get", "index"], [10], true, false],
+      17, ["match", ["get", "index"], [5, 10], true, false]
       ],
-
       "layout": {
-        "text-field": "{ele} {index}",
+        "text-field": "{ele}",
         "text-font": ["Open Sans Regular"],
         "symbol-placement": "line",
         "symbol-spacing" : 500,
-        "text-size": ["interpolate", ["exponential", 2], ["zoom"],
-        15, 16, 
-        18, 24
-      ]
+        "text-size": 16 
       },
       "paint": {
         "text-color": "#630",
