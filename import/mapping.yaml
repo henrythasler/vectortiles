@@ -55,7 +55,10 @@ tables:
       natural: [peak]
       highway: [bus_stop]
       amenity: [pub, fast_food, restaurant, bar, biergarten, hospital, parking, shelter, place_of_worship]
-      tourism: [alpine_hut, hotel]
+      tourism: [alpine_hut, hotel, viewpoint, information, zoo, aquarium, attraction, theme_park, camp_site, caravan_site]
+      leisure: [playground, water_park]
+      sport: [climbing]
+      geological: [palaeontological_site]
       shop: [bicycle, supermarket]
       railway: [station, halt, tram_stop]
       man_made: [mast, tower, communications_tower, antenna]
@@ -112,10 +115,14 @@ tables:
       natural: [peak]
       highway: [bus_stop]
       amenity: [pub, fast_food, restaurant, bar, biergarten, hospital, parking, shelter, place_of_worship]
-      tourism: [alpine_hut, hotel]
+      tourism: [alpine_hut, hotel, viewpoint, information, zoo, aquarium, attraction, theme_park, camp_site, caravan_site]
+      leisure: [playground, water_park]
+      sport: [climbing]
+      geological: [palaeontological_site]
       shop: [bicycle, supermarket]
       railway: [station, halt, tram_stop]
       man_made: [mast, tower, communications_tower, antenna]
+
 
   label_points:
     type: point
@@ -366,7 +373,7 @@ tables:
     mapping:
       waterway: [river, canal, stream, ditch]
 
-  landuse_temp:
+  landuse_import:
     type: polygon
     columns:
     - name: osm_id
@@ -401,8 +408,7 @@ tables:
         mapping:
           leisure: [nature_reserve]
 
-  landcover:
-  # FIXME: remove unused columns
+  landcover_import:
     type: polygon
     columns:
     - name: osm_id

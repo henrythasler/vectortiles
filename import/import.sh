@@ -202,11 +202,11 @@ else
 fi
 
 
-#OUT=0
+# OUT=0
 if [ $OUT -eq 0 ];then
     # landuse
-    filter "landuse_temp" "landuse" ", class, subclass, area, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name"
-    drop "landuse_temp"
+    filter "landuse_import" "landuse" ", class, subclass, area, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name"
+    drop "landuse_import"
     generalize "landuse" "landuse_gen14" 5 ", class, subclass, name, area" "ST_Area(geometry)>1000" &
     generalize "landuse" "landuse_gen13" 10 ", class, subclass, name, area" "ST_Area(geometry)>2000" &
     wait
@@ -220,15 +220,17 @@ if [ $OUT -eq 0 ];then
     wait
 
     # landcover
-    generalize "landcover" "landcover_gen14" 5 ", class, subclass, surface" "ST_Area(geometry)>1000" &
-    generalize "landcover" "landcover_gen13" 10 ", class, subclass, surface" "ST_Area(geometry)>2000" &
+    filter "landcover_import" "landcover" ", class, subclass, area, surface, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name"
+    drop "landcover_import"
+    generalize "landcover" "landcover_gen14" 5 ", class, subclass, surface, area, name" "ST_Area(geometry)>1000" &
+    generalize "landcover" "landcover_gen13" 10 ", class, subclass, surface, area, name" "ST_Area(geometry)>2000" &
     wait
 
-    generalize_buffer "landcover_gen13" "landcover_gen12" 20 ", class, subclass, surface" "ST_Area(geometry)>5000" &
-    generalize_buffer "landcover_gen13" "landcover_gen11" 50 ", class, subclass, surface" "ST_Area(geometry)>50000" &
-    generalize_buffer "landcover_gen13" "landcover_gen10" 100 ", class, subclass, surface" "ST_Area(geometry)>200000" &
-    generalize_buffer "landcover_gen13" "landcover_gen9" 150 ", class, subclass, surface" "ST_Area(geometry)>2000000" &
-    generalize_buffer "landcover_gen13" "landcover_gen8" 200 ", class, subclass, surface" "ST_Area(geometry)>5000000" &
+    generalize_buffer "landcover_gen13" "landcover_gen12" 20 ", class, subclass, surface, area, name" "ST_Area(geometry)>5000" &
+    generalize_buffer "landcover_gen13" "landcover_gen11" 50 ", class, subclass, surface, area, name" "ST_Area(geometry)>50000" &
+    generalize_buffer "landcover_gen13" "landcover_gen10" 100 ", class, subclass, surface, area, name" "ST_Area(geometry)>200000" &
+    generalize_buffer "landcover_gen13" "landcover_gen9" 150 ", class, subclass, surface, area, name" "ST_Area(geometry)>2000000" &
+    generalize_buffer "landcover_gen13" "landcover_gen8" 200 ", class, subclass, surface, area, name" "ST_Area(geometry)>5000000" &
     wait
 
     # waterarea
@@ -290,11 +292,8 @@ if [ $OUT -eq 0 ];then
     wait
     
     # poi filter
-    # filter "poi" "poi_gen16" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
-    # filter "poi" "poi_gen14" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
-    # filter "poi" "poi_gen12" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop')" &
-#    filter "poi" "poi_gen9" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'peak')" &
-#    filter "poi" "poi_gen0" ", class, subclass, name, ele, pop" "subclass NOT IN('bus_stop', 'hamlet', 'village', 'suburb', 'town', 'peak')" &
+    filter "poi" "poi_gen11" ", class, subclass, name, ele, access, parking, station, religion" "subclass IN('station', 'halt')" &
+    filter "poi" "poi_gen12" ", class, subclass, name, ele, access, parking, station, religion" "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site')" &
     wait
 
     printf "generalize ${GREEN}done${NC}\n"

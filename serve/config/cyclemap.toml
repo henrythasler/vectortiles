@@ -100,7 +100,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 religion,
                 ST_ClusterDBSCAN(geometry, 300, 1) OVER () AS cluster_id,
                 geometry as geom
-            FROM import.poi
+            FROM import.poi_gen11
             WHERE 11 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!)
             ) cluster
         GROUP BY class, subclass, cluster_id
@@ -125,7 +125,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 religion,
                 ST_ClusterDBSCAN(geometry, 160, 1) OVER () AS cluster_id,
                 geometry as geom
-            FROM import.poi
+            FROM import.poi_gen12
             WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!)
             ) cluster
         GROUP BY class, subclass, cluster_id
@@ -267,7 +267,7 @@ name = "cluster"
 
     [[maps.layers]]
     provider_layer = "cluster.poi"
-    min_zoom = 8
+    min_zoom = 11
 
 [[providers]]
 name = "osm"            # provider name is referenced from map layers
@@ -361,41 +361,41 @@ srid = 3857             # The default srid for this provider. If not provided it
     [[providers.layers]]
     name = "landuse"
     sql= """
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen8 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, area, name from import.landuse_gen8 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen9 WHERE 9 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, area, name from import.landuse_gen9 WHERE 9 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen10 WHERE 10 <= !ZOOM! AND 11 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, area, name from import.landuse_gen10 WHERE 10 <= !ZOOM! AND 11 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen11 WHERE 11 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, area, name from import.landuse_gen11 WHERE 11 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen12 WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, area, name from import.landuse_gen12 WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen13 WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, area, name from import.landuse_gen13 WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, area, name from import.landuse_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass from import.landuse WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, area, name from import.landuse WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
     """
 
     [[providers.layers]]
     name = "landcover"
     sql= """
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen8 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface, area, name from import.landcover_gen8 WHERE 9 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen9 WHERE 9 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface, area, name from import.landcover_gen9 WHERE 9 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen10 WHERE 10 <= !ZOOM! AND 11 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface, area, name from import.landcover_gen10 WHERE 10 <= !ZOOM! AND 11 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen11 WHERE 11 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface, area, name from import.landcover_gen11 WHERE 11 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen12 WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface, area, name from import.landcover_gen12 WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen13 WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface, area, name from import.landcover_gen13 WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface, area, name from import.landcover_gen14 WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!) 
     union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface from import.landcover WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, subclass, surface, area, name from import.landcover WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
     """
 
 

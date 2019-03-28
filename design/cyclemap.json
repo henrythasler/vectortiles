@@ -366,8 +366,8 @@
       17, true
       ],
       "paint": {
-        "line-color": "rgba(127, 51, 0, 0.25)",
-        "line-width": ["match", ["get", "index"], 10, 2, 1]
+        "line-color": ["match", ["get", "index"], 10, "rgba(127, 51, 0, 0.5)", "rgba(127, 51, 0, 0.25)"] ,
+        "line-width": 1
       }      
     },       
     {
@@ -388,8 +388,8 @@
         "text-size": 16 
       },
       "paint": {
-        "text-color": "#630",
-        "text-halo-color": "rgba(255, 255, 255, 0.5)",
+        "text-color": "#530",
+        "text-halo-color": "rgba(255, 255, 255, 0.25)",
         "text-halo-width": 2.5,
         "text-halo-blur": 1
       }
@@ -1929,7 +1929,58 @@
         "symbol-placement": "line-center",
         "icon-image": ["match", ["get", "scale"], 2, "circle-red", [3, 4, 5, 6], "circle-black", "circle-blue"]
       }
-    },        
+    },     
+    {
+      "id": "label-landcover",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "landcover",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["<", ["-", 26, ["ln", ["get", "area"]]], ["zoom"]],
+        [">",["length", ["get", "name"]], 0]
+      ],
+      "layout": {
+        "text-field": "{name}",
+        "text-font": ["Open Sans Bold Italic"],
+        "text-padding": 100,
+        "text-size": 18
+      },
+      "paint": {
+        "text-color": "#474",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 2.5,
+        "text-halo-blur": 1
+      }
+    },    
+    {
+      "id": "label-landuse",
+      "type": "symbol",
+      "source": "local",
+      "source-layer": "landuse",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": ["all",
+        ["<", ["-", 26, ["ln", ["get", "area"]]], ["zoom"]],
+        [">",["length", ["get", "name"]], 0],
+        ["match", ["get", "subclass"], ["residential", "commercial", "nature_reserve"], false, true]
+      ],
+      "layout": {
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
+        "text-field": "{name}",
+        "text-font": ["Open Sans Bold Italic"],
+        "text-padding": 2,
+        "text-size": 18
+      },
+      "paint": {
+        "text-color": "#555",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 2.5,
+        "text-halo-blur": 1
+      }
+    },    
     {
       "id": "label-road",
       "type": "symbol",
@@ -2014,7 +2065,7 @@
       "type": "symbol",
       "source": "cluster",
       "source-layer": "poi",
-      "minzoom": 10,
+      "minzoom": 11,
       "maxzoom": 24,
       "inactive-filter": ["match", ["get", "subclass"], ["bus_stop", "parking", "restaurant"], true, false],
       "paint": {
@@ -2052,7 +2103,7 @@
         "text-optional": true,
         "text-anchor": "top",
         "text-field": ["step", ["zoom"],
-          ["format", ["get", "count"], {}],
+          "",
           12, ["match", ["get", "subclass"], ["station", "halt"], ["format", ["get", "name"], {}], ""],
           14, ["case", 
                 ["==", ["get", "count"], 1],
