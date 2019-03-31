@@ -294,6 +294,8 @@ if [ $OUT -eq 0 ];then
     # poi filter
     filter "poi" "poi_gen11" ", class, subclass, name, ele, access, parking, station, religion" "subclass IN('station', 'halt')" &
     filter "poi" "poi_gen12" ", class, subclass, name, ele, access, parking, station, religion" "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site')" &
+    filter "poi" "poi_gen13" ", class, subclass, name, ele, access, parking, station, religion" "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site', 'bicycle')" &
+    filter "poi" "poi_gen14" ", class, subclass, name, ele, access, parking, station, religion" "subclass NOT IN('playground', 'viewpoint', 'information')" &
     wait
 
     printf "generalize ${GREEN}done${NC}\n"

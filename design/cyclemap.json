@@ -2067,12 +2067,11 @@
       "source-layer": "poi",
       "minzoom": 11,
       "maxzoom": 24,
-      "inactive-filter": ["match", ["get", "subclass"], ["bus_stop", "parking", "restaurant"], true, false],
       "paint": {
         "text-color": ["match", ["get", "subclass"], 
           ["station", "halt"], "#008", 
-          ["bus_stop", "tram_stop"], "#053", 
-          ["restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar"], "#631",
+          ["bus_stop", "tram_stop", "climbing"], "#053", 
+          ["restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "information"], "#631",
           ["supermarket", "bicycle"], "#505",
           ["hospital"], "#a22",
           "#222"],
@@ -2082,11 +2081,10 @@
       },
       "layout": {
         "visibility": "visible",
-        "icon-allow-overlap": true,
-        "icon-ignore-placement": true,
+        "icon-allow-overlap": false,
+        "icon-ignore-placement": false,
         "icon-image": ["match", ["get", "subclass"], 
-          ["parking", "shelter", "supermarket", "bicycle", "hotel", "bar", "hospital"], ["get", "subclass"], 
-          "peak", "triangle", 
+          ["parking", "shelter", "supermarket", "bicycle", "hotel", "bar", "hospital", "caravan_site", "camp_site", "peak", "playground", "information", "viewpoint", "climbing"], ["get", "subclass"], 
           ["pub", "biergarten"], "pub",
           ["bus_stop", "tram_stop"], "bus_stop",
           ["tower", "antenna", "mast", "communications_tower"], "tower",
@@ -2121,7 +2119,7 @@
                 ["get", "count"], 
                 1, ["match", ["get", "subclass"], 
                     ["station", "halt", "hospital"], ["format", ["get", "name"], {}], 
-                    ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar"], ["format",
+                    ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "information"], ["format",
                       ["case", 
                         [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
                         ["concat", ["get", "ele"]]
@@ -2138,7 +2136,7 @@
                 ["get", "count"], 
                 1, ["match", ["get", "subclass"], 
                     ["station", "halt", "bus_stop", "tram_stop", "place_of_worship", "hospital"], ["format", ["get", "name"], {}], 
-                    ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "supermarket", "bicycle"], ["format",
+                    ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "supermarket", "bicycle", "information", "climbing"], ["format",
                       ["case", 
                         [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
                         ["concat", ["get", "ele"]]
@@ -2154,14 +2152,13 @@
 
         ],
         "text-font": ["match", ["get", "subclass"], 
-          ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "hospital"], ["literal", ["Open Sans Bold Italic"]], 
+          ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "hospital", "information"], ["literal", ["Open Sans Bold Italic"]], 
           ["literal",["Open Sans Italic"]]
           ],
         "text-size": ["match", 
           ["get", "subclass"], 
-            ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "hospital"], 18, 
-            ["station", "halt", "bus_stop", "tram_stop", "place_of_worship", "supermarket", "bicycle"], 16,
-          12],
+            ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "hospital", "information"], 18, 
+          16],
         "text-offset": [0, 0.7],
         "text-max-width": 9
       }      

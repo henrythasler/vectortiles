@@ -150,7 +150,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 religion,
                 ST_ClusterDBSCAN(geometry, 160, 1) OVER () AS cluster_id,
                 geometry as geom
-            FROM import.poi
+            FROM import.poi_gen12
             WHERE 13 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!)
             ) cluster
         GROUP BY class, subclass, cluster_id
@@ -175,7 +175,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 religion,
                 ST_ClusterDBSCAN(geometry, 120, 1) OVER () AS cluster_id,
                 geometry as geom
-            FROM import.poi
+            FROM import.poi_gen14
             WHERE 14 <= !ZOOM! AND 15 > !ZOOM! AND (geometry && !BBOX!)
             ) cluster
         GROUP BY class, subclass, cluster_id
