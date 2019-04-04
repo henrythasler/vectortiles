@@ -139,6 +139,13 @@
     "x": 77,
     "y": 93
   },
+  "ring-black": {
+    "height": 8,
+    "pixelRatio": 1,
+    "width": 8,
+    "x": 60,
+    "y": 137
+  },
   "roundedsquare": {
     "height": 12,
     "pixelRatio": 1,

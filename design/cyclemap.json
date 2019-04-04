@@ -2091,6 +2091,7 @@
           ["restaurant", "fast_food", "alpine_hut"], "restaurant",
           ["station", "halt"], "station.red",
           "place_of_worship", ["match", ["get", "religion"], 1, "church", ""],
+          "attraction", "ring-black",
           "star.white"],
         "icon-size": ["interpolate", ["exponential", 2], ["zoom"],
           12, 0.5, 
@@ -2118,13 +2119,13 @@
          16, ["match",
                 ["get", "count"], 
                 1, ["match", ["get", "subclass"], 
-                    ["station", "halt", "hospital"], ["format", ["get", "name"], {}], 
-                    ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "information"], ["format",
+                    ["bus_stop", "parking"], "", 
+                    ["peak", "restaurant", "fast_food", "alpine_hut", "biergarten", "information"], ["format",
                       ["case", 
                         [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
                         ["concat", ["get", "ele"]]
                       ], {}], 
-                    ""
+                    ["format", ["get", "name"], {}]
                   ],
                 2, ["match", ["get", "subclass"], 
                     ["station", "halt"], ["format", ["get", "name"], {}], 
@@ -2135,13 +2136,12 @@
          17, ["match",
                 ["get", "count"], 
                 1, ["match", ["get", "subclass"], 
-                    ["station", "halt", "bus_stop", "tram_stop", "place_of_worship", "hospital"], ["format", ["get", "name"], {}], 
-                    ["peak", "restaurant", "fast_food", "alpine_hut", "pub", "biergarten", "hotel", "bar", "supermarket", "bicycle", "information", "climbing"], ["format",
+                    ["peak", "restaurant", "fast_food", "alpine_hut", "biergarten", "information", "climbing"], ["format",
                       ["case", 
                         [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
                         ["concat", ["get", "ele"]]
                       ], {}], 
-                    ""
+                    ["format", ["get", "name"], {}]
                   ],
                 2, ["match", ["get", "subclass"], 
                     ["station", "halt", "bus_stop", "tram_stop"], ["format", ["get", "name"], {}], 
