@@ -181,7 +181,8 @@ tables:
       key: population
     mapping:
       place: [city, town, village, hamlet, suburb]
-
+      natural: [water, pond]
+      landuse: [reservoir, basin]
 
   housenumbers_temp:
     type: point
