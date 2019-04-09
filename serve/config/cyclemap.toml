@@ -437,6 +437,12 @@ srid = 3857             # The default srid for this provider. If not provided it
     """
 
     [[providers.layers]]
+    name = "waterlabels"
+    sql= """
+    select osm_id as gid, ST_AsBinary(geometry) as geom, ele, name from import.lake_centerlines WHERE geometry && !BBOX!
+    """
+
+    [[providers.layers]]
     name = "housenumbers"
     sql= """
     select osm_id as gid, ST_AsBinary(geometry) as geom, number, name from import.housenumbers WHERE geometry && !BBOX!
@@ -506,6 +512,10 @@ tile_buffer = 256
 
     [[maps.layers]]
     provider_layer = "osm.waterarea"
+    min_zoom = 7
+
+    [[maps.layers]]
+    provider_layer = "osm.waterlabels"
     min_zoom = 7
 
     [[maps.layers]]

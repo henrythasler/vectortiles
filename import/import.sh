@@ -88,20 +88,36 @@ function drop() {
         -c "DROP TABLE IF EXISTS import.${table}" 2>&1 >/dev/null
 }
 
-function export_shp() {
+function create_centerlines() {
     local source=${1}
     local target=${2}
-    local columns=${3:-""}
-    local filter=${4:-"TRUE"}
+    local tempfile=${3}
+    local columns=${4:-""}
+    local filter=${5:-"TRUE"}
 
     docker run --rm --net gis \
-        -v ${target}:/out \
-        img-postgis:0.9 pgsql2shp -f "/out/lake_polygons.shp" -h ${pgdocker} -u postgres ${dbname} "SELECT osm_id, geometry${columns} FROM import.${source} WHERE ${filter}"
-#    local query="SELECT osm_id, ST_SimplifyPreserveTopology(geometry, 100) AS geometry FROM osm_lake_polygon WHERE area > 2 * 1000 * 1000 AND ST_GeometryType(geometry)='ST_Polygon' AND name <> '' ORDER BY area DESC"
+        -v ${tempfile}:/out \
+        img-postgis:0.9 pgsql2shp -f "/out/polygons.shp" -h ${pgdocker} -u postgres ${dbname} "SELECT osm_id, ST_MakeValid(ST_SimplifyPreserveTopology(ST_Buffer(geometry, 50), 100)) as geometry${columns} FROM import.${source} WHERE ${filter}"
 
     docker run --rm --net gis \
-        -v ${target}:/out \
-        centerlines --verbose --max_points 100 --output_driver GeoJSON /out/lake_polygons.shp /out/lake_polygons.geojson
+        -v ${tempfile}:/out \
+        centerlines --segmentize_maxlen 0.5 --smooth 3 --max_points 3000 --simplification 0.05 --output_driver GeoJSON /out/polygons.shp /out/centerlines.geojson
+
+    # https://www.gdal.org/ogr2ogr.html
+    # https://www.gdal.org/drv_pg.html
+    docker run --rm --net gis \
+        -v ${tempfile}:/out \
+        img-postgis:0.9 ogr2ogr -progress -overwrite -f "PostgreSQL" PG:"dbname=${dbname} user=postgres host=${pgdocker} port=5432" "/out/centerlines.geojson" -nln "import.${target}" -lco GEOMETRY_NAME=geometry
+
+    # fix column-type
+    docker run --rm --net gis img-postgis:0.9 psql -h ${pgdocker} -U postgres -d ${dbname} \
+        -c "ALTER TABLE import.${target} ALTER COLUMN osm_id TYPE int8 USING osm_id::int8;" 2>&1 >/dev/null \
+        -c "ALTER TABLE import.${target} DROP COLUMN ogc_fid;"
+
+    docker run --rm --net gis \
+        -v ${tempfile}:/out \
+        img-postgis:0.9 bash -c "rm /out/polygons.* /out/centerlines.geojson"
+
 }
 
 
@@ -317,9 +333,7 @@ if [ $OUT -eq 0 ];then
     # wait
 
     # label waterarea preprocessing
-    export_shp "waterarea" "${osmpath}/shp/lake_centerlines" ", class, subclass, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "name <> '' AND ST_Area(geometry)>5000 AND name='Ammersee'"
-
-
+    create_centerlines "waterarea" "lake_centerlines" "/media/ramdisk" ", class, subclass, ele, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "subclass = 'water' AND name <> '' AND ST_Area(geometry)>4000000"
 
     printf "generalize ${GREEN}done${NC}\n"
 

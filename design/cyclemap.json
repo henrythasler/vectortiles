@@ -1958,15 +1958,17 @@
       "id": "label-waterarea",
       "type": "symbol",
       "source": "local",
-      "source-layer": "label",
+      "source-layer": "waterlabels",
       "minzoom": 7,
       "maxzoom": 24,
-      "filter": ["match", ["get", "subclass"], ["water", "pond"], true, false],
       "layout": {
         "text-field": "{name}",
         "text-font": ["Open Sans Bold Italic"],
         "text-padding": 100,
-        "text-size": 18
+        "text-size": 18,
+        "text-allow-overlap": true,
+        "text-ignore-placement": true,
+        "symbol-placement": "line"
       },
       "paint": {
         "text-color": "#447",
