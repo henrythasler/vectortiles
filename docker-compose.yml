@@ -1,0 +1,80 @@
+version: "3.7"
+services:
+  postgis:
+    image: "img-postgis:0.9"
+    container_name: ${POSTGIS_HOSTNAME}
+    networks: 
+      - gis
+    volumes:
+      - ./serve/postgis.conf:/etc/postgresql/postgresql.conf:ro
+      - ${HOST_DATABASE_LOCATION}:/pgdata
+    ports:
+      - "5432:5432"
+    environment:
+      - PGDATA=/pgdata
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+
+  tegola:
+    image: "tegola:master"
+    depends_on:
+      - postgis
+    networks: 
+      - gis
+    volumes:
+      - ./serve/config/cyclemap.toml:/data/config.toml:ro
+      - ./serve/.cache:/cache
+    ports:
+      - "8080:8080"
+    environment:
+#      - TEGOLA_SQL_DEBUG=LAYER_SQL:EXECUTE_SQL
+#      - TEGOLA_SQL_DEBUG=LAYER_SQL
+      - TEGOLA_SQL_DEBUG=
+    command: serve --config /data/config.toml
+
+  preprocessing:
+    image: "img-postgis:0.9"
+    depends_on:
+      - postgis
+    networks: 
+      - gis
+    environment:
+      - POSTGIS_HOSTNAME=${POSTGIS_HOSTNAME}
+      - POSTGIS_USER=${POSTGIS_USER}
+      - DATABASE_NAME=${DATABASE_NAME}
+    volumes:
+      - ./import/preprocessing.sh:/import/preprocessing.sh:ro
+    command: bash /import/preprocessing.sh
+
+  import:
+    image: "jawg/imposm3"
+    depends_on:
+      - postgis
+    networks: 
+      - gis
+    volumes:
+      - ${IMPORT_PATH}${IMPORT_FILE}:/opt/imposm3/osmdata.osm.pbf:ro
+      - ${IMPOSM_MAPPING}:/opt/imposm3/mapping.yaml:ro
+    command: import -mapping mapping.yaml -read osmdata.osm.pbf -overwritecache -write -optimize -connection 'postgis://${POSTGIS_USER}@${POSTGIS_HOSTNAME}/'${DATABASE_NAME}'?prefix=NONE'
+
+  postprocessing:
+    image: "img-postgis:0.9"
+    depends_on:
+      - postgis
+    networks: 
+      - gis
+    environment:
+      - POSTGIS_HOSTNAME=${POSTGIS_HOSTNAME}
+      - POSTGIS_USER=${POSTGIS_USER}
+      - DATABASE_NAME=${DATABASE_NAME}
+    volumes:
+      - ./import/postprocessing.sh:/import/postprocessing.sh:ro
+    command: bash /import/postprocessing.sh
+
+networks:
+  gis:
+    name: gis
+
+volumes:
+  pgdata:
+    external:
+      name: vectortiles_db
