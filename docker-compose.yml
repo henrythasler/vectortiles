@@ -16,6 +16,7 @@ services:
 
   tegola:
     image: "tegola:master"
+    container_name: ${TEGOLA_HOSTNAME}
     depends_on:
       - postgis
     networks: 
