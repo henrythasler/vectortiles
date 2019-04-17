@@ -1,0 +1,62 @@
+{
+  "version": 8,
+  "name": "Mapbox Local",
+  "metadata": {},
+  "sources": {
+    "local": {
+      "type": "vector",
+      "tiles": [
+        "http://tegola:8080/maps/local/{z}/{x}/{y}.pbf?debug=true"
+      ]
+    },
+    "mapbox-terrain-rgb": {
+      "type": "raster-dem",
+      "url": "mapbox://mapbox.terrain-rgb"
+    }
+  },
+  "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#f6f4e7"
+      }
+    },
+    {
+      "id": "landuse-forest",
+      "type": "fill",
+      "source": "local",
+      "source-layer": "landcover",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "filter": ["match", ["get", "subclass"], ["forest", "wood", "scrub"], true, false], 
+      "paint": {
+        "fill-color": "rgba(176, 208, 144, 1)",
+        "fill-outline-color": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "id": "hillshading",
+      "source": "mapbox-terrain-rgb",
+      "type": "hillshade",
+      "maxzoom": 15,
+      "layout": {
+        "visibility": "visible"
+      },      
+      "paint": {
+        "hillshade-illumination-direction": 315,
+        "hillshade-exaggeration": 0.4,
+        "hillshade-shadow-color": {
+          "stops": [
+            [14, "rgba(0, 0, 0, 1)"],
+            [15, "rgba(0, 0, 0, 0)"]
+          ]
+        },
+        "hillshade-highlight-color": "rgba(255, 255, 255, 0)",
+        "hillshade-accent-color": "rgba(0, 0, 0, .5)"
+      }
+    }
+  ],
+  "id": "cndhwdkjr"
+}
