@@ -25,6 +25,27 @@
       }
     },
     {
+      "id": "hillshading",
+      "source": "mapbox-terrain-rgb",
+      "type": "hillshade",
+      "maxzoom": 15,
+      "layout": {
+        "visibility": "visible"
+      },      
+      "paint": {
+        "hillshade-illumination-direction": 315,
+        "hillshade-exaggeration": 0.4,
+        "hillshade-shadow-color": {
+          "stops": [
+            [14, "rgba(0, 0, 0, 1)"],
+            [15, "rgba(0, 0, 0, 0)"]
+          ]
+        },
+        "hillshade-highlight-color": "rgba(255, 255, 255, 0)",
+        "hillshade-accent-color": "rgba(0, 0, 0, .5)"
+      }
+    },
+    {
       "id": "landuse-forest",
       "type": "fill",
       "source": "local",
