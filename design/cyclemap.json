@@ -6,13 +6,13 @@
     "global": {
       "type": "vector",
       "tiles": [
-        "http://localhost:8080/maps/global/{z}/{x}/{y}.pbf"
+        "http://localhost:8081/maps/global/{z}/{x}/{y}.pbf"
       ]
     },
     "local": {
       "type": "vector",
       "tiles": [
-        "http://localhost:8080/maps/local/{z}/{x}/{y}.pbf?debug=true"
+        "http://localhost:8081/maps/local/{z}/{x}/{y}.pbf?debug=true"
       ]
     },
     "cluster": {
@@ -22,7 +22,7 @@
       "clusterMaxZoom": 14,
       "clusterRadius": 50,
       "tiles": [
-        "http://localhost:8080/maps/cluster/{z}/{x}/{y}.pbf"
+        "http://localhost:8081/maps/cluster/{z}/{x}/{y}.pbf"
       ]
     },
     "mapbox-terrain-rgb": {
@@ -34,7 +34,7 @@
       "url": "mapbox://mapbox.mapbox-terrain-v2"
       }    
   },
-  "sprite": "http://localhost:8081/sprites/cyclemap",
+  "sprite": "http://localhost:8082/sprites/cyclemap",
   "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
   "layers": [
     {
