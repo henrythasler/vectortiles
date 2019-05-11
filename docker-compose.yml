@@ -46,6 +46,21 @@ services:
       - ./import/preprocessing.sh:/import/preprocessing.sh:ro
     command: bash /import/preprocessing.sh
 
+  shapes:
+    image: "img-postgis:0.9"
+    depends_on:
+      - postgis
+    networks: 
+      - gis
+    environment:
+      - POSTGIS_HOSTNAME=${POSTGIS_HOSTNAME}
+      - POSTGIS_USER=${POSTGIS_USER}
+      - SHAPE_DATABASE_NAME=${SHAPE_DATABASE_NAME}
+    volumes:
+      - ./data/shp:/shp:ro
+      - ./import/world.sh:/world.sh:ro
+    command: bash /world.sh
+    
   import:
     image: "jawg/imposm3"
     depends_on:
@@ -71,6 +86,14 @@ services:
       - ./import/postprocessing.sh:/import/postprocessing.sh:ro
     command: bash /import/postprocessing.sh
 
+  checkdb:
+    image: "img-postgis:0.9"
+    depends_on:
+      - postgis
+    networks: 
+      - gis
+    command: psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${DATABASE_NAME} -c "SELECT COUNT(*) from pg_stat_activity;" 
+    
 networks:
   gis:
     name: gis

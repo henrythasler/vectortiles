@@ -39,21 +39,21 @@ srid = 3857             # The default srid for this provider. If not provided it
     select gid, ST_AsBinary(geometry) as geom from public.water_polygons WHERE 8 < !ZOOM! AND (geometry && !BBOX!) 
     """
 
-    [[providers.layers]]
-    name = "admin"
-    sql= """
-    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen4 WHERE 6 > !ZOOM! AND (geometry && !BBOX!) 
-    union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen6 WHERE 6 <= !ZOOM! AND 8 > !ZOOM! AND (geometry && !BBOX!) 
-    union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen8 WHERE 8 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
-    union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen10 WHERE 10 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
-    union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen12 WHERE 12 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
-    union all
-    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen14 WHERE 14 <= !ZOOM! AND (geometry && !BBOX!) 
-    """
+#     [[providers.layers]]
+#     name = "admin"
+#     sql= """
+#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen4 WHERE 6 > !ZOOM! AND (geometry && !BBOX!) 
+#     union all
+#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen6 WHERE 6 <= !ZOOM! AND 8 > !ZOOM! AND (geometry && !BBOX!) 
+#     union all
+#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen8 WHERE 8 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
+#     union all
+#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen10 WHERE 10 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
+#     union all
+#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen12 WHERE 12 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
+#     union all
+#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen14 WHERE 14 <= !ZOOM! AND (geometry && !BBOX!) 
+#     """
 
 [[maps]]
 name = "global"
@@ -62,8 +62,8 @@ name = "global"
     provider_layer = "world.water"
     dont_simplify = true    
 
-    [[maps.layers]]
-    provider_layer = "world.admin"
+#     [[maps.layers]]
+#     provider_layer = "world.admin"
 
 
 [[providers]]
@@ -436,11 +436,11 @@ srid = 3857             # The default srid for this provider. If not provided it
     select osm_id as gid, ST_AsBinary(geometry) as geom from import.waterarea WHERE 15 <= !ZOOM! AND (geometry && !BBOX!) 
     """
 
-    [[providers.layers]]
-    name = "waterlabels"
-    sql= """
-    select osm_id as gid, ST_AsBinary(geometry) as geom, ele, name from import.lake_centerlines WHERE geometry && !BBOX!
-    """
+#     [[providers.layers]]
+#     name = "waterlabels"
+#     sql= """
+#     select osm_id as gid, ST_AsBinary(geometry) as geom, ele, name from import.lake_centerlines WHERE geometry && !BBOX!
+#     """
 
     [[providers.layers]]
     name = "housenumbers"
@@ -514,9 +514,9 @@ tile_buffer = 256
     provider_layer = "osm.waterarea"
     min_zoom = 7
 
-    [[maps.layers]]
-    provider_layer = "osm.waterlabels"
-    min_zoom = 7
+#     [[maps.layers]]
+#     provider_layer = "osm.waterlabels"
+#     min_zoom = 7
 
     [[maps.layers]]
     provider_layer = "osm.housenumbers"
