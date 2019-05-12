@@ -6,13 +6,13 @@
     "global": {
       "type": "vector",
       "tiles": [
-        "http://localhost:8081/maps/global/{z}/{x}/{y}.pbf"
+        "http://localhost:8081/maps/global/{z}/{x}/{y}.pbf?debug=true"
       ]
     },
     "local": {
       "type": "vector",
       "tiles": [
-        "http://localhost:8081/maps/local/{z}/{x}/{y}.pbf?debug=true"
+        "http://localhost:8081/maps/local/{z}/{x}/{y}.pbf"
       ]
     },
     "cluster": {
@@ -2413,31 +2413,21 @@
     {
       "id": "debug-tile-outline",
       "type": "line",
-      "source": "local",
+      "source": "global",
       "source-layer": "debug-tile-outline",
-      "layout": {
-        "visibility": "visible"
-      },
-      "paint": {
-        "line-color": "rgba(255, 0, 0, 0.2)"
-      }
+      "layout": {"visibility": "visible"},
+      "paint": { "line-color": "rgba(255, 0, 0, 0.2)" }
     },
     {
       "id": "debug-tile-center",
       "type": "symbol",
-      "source": "local",
+      "source": "global",
       "source-layer": "debug-tile-center",
-      "minzoom": 0,
-      "maxzoom": 24,
-      "filter": [
-        "all"
-      ],
       "paint": {"text-color": "#ff0000"},
       "layout": {
-        "visibility": "none",
+        "visibility": "visible",
         "text-field": "{zxy}"
       }
     }       
-  ],
-  "id": "cndhwdkjr"
+  ]
 }

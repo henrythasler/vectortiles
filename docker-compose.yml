@@ -17,6 +17,7 @@ services:
   tegola:
     image: "tegola:master"
     container_name: ${TEGOLA_HOSTNAME}
+    user: 1000:1000
     depends_on:
       - postgis
     networks: 
@@ -93,7 +94,38 @@ services:
     networks: 
       - gis
     command: psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${DATABASE_NAME} -c "SELECT COUNT(*) from pg_stat_activity;" 
-    
+
+  seed_global:
+    image: "tegola:master"
+    container_name: ${TEGOLA_HOSTNAME}
+    user: 1000:1000
+    depends_on:
+      - postgis
+    networks: 
+      - gis
+    volumes:
+      - ./serve/config/cyclemap.toml:/data/config.toml:ro
+      - ./serve/.cache:/cache
+    ports:
+      - "${TEGOLA_PORT}:8080"
+    command: cache seed tile-name 0/0/0 --config /data/config.toml --min-zoom 0 --max-zoom 6 --map global --overwrite
+
+  seed_local:
+    image: tegola:master
+    container_name: ${TEGOLA_HOSTNAME}
+    user: 1000:1000
+    depends_on:
+      - postgis
+    networks: 
+      - gis
+    volumes:
+      - ./serve/config/cyclemap.toml:/data/config.toml:ro
+      - ./serve/tiles_munich.txt:/data/tiles_munich.txt:ro
+      - ./serve/.cache:/cache
+    ports:
+      - "${TEGOLA_PORT}:8080"
+    command: cache seed tile-list /data/tiles_munich.txt --config /data/config.toml --min-zoom 8 --max-zoom 10 --map local --overwrite
+
 networks:
   gis:
     name: gis
