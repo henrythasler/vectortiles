@@ -2,84 +2,338 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <style>
-    body {
-        margin: 0;
-        padding: 0;
-      }
+    <meta charset="utf-8">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
 
-      #map {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 100%;
-      }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .distance-container {
+            position: absolute;
+            top: 10px;
+            left: 50px;
+            z-index: 1;
+        }
+
+        .distance-container>* {
+            background-color: #fff;
+            color: #000;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 18px;
+            display: block;
+            margin: 0;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        #export {
+            position: absolute;
+            top: 140px;
+            left: 10px;
+            z-index: 100;
+            background-color: white;
+            color: black;
+            padding: 6px;
+            border-radius: 4px;
+            font-family: 'Helvetica Neue';
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath style='fill:%23333333;' d='M 10 6 C 9.446 6 9 6.4459904 9 7 L 9 9 L 7 9 C 6.446 9 6 9.446 6 10 C 6 10.554 6.446 11 7 11 L 9 11 L 9 13 C 9 13.55401 9.446 14 10 14 C 10.554 14 11 13.55401 11 13 L 11 11 L 13 11 C 13.554 11 14 10.554 14 10 C 14 9.446 13.554 9 13 9 L 11 9 L 11 7 C 11 6.4459904 10.554 6 10 6 z'/%3E %3C/svg%3E");
+            background-repeat: no-repeat;
+            height: 20px;
+            width: 20px;
+        }
+
+        #export:hover {
+            background-color: #ddd;
+        }
+
+        #gpx {
+            position: absolute;
+            top: 180px;
+            left: 10px;
+            z-index: 100;
+            background-color: white;
+            color: black;
+            padding: 6px;
+            border-radius: 4px;
+            font-family: 'Helvetica Neue';
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E %3Cpath style='fill:%23333333;' d='M 10 6 C 9.446 6 9 6.4459904 9 7 L 9 9 L 7 9 C 6.446 9 6 9.446 6 10 C 6 10.554 6.446 11 7 11 L 9 11 L 9 13 C 9 13.55401 9.446 14 10 14 C 10.554 14 11 13.55401 11 13 L 11 11 L 13 11 C 13.554 11 14 10.554 14 10 C 14 9.446 13.554 9 13 9 L 11 9 L 11 7 C 11 6.4459904 10.554 6 10 6 z'/%3E %3C/svg%3E");
+            background-repeat: no-repeat;
+            height: 20px;
+            width: 20px;
+        }
+
+        #gpx:hover {
+            background-color: #ddd;
+        }
     </style>
-  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
 
-  <script src='https://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.min.js'></script>
-  <link href='https://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.css' rel='stylesheet' />
+    <script src='https://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.min.js'></script>
+    <link href='https://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.css' rel='stylesheet' />
 
-  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.6/mapbox-gl-geocoder.min.js'></script>
-  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.6/mapbox-gl-geocoder.css' type='text/css' />
+    <script
+        src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.6/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet'
+        href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v3.1.6/mapbox-gl-geocoder.css'
+        type='text/css' />
 
-  <title>CycleMap</title>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css'
+        type='text/css' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+
+    <script src='togpx.js'></script>
+
+    <title>CycleMap</title>
 </head>
 
 <body>
-  <div id="map"></div>
-  <script type="text/javascript">
+    <div id="map"></div>
+    <div id='distance' class='distance-container'></div>
+    <a href='#' id='export'></a>
+    <a href='#' id='gpx'></a>
 
-    function loadJSON(callback) {
-      var xobj = new XMLHttpRequest();
-      xobj.overrideMimeType("application/json");
-      xobj.open('GET', 'cyclemap.json', true); // Replace 'my_data' with the path to your file
-      xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4 && xobj.status == "200") {
-          // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-          callback(xobj.responseText);
+    <script type="text/javascript">
+
+        function loadJSON(callback) {
+            var xobj = new XMLHttpRequest();
+            xobj.overrideMimeType("application/json");
+            xobj.open('GET', 'cyclemap.json', true); // Replace 'my_data' with the path to your file
+            xobj.onreadystatechange = function () {
+                if (xobj.readyState == 4 && xobj.status == "200") {
+                    // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+                    callback(xobj.responseText);
+                }
+            };
+            xobj.send(null);
         }
-      };
-      xobj.send(null);
-    }
 
-    loadJSON(function (response) {
-      // Parse JSON string into object
-      var myStyle = JSON.parse(response);
+        loadJSON(function (response) {
+            // Parse JSON string into object
+            var myStyle = JSON.parse(response);
 
-      // TODO: Enter your mapbox gl access token on the line below
-      mapboxgl.accessToken = 'pk.eyJ1IjoibXljeWNsZW1hcCIsImEiOiJjaXJhYnoxcGEwMDRxaTlubnk3cGZpbTBmIn0.TEO9UhyyX1nFKDTwO4K1xg'
-      var map = new mapboxgl.Map({
-        container: 'map',
-        style: myStyle,
-        hash: true,
-        dragRotate: false,
-        maxZoom: 20,
-        center: [10.85, 48.05],
-        zoom: 12,
-      });
+            // TODO: Enter your mapbox gl access token on the line below
+            mapboxgl.accessToken = 'pk.eyJ1IjoibXljeWNsZW1hcCIsImEiOiJjaXJhYnoxcGEwMDRxaTlubnk3cGZpbTBmIn0.TEO9UhyyX1nFKDTwO4K1xg'
+            var map = new mapboxgl.Map({
+                container: 'map',
+                style: myStyle,
+                hash: true,
+                dragRotate: false,
+                maxZoom: 20,
+                center: [10.85, 48.05],
+                zoom: 12,
+            });
 
-      map.addControl(new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken
-      }));      
+            map.addControl(new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken
+            }));
 
-      map.addControl(new MapboxInspect({
-        selectThreshold: 5
-      }));
+            map.addControl(new MapboxInspect({
+                // showMapPopup: true,
+                // showMapPopupOnHover: false,
+                // showInspectMapPopupOnHover: false,
+                selectThreshold: 5
+            }));
 
-      var nav = new mapboxgl.NavigationControl();
-      map.addControl(nav, 'top-right');
+            var nav = new mapboxgl.NavigationControl();
+            map.addControl(nav, 'top-right');
 
-      var scale = new mapboxgl.ScaleControl();
-      map.addControl(scale);
+            var scale = new mapboxgl.ScaleControl();
+            map.addControl(scale);
 
-      map.on('load', function () {
+            var draw = new MapboxDraw({
+                displayControlsDefault: false,
+                controls: {
+                    line_string: true,
+                    trash: true
+                },
+                styles: [
+                    // ACTIVE (being drawn)
+                    // line stroke
+                    {
+                        "id": "gl-draw-line",
+                        "type": "line",
+                        "filter": ["all", ["==", "$type", "LineString"], ["!=", "mode", "static"]],
+                        "layout": {
+                            "line-cap": "round",
+                            "line-join": "round"
+                        },
+                        "paint": {
+                            "line-color": "rgba(255,32,32,0.75)",
+                            "line-width": 8
+                        }
+                    },
+                    // vertex point halos
+                    {
+                        "id": "gl-draw-polygon-and-line-vertex-halo-active",
+                        "type": "circle",
+                        "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+                        "paint": {
+                            "circle-radius": 12,
+                            "circle-color": "rgba(255,32,32,0.75)"
+                        }
+                    },
+                    // vertex points
+                    {
+                        "id": "gl-draw-polygon-and-line-vertex-active",
+                        "type": "circle",
+                        "filter": ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+                        "paint": {
+                            "circle-radius": 6,
+                            "circle-color": "#fc0",
+                        }
+                    },
+                    // line-midpoint-halo
+                    {
+                        "id": "gl-draw-polygon-and-line-midpoint-halo-active",
+                        "type": "circle",
+                        "filter": ["all", ["==", "meta", "midpoint"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+                        "paint": {
+                            "circle-radius": 8,
+                            "circle-color": "#000",
+                        }
+                    },                    
+                    // line-midpoint
+                    {
+                        "id": "gl-draw-polygon-and-line-midpoint-active",
+                        "type": "circle",
+                        "filter": ["all", ["==", "meta", "midpoint"], ["==", "$type", "Point"], ["!=", "mode", "static"]],
+                        "paint": {
+                            "circle-radius": 6,
+                            "circle-color": "#fc0",
+                        }
+                    }               
+                ]
 
-      });
-    });
-  </script>
+            });
+            map.addControl(draw, 'top-left');
+
+
+            function updateDistance(e) {
+                var data = draw.getAll();
+                // console.log(data);
+                var distanceContainer = document.getElementById('distance');
+                if (data.features.length > 0) {
+                    var distance = turf.length(data);
+
+                    distanceContainer.innerHTML = '';
+                    var value = document.createElement('pre');
+                    value.textContent = 'Distance: ' + (Math.round(turf.lineDistance(data, { units: 'kilometers' }) * 100) / 100).toLocaleString() + 'km';
+                    distanceContainer.appendChild(value);
+                } else {
+                    distanceContainer.innerHTML = '';
+                    if (e.type !== 'draw.delete') alert("Use the draw tools to draw a polygon!");
+                }
+            }
+
+            map.on('draw.create', updateDistance);
+            map.on('draw.delete', updateDistance);
+            map.on('draw.update', updateDistance);
+
+
+            function handleDragOver(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+                evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+            }
+
+            function handleFileSelect(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+
+                let files = evt.dataTransfer.files; // FileList object.
+
+                // files is a FileList of File objects. List some properties.
+                let output = [];
+                for (let i = 0, f; f = files[i]; i++) {
+                    console.log(escape(f.name) + ', ' + f.size + ' Bytes');
+                    let reader = new FileReader();
+
+                    // Closure to capture the file information.
+                    reader.onload = (function (theFile) {
+                        return function (e) {
+                            let featureIds = draw.add(JSON.parse(e.target.result));
+
+                            // Geographic coordinates of the LineString
+                            let coordinates = draw.get(featureIds).geometry.coordinates;;
+
+                            // Pass the first coordinates in the LineString to `lngLatBounds` &
+                            // wrap each coordinate pair in `extend` to include them in the bounds
+                            // result. A variation of this technique could be applied to zooming
+                            // to the bounds of multiple Points or Polygon geomteries - it just
+                            // requires wrapping all the coordinates with the extend method.
+                            let bounds = coordinates.reduce(function (bounds, coord) {
+                                return bounds.extend(coord);
+                            }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+
+                            map.fitBounds(bounds, {
+                                padding: 20
+                            });
+
+                            updateDistance();
+                        };
+                    })(f);
+
+                    // Read in the image file as a data URL.
+                    reader.readAsText(f);
+                }
+            }
+            var dropZone = document.getElementById('map');
+            dropZone.addEventListener('dragover', handleDragOver, false);
+            dropZone.addEventListener('drop', handleFileSelect, false);
+
+
+            map.on('load', function () {
+            });
+
+            document.getElementById('export').onclick = function (e) {
+                // Extract GeoJson from featureGroup
+                let data = draw.getAll();
+                if (data.features.length > 0) {
+                    // Stringify the GeoJson
+                    var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+                    // Create export
+                    document.getElementById('export').setAttribute('href', 'data:' + convertedData);
+                    document.getElementById('export').setAttribute('download', 'data.geojson');
+                } else {
+                    alert("Wouldn't you like to draw some data?");
+                }
+            }
+
+            document.getElementById('gpx').onclick = function (e) {
+                // Extract GeoJson from featureGroup
+                let data = draw.getAll();
+                if (data.features.length > 0) {
+                    // Stringify the GeoJson
+                    let gpx = togpx(data);
+                    let convertedData = 'application/gpx;charset=utf-8,' + encodeURIComponent(gpx);
+                    // Create export
+                    document.getElementById('gpx').setAttribute('href', 'data:' + convertedData);
+                    document.getElementById('gpx').setAttribute('download', 'data.gpx');
+                } else {
+                    alert("Wouldn't you like to draw some data?");
+                }
+            }
+
+        });
+    </script>
 </body>
 
 </html>
