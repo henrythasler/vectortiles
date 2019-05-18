@@ -2415,7 +2415,7 @@
       "type": "line",
       "source": "global",
       "source-layer": "debug-tile-outline",
-      "layout": {"visibility": "visible"},
+      "layout": {"visibility": "none"},
       "paint": { "line-color": "rgba(255, 0, 0, 0.2)" }
     },
     {
@@ -2425,7 +2425,7 @@
       "source-layer": "debug-tile-center",
       "paint": {"text-color": "#ff0000"},
       "layout": {
-        "visibility": "visible",
+        "visibility": "none",
         "text-field": "{zxy}"
       }
     }       

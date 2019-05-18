@@ -7,3 +7,4 @@ design/maputnik/
 serve/trace.log
 
 data/pbf/
+.env

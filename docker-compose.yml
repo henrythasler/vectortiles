@@ -97,7 +97,6 @@ services:
 
   seed_global:
     image: "tegola:master"
-    container_name: ${TEGOLA_HOSTNAME}
     user: 1000:1000
     depends_on:
       - postgis
@@ -112,7 +111,6 @@ services:
 
   seed_local:
     image: tegola:master
-    container_name: ${TEGOLA_HOSTNAME}
     user: 1000:1000
     depends_on:
       - postgis
@@ -124,7 +122,7 @@ services:
       - ./serve/.cache:/cache
     ports:
       - "${TEGOLA_PORT}:8080"
-    command: cache seed tile-list /data/tiles_munich.txt --config /data/config.toml --min-zoom 8 --max-zoom 10 --map local --overwrite
+    command: cache seed tile-list /data/tiles_munich.txt --config /data/config.toml --min-zoom 8 --max-zoom 14 --map local --overwrite
 
 networks:
   gis:

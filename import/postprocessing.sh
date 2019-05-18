@@ -93,6 +93,20 @@ function drop() {
         -c "DROP TABLE IF EXISTS import.${table}" 2>&1 >/dev/null
 }
 
+# merge all features into one multigeometry
+function merge() {
+    local source=${1}
+    local target=${2}
+    local filter=${3:-"TRUE"}
+    printf "start import.${target}...\n"
+    psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${DATABASE_NAME} \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT row_number() over () as gid, ST_LineMerge(ST_Collect(geometry)) FROM import.${source} WHERE ${filter})" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}"
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
+
 ### main()
 
 # landuse
@@ -191,6 +205,9 @@ wait
 
 # label waterarea preprocessing
 #create_centerlines "waterarea" "lake_centerlines" "/media/ramdisk" ", class, subclass, ele, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "subclass = 'water' AND name <> '' AND ST_Area(geometry)>4000000"
+
+# merge cycleroutes into one layer for improved rendering of transparent lines
+# merge "cycleroute" "cycleroute_merged"
 
 ### show resulting database size
 psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${DATABASE_NAME} \
