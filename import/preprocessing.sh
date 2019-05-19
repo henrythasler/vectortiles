@@ -16,6 +16,6 @@ psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${DATABASE_NAME} \
     -c "CREATE EXTENSION IF NOT EXISTS postgis_topology;" 2>&1 >/dev/null \
     -c "CREATE EXTENSION IF NOT EXISTS postgis_sfcgal;" 2>&1 >/dev/null \
     -c "CREATE EXTENSION IF NOT EXISTS hstore;" 2>&1 >/dev/null \
-    -c "ALTER DATABASE ${DATABASE_NAME} SET postgis.backend = sfcgal;" 2>&1 >/dev/null
+    -c "ALTER DATABASE ${DATABASE_NAME} SET postgis.backend = geos;" 2>&1 >/dev/null
 
 printf "${GREEN}All done${NC}\n"
