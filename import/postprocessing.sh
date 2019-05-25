@@ -72,6 +72,19 @@ function merge_to_point() {
     printf "import.${target} ${GREEN}done${NC}\n"
 }
 
+function reduce_to_point() {
+    local source=${1}
+    local target=${2}
+    local columns=${3:-""}
+    local filter=${4:-"TRUE"}
+    printf "start import.${target}...\n"
+    psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${DATABASE_NAME} \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT osm_id, ST_PointOnSurface(geometry) AS geometry${columns} FROM import.${source} WHERE ${filter})" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}"
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
 
 function filter() {
     local source=${1}
@@ -151,9 +164,9 @@ generalize "waterarea_gen13" "waterarea_gen8" 250 ", class, subclass" "ST_Area(g
 wait
 
 # waterway
-generalize "waterway" "waterway_gen12" 20 ", class, subclass, tunnel, layer" "ST_Length(geometry)>50" &
-generalize "waterway" "waterway_gen10" 50 ", class, subclass, tunnel, layer" "ST_Length(geometry)>100" &
-generalize "waterway" "waterway_gen8" 100 ", class, subclass, tunnel, layer" "ST_Length(geometry)>200" &
+generalize "waterway" "waterway_gen12" 20 ", class, subclass, tunnel, layer, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "ST_Length(geometry)>50" &
+generalize "waterway" "waterway_gen10" 50 ", class, subclass, tunnel, layer, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "ST_Length(geometry)>100" &
+generalize "waterway" "waterway_gen8" 100 ", class, subclass, tunnel, layer, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "ST_Length(geometry)>200" &
 wait
 
 # transportation
@@ -164,7 +177,7 @@ wait
 
 # roads - prepare
 filter "roads_temp" "roads" ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" 
-#drop "roads_temp"
+drop "roads_temp"
 
 # roads - generalize
 generalize "roads" "roads_gen15" 3 ", class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref" "(service <=1) OR (ST_Length(geometry) > 50)" &
@@ -204,7 +217,15 @@ filter "poi" "poi_gen14" ", class, subclass, name, ele, access, parking, station
 wait
 
 # label waterarea preprocessing
-#create_centerlines "waterarea" "lake_centerlines" "/media/ramdisk" ", class, subclass, ele, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "subclass = 'water' AND name <> '' AND ST_Area(geometry)>4000000"
+# create_centerlines "waterarea" "lake_centerlines" "/media/ramdisk" ", class, subclass, ele, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "subclass = 'water' AND name <> '' AND ST_Area(geometry)>4000000"
+
+reduce_to_point "waterarea" "label_waterarea" ", class, subclass, area, ele, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "subclass NOT IN('riverbank', 'swimming_pool') AND ((name_de <> '') IS NOT FALSE OR (name_en <> '') IS NOT FALSE OR (name <> '') IS NOT FALSE)"
+
+filter "label_waterarea" "label_waterarea_gen14" ", class, subclass, name, area, ele" "area>100000" &
+filter "label_waterarea" "label_waterarea_gen12" ", class, subclass, name, area, ele" "area>1000000" &
+filter "label_waterarea" "label_waterarea_gen10" ", class, subclass, name, area, ele" "area>10000000" &
+filter "label_waterarea" "label_waterarea_gen8" ", class, subclass, name, area, ele" "area>100000000" &
+wait
 
 # merge cycleroutes into one layer for improved rendering of transparent lines
 # merge "cycleroute" "cycleroute_merged"

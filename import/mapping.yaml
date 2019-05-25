@@ -372,6 +372,15 @@ tables:
     - name: layer
       type: integer
       key: layer
+    - name: name_de
+      type: string
+      key: name:de
+    - name: name_en
+      type: string
+      key: name:en
+    - name: name
+      type: string
+      key: name      
     mapping:
       waterway: [river, canal, stream, ditch]
 

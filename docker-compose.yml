@@ -122,7 +122,9 @@ services:
       - ./serve/.cache:/cache
     ports:
       - "${TEGOLA_PORT}:8080"
-    command: cache seed tile-list /data/tiles_munich.txt --config /data/config.toml --min-zoom 8 --max-zoom 14 --map local --overwrite
+    # command: cache seed tile-list /data/tiles_munich.txt --config /data/config.toml --min-zoom 8 --max-zoom 14 --map local --overwrite
+    command: cache seed --bounds "9.140625,46.80005968,13.35937466,48.92249926" --config /data/config.toml --min-zoom 7 --max-zoom 14 --map local --overwrite
+    
 
 networks:
   gis:

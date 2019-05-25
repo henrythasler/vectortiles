@@ -60,8 +60,8 @@
         }
 
     </style>
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
 
     <script src='https://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.min.js'></script>
     <link href='https://mapbox-gl-inspect.lukasmartinelli.ch/dist/mapbox-gl-inspect.css' rel='stylesheet' />
@@ -97,15 +97,13 @@
 <body>
     <div id="map"></div>
     <div id='distance' class='distance-container'></div>
-    <!-- <a href='#' id='export'></a>
-    <a href='#' id='gpx'></a> -->
 
     <script type="text/javascript">
 
         function loadJSON(callback) {
             var xobj = new XMLHttpRequest();
             xobj.overrideMimeType("application/json");
-            xobj.open('GET', 'cyclemap.json', true); // Replace 'my_data' with the path to your file
+            xobj.open('GET', 'cyclemap.json', true); 
             xobj.onreadystatechange = function () {
                 if (xobj.readyState == 4 && xobj.status == "200") {
                     // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
@@ -223,7 +221,6 @@
 
             function updateDistance(e) {
                 var data = draw.getAll();
-                // console.log(data);
                 var distanceContainer = document.getElementById('distance');
                 if (data.features.length > 0) {
                     var distance = turf.length(data);
