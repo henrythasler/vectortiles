@@ -9,11 +9,11 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="12"
-   height="12"
+   width="18"
+   height="18"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="subway.svg">
   <defs
      id="defs4" />
@@ -24,16 +24,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11.2"
-     inkscape:cx="24.912038"
-     inkscape:cy="-4.7371708"
+     inkscape:zoom="31.678384"
+     inkscape:cx="8.4997751"
+     inkscape:cy="11.638658"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1151"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:window-width="1869"
+     inkscape:window-height="1145"
+     inkscape:window-x="51"
+     inkscape:window-y="27"
      inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -46,7 +46,9 @@
        empspacing="5"
        visible="true"
        enabled="true"
-       snapvisiblegridlinesonly="true" />
+       snapvisiblegridlinesonly="true"
+       originx="3"
+       originy="3" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -64,25 +66,23 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(4.8596183e-7,-1040.3622)">
+     transform="translate(3.0000005,-1037.3622)">
     <rect
-       style="fill:#005699;fill-opacity:1;stroke:#005699;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="rect3768"
-       width="11"
-       height="11"
-       x="0.49999952"
-       y="1040.8622"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.45454383;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3768-3"
+       width="15.999982"
+       height="15.999982"
+       x="-1.9999914"
+       y="1038.3622"
        ry="0" />
+    <path
+       style="opacity:1;fill:#005699;fill-opacity:1;stroke:none;stroke-width:2.84562612;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       d="m -2,-3 c -0.554,0 -1,0.5728705 -1,1.2851562 V 13.714844 C -3,14.427129 -2.554,15 -2,15 h 16 c 0.554,0 1,-0.572871 1,-1.285156 V -1.7148438 C 15,-2.4271295 14.554,-3 14,-3 Z m 2.13476562,2.06445312 H 3.6445312 V 7.2207031 c 0,1.1241319 0.1822917,1.9299046 0.546875,2.4160157 0.3706598,0.4800342 0.9722223,0.7207032 1.8046876,0.7207032 0.8385416,0 1.4401041,-0.240669 1.8046874,-0.7207032 C 8.171441,9.1506077 8.3554688,8.344835 8.3554688,7.2207031 V -0.93554688 H 11.865234 V 7.2207031 c 0,1.9262152 -0.483073,3.3608939 -1.449218,4.3027349 -0.9661462,0.94184 -2.4390195,1.412109 -4.4199222,1.412109 -1.9748264,0 -3.4459636,-0.470269 -4.4121094,-1.412109 C 0.61783857,10.581597 0.13476563,9.1469183 0.13476562,7.2207031 Z"
+       transform="translate(-4.8596183e-7,1040.3622)"
+       id="rect861"
+       inkscape:connector-curvature="0" />
     <g
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
        id="text3782" />
-    <g
-       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Verdana;-inkscape-font-specification:Verdana"
-       id="text3935">
-      <path
-         d="m 9.8818355,1047.4755 c -8.8e-6,1.0781 -0.3281335,1.9043 -0.984375,2.4785 -0.6562572,0.5742 -1.6230531,0.8613 -2.9003907,0.8613 -1.2773473,0 -2.2441432,-0.2871 -2.9003906,-0.8613 -0.6523451,-0.5742 -0.9785166,-1.3985 -0.9785156,-2.4727 l 0,-5.5722 2.2617187,0 0,5.4433 c -3.2e-6,0.6055 0.1269498,1.0567 0.3808594,1.3535 0.2539024,0.2969 0.6660113,0.4453 1.2363281,0.4453 0.5624946,0 0.9726504,-0.1425 1.2304688,-0.4277 0.2617124,-0.2851 0.3925716,-0.7422 0.3925781,-1.3711 l 0,-5.4433 2.2617188,0 0,5.5664"
-         style="font-size:12px;font-weight:bold;-inkscape-font-specification:Verdana Bold;fill:#ffffff"
-         id="path2996" />
-    </g>
   </g>
 </svg>

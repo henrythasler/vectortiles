@@ -45,21 +45,21 @@
     "height": 30,
     "pixelRatio": 2,
     "width": 30,
-    "x": 144,
+    "x": 180,
     "y": 239
   },
   "circle-blue": {
     "height": 30,
     "pixelRatio": 2,
     "width": 30,
-    "x": 174,
+    "x": 210,
     "y": 239
   },
   "circle-red": {
     "height": 30,
     "pixelRatio": 2,
     "width": 30,
-    "x": 204,
+    "x": 240,
     "y": 239
   },
   "climbing": {
@@ -94,7 +94,7 @@
     "height": 24,
     "pixelRatio": 2,
     "width": 24,
-    "x": 234,
+    "x": 270,
     "y": 239
   },
   "parking": {
@@ -115,7 +115,7 @@
     "height": 24,
     "pixelRatio": 2,
     "width": 24,
-    "x": 258,
+    "x": 294,
     "y": 239
   },
   "playground": {
@@ -150,7 +150,7 @@
     "height": 24,
     "pixelRatio": 2,
     "width": 24,
-    "x": 282,
+    "x": 318,
     "y": 239
   },
   "shelter": {
@@ -206,15 +206,15 @@
     "height": 24,
     "pixelRatio": 2,
     "width": 24,
-    "x": 306,
+    "x": 342,
     "y": 239
   },
   "shop1": {
     "height": 24,
     "pixelRatio": 2,
     "width": 24,
-    "x": 330,
-    "y": 239
+    "x": 342,
+    "y": 135
   },
   "shop2": {
     "height": 48,
@@ -227,28 +227,28 @@
     "height": 24,
     "pixelRatio": 2,
     "width": 24,
-    "x": 342,
-    "y": 135
-  },
-  "square.white": {
-    "height": 24,
-    "pixelRatio": 2,
-    "width": 24,
     "x": 339,
     "y": 187
   },
-  "star.white": {
+  "square.white": {
     "height": 24,
     "pixelRatio": 2,
     "width": 24,
     "x": 344,
     "y": 0
   },
-  "station.blue": {
+  "star.white": {
     "height": 24,
     "pixelRatio": 2,
     "width": 24,
     "x": 0,
+    "y": 275
+  },
+  "station.blue": {
+    "height": 24,
+    "pixelRatio": 2,
+    "width": 24,
+    "x": 24,
     "y": 275
   },
   "station.red": {
@@ -262,15 +262,15 @@
     "height": 24,
     "pixelRatio": 2,
     "width": 24,
-    "x": 24,
+    "x": 48,
     "y": 275
   },
   "subway": {
-    "height": 24,
+    "height": 36,
     "pixelRatio": 2,
-    "width": 24,
-    "x": 48,
-    "y": 275
+    "width": 36,
+    "x": 144,
+    "y": 239
   },
   "supermarket": {
     "height": 48,

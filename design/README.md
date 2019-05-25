@@ -17,6 +17,8 @@ docker run --rm -ti -v $(pwd):/sprites afrith/node-mapnik:latest bash
  npm install -g @mapbox/spritezero-cli
  cd /sprites
  spritezero cyclemap src/
+ spritezero --ratio=2 cyclemap@2x src/
+ spritezero --ratio=4 cyclemap@4x src/
 ```
 
 ## References

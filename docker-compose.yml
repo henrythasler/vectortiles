@@ -58,9 +58,9 @@ services:
       - POSTGIS_USER=${POSTGIS_USER}
       - SHAPE_DATABASE_NAME=${SHAPE_DATABASE_NAME}
     volumes:
-      - ./data/shp:/shp:ro
-      - ./import/world.sh:/world.sh:ro
-    command: bash /world.sh
+      - ${IMPORT_PATH}shp:/shp:ro
+      - ./import/shapes.sh:/shapes.sh:ro
+    command: bash /shapes.sh
     
   import:
     image: "jawg/imposm3"

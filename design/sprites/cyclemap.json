@@ -45,21 +45,21 @@
     "height": 15,
     "pixelRatio": 1,
     "width": 15,
-    "x": 54,
+    "x": 72,
     "y": 119
   },
   "circle-blue": {
     "height": 15,
     "pixelRatio": 1,
     "width": 15,
-    "x": 69,
+    "x": 87,
     "y": 119
   },
   "circle-red": {
     "height": 15,
     "pixelRatio": 1,
     "width": 15,
-    "x": 84,
+    "x": 102,
     "y": 119
   },
   "climbing": {
@@ -94,7 +94,7 @@
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 99,
+    "x": 117,
     "y": 119
   },
   "parking": {
@@ -115,7 +115,7 @@
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 111,
+    "x": 129,
     "y": 119
   },
   "playground": {
@@ -143,14 +143,14 @@
     "height": 8,
     "pixelRatio": 1,
     "width": 8,
-    "x": 60,
+    "x": 72,
     "y": 137
   },
   "roundedsquare": {
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 123,
+    "x": 141,
     "y": 119
   },
   "shelter": {
@@ -206,14 +206,14 @@
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 135,
+    "x": 153,
     "y": 119
   },
   "shop1": {
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 147,
+    "x": 165,
     "y": 119
   },
   "shop2": {
@@ -227,28 +227,28 @@
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 159,
-    "y": 119
+    "x": 168,
+    "y": 93
   },
   "square.white": {
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 171,
-    "y": 119
+    "x": 0,
+    "y": 137
   },
   "star.white": {
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 168,
-    "y": 93
+    "x": 12,
+    "y": 137
   },
   "station.blue": {
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 0,
+    "x": 24,
     "y": 137
   },
   "station.red": {
@@ -262,15 +262,15 @@
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 12,
+    "x": 36,
     "y": 137
   },
   "subway": {
-    "height": 12,
+    "height": 18,
     "pixelRatio": 1,
-    "width": 12,
-    "x": 24,
-    "y": 137
+    "width": 18,
+    "x": 54,
+    "y": 119
   },
   "supermarket": {
     "height": 24,
@@ -304,14 +304,14 @@
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 36,
+    "x": 48,
     "y": 137
   },
   "zoo2": {
     "height": 12,
     "pixelRatio": 1,
     "width": 12,
-    "x": 48,
+    "x": 60,
     "y": 137
   }
 }

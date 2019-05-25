@@ -88,7 +88,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
             (array_agg(access))[1] AS access,
-            (array_agg(religion))[1] AS religion    
+            (array_agg(religion))[1] AS religion,
+            (array_agg(subway))[1] AS subway
         FROM 
             (SELECT
                 osm_id,
@@ -98,6 +99,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 ele,
                 access,
                 religion,
+                subway,
                 ST_ClusterDBSCAN(geometry, 300, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi_gen11
@@ -113,7 +115,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
             (array_agg(access))[1] AS access,
-            (array_agg(religion))[1] AS religion    
+            (array_agg(religion))[1] AS religion,
+            (array_agg(subway))[1] AS subway    
         FROM 
             (SELECT
                 osm_id,
@@ -123,6 +126,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 ele,
                 access,
                 religion,
+                subway,
                 ST_ClusterDBSCAN(geometry, 160, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi_gen12
@@ -138,7 +142,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
             (array_agg(access))[1] AS access,
-            (array_agg(religion))[1] AS religion    
+            (array_agg(religion))[1] AS religion,
+            (array_agg(subway))[1] AS subway
         FROM 
             (SELECT
                 osm_id,
@@ -148,6 +153,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 ele,
                 access,
                 religion,
+                subway,
                 ST_ClusterDBSCAN(geometry, 160, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi_gen12
@@ -163,7 +169,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
             (array_agg(access))[1] AS access,
-            (array_agg(religion))[1] AS religion    
+            (array_agg(religion))[1] AS religion,
+            (array_agg(subway))[1] AS subway
         FROM 
             (SELECT
                 osm_id,
@@ -173,6 +180,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 ele,
                 access,
                 religion,
+                subway,
                 ST_ClusterDBSCAN(geometry, 120, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi_gen14
@@ -188,7 +196,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
             (array_agg(access))[1] AS access,
-            (array_agg(religion))[1] AS religion    
+            (array_agg(religion))[1] AS religion,
+            (array_agg(subway))[1] AS subway
         FROM 
             (SELECT
                 osm_id,
@@ -198,6 +207,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 ele,
                 access,
                 religion,
+                subway,
                 ST_ClusterDBSCAN(geometry, 80, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi
@@ -213,7 +223,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
             (array_agg(access))[1] AS access,
-            (array_agg(religion))[1] AS religion    
+            (array_agg(religion))[1] AS religion,
+            (array_agg(subway))[1] AS subway
         FROM 
             (SELECT
                 osm_id,
@@ -223,6 +234,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 ele,
                 access,
                 religion,
+                subway,
                 ST_ClusterDBSCAN(geometry, 40, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi
@@ -238,7 +250,8 @@ srid = 3857             # The default srid for this provider. If not provided it
             (array_remove(array_agg(name), ''))[1] as name,
             (array_agg(ele))[1] as ele, 
             (array_agg(access))[1] AS access,
-            (array_agg(religion))[1] AS religion    
+            (array_agg(religion))[1] AS religion,
+            (array_agg(subway))[1] AS subway
         FROM 
             (SELECT
                 osm_id,
@@ -248,6 +261,7 @@ srid = 3857             # The default srid for this provider. If not provided it
                 ele,
                 access,
                 religion,
+                subway,
                 ST_ClusterDBSCAN(geometry, 20, 1) OVER () AS cluster_id,
                 geometry as geom
             FROM import.poi
@@ -256,7 +270,7 @@ srid = 3857             # The default srid for this provider. If not provided it
         GROUP BY class, subclass, cluster_id
     UNION ALL
         SELECT
-            osm_id as gid, ST_AsBinary(geometry) as geom, 1 as count, class, subclass, name, ele, access, religion
+            osm_id as gid, ST_AsBinary(geometry) as geom, 1 as count, class, subclass, name, ele, access, subway, religion
         FROM import.poi
         WHERE (18 <= !ZOOM!) AND (geometry && !BBOX!)    
     ORDER BY count DESC
@@ -286,7 +300,9 @@ srid = 3857             # The default srid for this provider. If not provided it
     UNION ALL
     select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, substring(ref from '\\w+') as ref_prefix, substring(ref from '\\d+') as ref_num, NULL as name from import.roads_gen9 WHERE 9 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
     UNION ALL
-    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, substring(ref from '\\w+') as ref_prefix, substring(ref from '\\d+') as ref_num, NULL as name from import.roads_gen10 WHERE 10 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, substring(ref from '\\w+') as ref_prefix, substring(ref from '\\d+') as ref_num, NULL as name from import.roads_gen10 WHERE 10 <= !ZOOM! AND 11 > !ZOOM! AND (geometry && !BBOX!) 
+    UNION ALL
+    select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, substring(ref from '\\w+') as ref_prefix, substring(ref from '\\d+') as ref_num, NULL as name from import.roads_gen11 WHERE 11 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
     UNION ALL
     select osm_id as gid, ST_AsBinary(geometry) as geom, class, subclass, oneway, tracktype, bridge, tunnel, service, CASE WHEN layer IS NULL THEN 0 ELSE layer END as layer, rank, bicycle, scale, substring(ref from '\\w+') as ref_prefix, substring(ref from '\\d+') as ref_num, NULL as name from import.roads_gen12 WHERE 12 <= !ZOOM! AND 13 > !ZOOM! AND (geometry && !BBOX!)
     UNION ALL

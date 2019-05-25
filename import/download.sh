@@ -12,6 +12,7 @@ shapefiles=(
     # https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/physical/ne_10m_geographic_lines.zip
     # https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_countries.zip
     # http://data.openstreetmapdata.com/water-polygons-generalized-3857.zip
+    https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/physical/ne_10m_bathymetry_all.zip
 )
 
 #defines

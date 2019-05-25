@@ -39,12 +39,12 @@ tables:
           values:
             - multi-storey
             - underground
-    - name: station
+    - name: subway
       type: enumerate
-      key: station
+      key: subway
       args:
           values:
-            - subway
+            - "yes"
     - name: religion
       type: enumerate
       key: religion
@@ -99,12 +99,12 @@ tables:
           values:
             - multi-storey
             - underground
-    - name: station
+    - name: subway
       type: enumerate
-      key: station
+      key: subway
       args:
           values:
-            - subway
+            - "yes"
     - name: religion
       type: enumerate
       key: religion
