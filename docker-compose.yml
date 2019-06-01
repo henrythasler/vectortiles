@@ -48,7 +48,7 @@ services:
     command: bash /import/preprocessing.sh
 
   shapes:
-    image: "img-postgis:0.9"
+    image: "img-postgis:0.9.1"
     depends_on:
       - postgis
     networks: 
@@ -59,9 +59,23 @@ services:
       - SHAPE_DATABASE_NAME=${SHAPE_DATABASE_NAME}
     volumes:
       - ${IMPORT_PATH}shp:/shp:ro
-      - ./import/shapes.sh:/shapes.sh:ro
-    command: bash /shapes.sh
+      - ./import/shapes_import.sh:/shapes_import.sh:ro
+    command: bash /shapes_import.sh
     
+  shapes_postprocessing:
+    image: "img-postgis:0.9"
+    depends_on:
+      - postgis
+    networks: 
+      - gis
+    environment:
+      - POSTGIS_HOSTNAME=${POSTGIS_HOSTNAME}
+      - POSTGIS_USER=${POSTGIS_USER}
+      - SHAPE_DATABASE_NAME=${SHAPE_DATABASE_NAME}
+    volumes:
+      - ./import/shapes_postprocessing.sh:/shapes_postprocessing.sh:ro
+    command: bash /shapes_postprocessing.sh
+        
   import:
     image: "jawg/imposm3"
     depends_on:

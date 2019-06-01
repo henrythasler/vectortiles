@@ -3,16 +3,16 @@
   "name": "Mapbox Local",
   "metadata": {},
   "sources": {
+    "global": {
+      "type": "vector",
+      "tiles": [
+        "http://localhost:8081/maps/global/{z}/{x}/{y}.pbf"
+      ]
+    },
     "local": {
       "type": "vector",
       "tiles": [
         "http://localhost:8081/maps/local/{z}/{x}/{y}.pbf"
-      ]
-    },
-    "global": {
-      "type": "vector",
-      "tiles": [
-        "http://localhost:8081/maps/global/{z}/{x}/{y}.pbf?debug=true"
       ]
     },
     "cluster": {
@@ -32,11 +32,7 @@
     "contour-lines": {
       "type": "vector",
       "url": "mapbox://mapbox.mapbox-terrain-v2"
-      },
-    "bathymetry": {
-      "type": "vector",
-      "url": "mapbox://mapbox.9tm8dx88"
-    }
+      }
   },
   "sprite": "http://localhost:8082/sprites/cyclemap",
   "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
@@ -59,19 +55,18 @@
       }
     },
     {
-      "id": "10m-bathymetry-81bsvj",
+      "id": "bathymetry",
       "type": "fill",
-      "source": "bathymetry",
-      "source-layer": "10m-bathymetry-81bsvj",
-      "filter": ["!=", ["get", "DEPTH"], 0],
+      "source": "global",
+      "source-layer": "bathymetry",
       "paint": {
         "fill-outline-color": "rgba(0, 0, 0, 0)",
         "fill-color": [ "interpolate",
           [ "cubic-bezier",
             0, 0.5,
             1, 0.5 ],
-          ["get", "DEPTH"],
-            200,  "#7babcd",
+          ["get", "depth"],
+            200,  "#619ac2",
             9000, "#15659f"
           ]
         }
@@ -2164,7 +2159,7 @@
       "type": "symbol",
       "source": "cluster",
       "source-layer": "poi",
-      "filter": ["match", ["get", "subclass"], ["station", "halt", "bus_stop", "tram_stop"], false, true],
+      "filter": ["match", ["get", "subclass"], ["station", "halt", "bus_stop", "tram_stop", "restaurant", "biergarten", "hotel"], false, true],
       "minzoom": 11,
       "maxzoom": 24,
       "paint": {
@@ -2268,7 +2263,7 @@
       "type": "symbol",
       "source": "cluster",
       "source-layer": "poi",
-      "filter": ["match", ["get", "subclass"], ["station", "halt", "bus_stop", "tram_stop"], true, false],
+      "filter": ["match", ["get", "subclass"], ["station", "halt", "bus_stop", "tram_stop", "restaurant", "biergarten", "hotel"], true, false],
       "minzoom": 11,
       "maxzoom": 24,
       "paint": {

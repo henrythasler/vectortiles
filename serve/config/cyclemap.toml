@@ -39,6 +39,16 @@ srid = 3857             # The default srid for this provider. If not provided it
     select gid, ST_AsBinary(geometry) as geom from public.water_polygons WHERE 8 < !ZOOM! AND (geometry && !BBOX!) 
     """
 
+    [[providers.layers]]
+    name = "bathymetry"
+    sql= """
+    select gid, ST_AsBinary(geometry) as geom, depth from public.bathymetry_gen3 WHERE 4 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select gid, ST_AsBinary(geometry) as geom, depth from public.bathymetry_gen4 WHERE 4 <= !ZOOM! AND 5 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select gid, ST_AsBinary(geometry) as geom, depth from public.bathymetry WHERE 5 <= !ZOOM! AND (geometry && !BBOX!) 
+    """
+
 #     [[providers.layers]]
 #     name = "admin"
 #     sql= """
@@ -61,6 +71,9 @@ name = "global"
     [[maps.layers]]
     provider_layer = "world.water"
     dont_simplify = true    
+
+    [[maps.layers]]
+    provider_layer = "world.bathymetry"
 
 #     [[maps.layers]]
 #     provider_layer = "world.admin"

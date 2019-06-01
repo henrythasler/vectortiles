@@ -128,7 +128,12 @@
                 maxZoom: 20,
                 center: [10.85, 48.05],
                 zoom: 12,
-            });
+                attributionControl: false,
+            }).addControl(new mapboxgl.AttributionControl({
+                    compact: true,
+                    customAttribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>'
+                })
+            );
 
             // Debug output
             map.showTileBoundaries = true;
