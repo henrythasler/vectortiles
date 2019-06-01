@@ -42,11 +42,18 @@ srid = 3857             # The default srid for this provider. If not provided it
     [[providers.layers]]
     name = "bathymetry"
     sql= """
-    select gid, ST_AsBinary(geometry) as geom, depth from public.bathymetry_gen3 WHERE 4 > !ZOOM! AND (geometry && !BBOX!) 
+    select gid, ST_AsBinary(geometry) as geom, depth from public.bathymetry_gen3 WHERE 4 > !ZOOM! AND (geometry && !BBOX!)
     union all
-    select gid, ST_AsBinary(geometry) as geom, depth from public.bathymetry_gen4 WHERE 4 <= !ZOOM! AND 5 > !ZOOM! AND (geometry && !BBOX!) 
+    select gid, ST_AsBinary(geometry) as geom, depth from public.bathymetry_gen4 WHERE 4 <= !ZOOM! AND 5 > !ZOOM! AND (geometry && !BBOX!)
     union all
     select gid, ST_AsBinary(geometry) as geom, depth from public.bathymetry WHERE 5 <= !ZOOM! AND (geometry && !BBOX!) 
+    ORDER BY depth
+    """
+
+    [[providers.layers]]
+    name = "lakes"
+    sql= """
+    select gid, ST_AsBinary(geometry) as geom, name, subclass, scalerank, minzoom, minlabel from public.lakes WHERE minzoom <= !ZOOM! AND geometry && !BBOX!
     """
 
 #     [[providers.layers]]
@@ -74,6 +81,9 @@ name = "global"
 
     [[maps.layers]]
     provider_layer = "world.bathymetry"
+
+    [[maps.layers]]
+    provider_layer = "world.lakes"
 
 #     [[maps.layers]]
 #     provider_layer = "world.admin"

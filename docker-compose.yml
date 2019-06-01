@@ -28,8 +28,8 @@ services:
     ports:
       - "${TEGOLA_PORT}:8080"
     environment:
-#      - TEGOLA_SQL_DEBUG=LAYER_SQL:EXECUTE_SQL
-#      - TEGOLA_SQL_DEBUG=LAYER_SQL
+      # - TEGOLA_SQL_DEBUG=LAYER_SQL:EXECUTE_SQL
+      # - TEGOLA_SQL_DEBUG=LAYER_SQL
       - TEGOLA_SQL_DEBUG=
     command: serve --config /data/config.toml
 
@@ -121,7 +121,7 @@ services:
       - ./serve/.cache:/cache
     ports:
       - "${TEGOLA_PORT}:8080"
-    command: cache seed tile-name 0/0/0 --config /data/config.toml --min-zoom 0 --max-zoom 6 --map global --overwrite
+    command: cache seed tile-name 0/0/0 --config /data/config.toml --min-zoom 3 --max-zoom 6 --map global --overwrite
 
   seed_local:
     image: tegola:master

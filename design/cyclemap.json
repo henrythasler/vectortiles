@@ -66,7 +66,7 @@
             0, 0.5,
             1, 0.5 ],
           ["get", "depth"],
-            200,  "#619ac2",
+            0,  "#7babcd",
             9000, "#15659f"
           ]
         }
@@ -190,18 +190,6 @@
       }
     },
     {
-      "id": "water-area",
-      "type": "fill",
-      "source": "local",
-      "source-layer": "waterarea",
-      "minzoom": 7,
-      "maxzoom": 24,
-      "paint": {
-        "fill-color": "rgba(123, 171, 205, 1)",
-        "fill-outline-color": "rgba(31, 131, 188, 1)"
-      }
-    },
-    {
       "id": "landuse-swamp-fill",
       "type": "fill",
       "source": "local",
@@ -280,7 +268,7 @@
       "type": "line",
       "source": "local",
       "source-layer": "landuse",
-      "minzoom": 7,
+      "minzoom": 8,
       "maxzoom": 24,
       "filter": ["match", ["get", "subclass"], "nature_reserve", true, false],
       "layout": {
@@ -390,6 +378,29 @@
         "text-halo-blur": 1
       }
     },       
+    {
+      "id": "global-lakes",
+      "type": "fill",
+      "source": "global",
+      "source-layer": "lakes",
+      "maxzoom": 8,
+      "paint": {
+        "fill-color": "rgba(123, 171, 205, 1)",
+        "fill-outline-color": "rgba(31, 131, 188, 1)"
+      }
+    },    
+    {
+      "id": "water-area",
+      "type": "fill",
+      "source": "local",
+      "source-layer": "waterarea",
+      "minzoom": 7,
+      "maxzoom": 24,
+      "paint": {
+        "fill-color": "rgba(123, 171, 205, 1)",
+        "fill-outline-color": "rgba(31, 131, 188, 1)"
+      }
+    },
     {
       "id": "weir",
       "type": "line",
@@ -1947,7 +1958,7 @@
       "type": "symbol",
       "source": "local",
       "source-layer": "waterlabels",
-      "minzoom": 7,
+      "minzoom": 8,
       "maxzoom": 24,
       "layout": {
         "text-allow-overlap": false,
@@ -2376,7 +2387,7 @@
         "text-padding": 1,
         "text-field": ["step", ["zoom"],
         "",
-        7, ["match", 
+        8, ["match", 
               ["get", "subclass"], 
                 "city", ["format",["upcase",["get", "name"]],{"font-scale": 0.8, "text-font": ["literal", ["Open Sans Bold"]]}], 
                 "town", ["format", ["get", "name"],{"font-scale": 0.6, "text-font": ["literal", ["Open Sans Bold"]]}], 
