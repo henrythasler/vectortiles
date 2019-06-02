@@ -56,6 +56,19 @@ srid = 3857             # The default srid for this provider. If not provided it
     select gid, ST_AsBinary(geometry) as geom, name, subclass, scalerank, minzoom, minlabel from public.lakes WHERE minzoom <= !ZOOM! AND geometry && !BBOX!
     """
 
+    [[providers.layers]]
+    name = "urban_areas"
+    sql= """
+    select gid, ST_AsBinary(geometry) as geom from public.ne_10m_urban_areas WHERE min_zoom <= !ZOOM! AND geometry && !BBOX!
+    """
+
+    [[providers.layers]]
+    name = "places"
+    sql= """
+    select gid, ST_AsBinary(geometry) as geom, name, featurecla as subclass from public.ne_10m_populated_places_simple WHERE min_zoom <= !ZOOM! AND geometry && !BBOX! 
+    ORDER BY scalerank
+    """
+
 #     [[providers.layers]]
 #     name = "admin"
 #     sql= """
@@ -84,6 +97,12 @@ name = "global"
 
     [[maps.layers]]
     provider_layer = "world.lakes"
+
+    [[maps.layers]]
+    provider_layer = "world.urban_areas"
+
+    [[maps.layers]]
+    provider_layer = "world.places"
 
 #     [[maps.layers]]
 #     provider_layer = "world.admin"

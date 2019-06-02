@@ -11,6 +11,7 @@
     },
     "local": {
       "type": "vector",
+      "minzoom": 8,
       "tiles": [
         "http://localhost:8081/maps/local/{z}/{x}/{y}.pbf"
       ]
@@ -70,7 +71,21 @@
             9000, "#15659f"
           ]
         }
-    },    
+    },   
+    {
+      "id": "global-urban_areas",
+      "type": "fill",
+      "source": "global",
+      "source-layer": "urban_areas",
+      "maxzoom": 8,
+      "paint": {
+        "fill-color": [ "interpolate", ["exponential", 2], ["zoom"],
+            7, "#ccc",
+            8, "rgba(0,0,0,0)"
+          ],
+        "fill-outline-color": "rgba(0, 0, 0, 0)"
+      }
+    },       
     {
       "id": "landuse-residential",
       "type": "fill",
@@ -2373,6 +2388,36 @@
         "text-max-width": 9
       }      
     },    
+    {
+      "id": "global-places",
+      "type": "symbol",
+      "source": "global",
+      "source-layer": "places",
+      "maxzoom": 8,
+      "layout": {
+        "symbol-placement": "point",
+        "icon-image": ["match", ["get", "subclass"], 
+          ["Admin-0 capital"], "star.white", 
+          "ring-black"],
+        "text-optional": true,
+        "text-anchor": "top",
+        "text-field": ["step", ["zoom"],
+        ["get", "name"],
+        14, ["case", 
+          [">",["length", ["get", "name"]], 0], ["concat", ["get", "name"], "\n", ["get", "ele"]], 
+          ["get", "ele"]
+        ]],
+        "text-font": ["Open Sans Bold Italic"],
+        "text-size": 18,
+        "text-offset": [0, 0.25]
+      },
+      "paint": {
+        "text-color": "#222",
+        "text-halo-color": "rgba(255, 255, 255, 1)",
+        "text-halo-width": 2.5,
+        "text-halo-blur": 1
+      }
+    },      
     {
       "id": "label-place",
       "type": "symbol",
