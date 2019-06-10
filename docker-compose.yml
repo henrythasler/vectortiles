@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   postgis:
-    image: "img-postgis:0.9"
+    image: "img-postgis:0.9.1"
     container_name: ${POSTGIS_HOSTNAME}
     networks: 
       - gis
@@ -34,7 +34,7 @@ services:
     command: serve --config /data/config.toml
 
   preprocessing:
-    image: "img-postgis:0.9"
+    image: "img-postgis:0.9.1"
     depends_on:
       - postgis
     networks: 
@@ -78,7 +78,7 @@ services:
     command: bash /shapes_import.sh
     
   shapes_postprocessing:
-    image: "img-postgis:0.9"
+    image: "img-postgis:0.9.1"
     depends_on:
       - postgis
     networks: 
@@ -103,7 +103,7 @@ services:
     command: import -mapping mapping.yaml -read osmdata.osm.pbf -overwritecache -write -optimize -connection 'postgis://${POSTGIS_USER}@${POSTGIS_HOSTNAME}/'${DATABASE_NAME}'?prefix=NONE'
 
   postprocessing:
-    image: "img-postgis:0.9"
+    image: "img-postgis:0.9.1"
     depends_on:
       - postgis
     networks: 
@@ -117,7 +117,7 @@ services:
     command: bash /import/postprocessing.sh
 
   checkdb:
-    image: "img-postgis:0.9"
+    image: "img-postgis:0.9.1"
     depends_on:
       - postgis
     networks: 
