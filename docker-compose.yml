@@ -9,7 +9,7 @@ services:
       - ./serve/postgis.conf:/etc/postgresql/postgresql.conf:ro
       - ${HOST_DATABASE_LOCATION}:/pgdata
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
       - PGDATA=/pgdata
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
@@ -26,7 +26,7 @@ services:
       - ./serve/config/cyclemap.toml:/data/config.toml:ro
       - ./serve/.cache:/cache
     ports:
-      - "${TEGOLA_PORT}:8080"
+      - "127.0.0.1:${TEGOLA_PORT}:8080"
     environment:
       # - TEGOLA_SQL_DEBUG=LAYER_SQL:EXECUTE_SQL
       # - TEGOLA_SQL_DEBUG=LAYER_SQL
@@ -46,6 +46,21 @@ services:
     volumes:
       - ./import/preprocessing.sh:/import/preprocessing.sh:ro
     command: bash /import/preprocessing.sh
+
+  borders:
+    image: "img-postgis:0.9.1"
+    depends_on:
+      - postgis
+    networks: 
+      - gis
+    environment:
+      - POSTGIS_HOSTNAME=${POSTGIS_HOSTNAME}
+      - POSTGIS_USER=${POSTGIS_USER}
+      - SHAPE_DATABASE_NAME=${SHAPE_DATABASE_NAME}
+    volumes:
+      - ${IMPORT_PATH}shp:/shp:ro
+      - ./import/osmborder.sh:/osmborder.sh:ro
+    command: bash /osmborder.sh
 
   shapes:
     image: "img-postgis:0.9.1"
