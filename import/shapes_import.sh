@@ -26,6 +26,12 @@ for folder in $(find /shp/ -mindepth 1 -maxdepth 1 -type d)
 do
     for file in ${folder}/*.shp
     do
+        if [[ ! -e "$file" ]]
+        then 
+            printf "${RED}No shapefiles found: ${BOLD}%s${NC}\n\n" ${folder}
+            continue
+        fi
+
         table="$(basename -- ${file})"
         table=${table%.*}
         printf "${BOLD}%s${NC}\n" ${table}
