@@ -578,6 +578,7 @@
           ["match", ["get", "subclass"], ["motorway", "trunk", "motorway_link", "trunk_link"], true, false], "#ee9900",
           ["match", ["get", "subclass"], ["primary", "primary_link"], true, false], "#ffcc99", 
           ["match", ["get", "subclass"], ["secondary", "secondary_link"], true, false], "#ffff99", 
+          ["match", ["get", "subclass"], ["pedestrian"], true, false], "#dcb", 
           "#fff"
         ],
         "line-width": [
@@ -1069,6 +1070,7 @@
           ["all", ["match", ["get", "subclass"], ["motorway", "trunk", "motorway_link"], true, false], ["==", ["get", "oneway"], true]], "#ee9900",
           ["match", ["get", "subclass"], ["trunk", "trunk_link", "primary", "primary_link"], true, false], "#ffcc99", 
           ["match", ["get", "subclass"], ["secondary", "secondary_link"], true, false], "#ffff99", 
+          ["match", ["get", "subclass"], ["pedestrian"], true, false], "#dcb", 
           "#fff"
         ],
         "line-width": [
@@ -1460,6 +1462,7 @@
           ["all", ["match", ["get", "subclass"], ["motorway", "trunk", "motorway_link"], true, false], ["==", ["get", "oneway"], true]], "#ee9900",
           ["match", ["get", "subclass"], ["trunk", "trunk_link", "primary", "primary_link"], true, false], "#ffcc99", 
           ["match", ["get", "subclass"], ["secondary", "secondary_link"], true, false], "#ffff99", 
+          ["match", ["get", "subclass"], ["pedestrian"], true, false], "#dcb", 
           "#fff"
         ],
         "line-width": [
@@ -1759,6 +1762,7 @@
           ["all", ["match", ["get", "subclass"], ["motorway", "trunk", "motorway_link"], true, false], ["==", ["get", "oneway"], true]], "#ee9900",
           ["match", ["get", "subclass"], ["trunk", "trunk_link", "primary", "primary_link"], true, false], "#ffcc99", 
           ["match", ["get", "subclass"], ["secondary", "secondary_link"], true, false], "#ffff99", 
+          ["match", ["get", "subclass"], ["pedestrian"], true, false], "#dcb", 
           "#fff"
         ],
         "line-width": [

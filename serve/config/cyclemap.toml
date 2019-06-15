@@ -69,21 +69,21 @@ srid = 3857             # The default srid for this provider. If not provided it
     ORDER BY scalerank
     """
 
-#     [[providers.layers]]
-#     name = "admin"
-#     sql= """
-#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen4 WHERE 6 > !ZOOM! AND (geometry && !BBOX!) 
-#     union all
-#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen6 WHERE 6 <= !ZOOM! AND 8 > !ZOOM! AND (geometry && !BBOX!) 
-#     union all
-#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen8 WHERE 8 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
-#     union all
-#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen10 WHERE 10 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
-#     union all
-#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen12 WHERE 12 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
-#     union all
-#     select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen14 WHERE 14 <= !ZOOM! AND (geometry && !BBOX!) 
-#     """
+    [[providers.layers]]
+    name = "admin"
+    sql= """
+    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen4 WHERE 6 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen6 WHERE 6 <= !ZOOM! AND 8 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen8 WHERE 8 <= !ZOOM! AND 10 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen10 WHERE 10 <= !ZOOM! AND 12 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen12 WHERE 12 <= !ZOOM! AND 14 > !ZOOM! AND (geometry && !BBOX!) 
+    union all
+    select osm_id as gid, ST_AsBinary(geometry) as geom, admin_level, maritime from public.osmborder_gen14 WHERE 14 <= !ZOOM! AND (geometry && !BBOX!) 
+    """
 
 [[maps]]
 name = "global"
@@ -104,8 +104,8 @@ name = "global"
     [[maps.layers]]
     provider_layer = "world.places"
 
-#     [[maps.layers]]
-#     provider_layer = "world.admin"
+    [[maps.layers]]
+    provider_layer = "world.admin"
 
 
 [[providers]]

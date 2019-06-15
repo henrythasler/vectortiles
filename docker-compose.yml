@@ -58,7 +58,7 @@ services:
       - POSTGIS_USER=${POSTGIS_USER}
       - SHAPE_DATABASE_NAME=${SHAPE_DATABASE_NAME}
     volumes:
-      - ${IMPORT_PATH}shp:/shp:ro
+      - ${IMPORT_PATH}:/data
       - ./import/osmborder.sh:/osmborder.sh:ro
     command: bash /osmborder.sh
 
