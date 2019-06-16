@@ -473,7 +473,7 @@ tables:
       key: name
     mapping:
       route: [ferry]
-      aerialway: [cable_car, chairlift, gondola, chair_lift, mixed_lift, goods]
+      aerialway: [cable_car, chairlift, gondola, chair_lift, mixed_lift, goods, drag_lift]
       railway: [funicular]
       attraction: [summer_toboggan]
 

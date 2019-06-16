@@ -300,41 +300,7 @@
           16, 10
         ]
       }
-    },
-    {
-      "id": "admin",
-      "type": "line",
-      "source": "global",
-      "source-layer": "admin",
-      "minzoom": 2,
-      "filter": ["==", ["get", "maritime"], false],
-      "layout": {        
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      "paint": {
-        "line-color": "#c193b9",
-        "line-width": [
-          "interpolate", ["exponential", 2], ["zoom"],
-          2, 1,
-          6, ["case",
-            ["==", ["get", "admin_level"], 2], 2,
-            ["==", ["get", "admin_level"], 4], 1,
-            1
-          ],
-          10, ["case",
-            ["==", ["get", "admin_level"], 2], 3,
-            ["==", ["get", "admin_level"], 4], 2,
-            1
-          ],
-          14, ["case",
-            ["==", ["get", "admin_level"], 2], 7,
-            ["==", ["get", "admin_level"], 4], 5,
-            3
-          ]
-        ]
-      }
-    },    
+    }, 
     {
       "id": "hillshading",
       "source": "mapbox-terrain-rgb",
@@ -416,6 +382,40 @@
         "fill-outline-color": "rgba(31, 131, 188, 1)"
       }
     },
+    {
+      "id": "admin",
+      "type": "line",
+      "source": "global",
+      "source-layer": "admin",
+      "minzoom": 2,
+      "filter": ["==", ["get", "maritime"], false],
+      "layout": {        
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#a4a",
+        "line-width": [
+          "interpolate", ["exponential", 2], ["zoom"],
+          2, 1,
+          6, ["case",
+            ["==", ["get", "admin_level"], 2], 2,
+            ["==", ["get", "admin_level"], 4], 1,
+            1
+          ],
+          10, ["case",
+            ["==", ["get", "admin_level"], 2], 3,
+            ["==", ["get", "admin_level"], 4], 2,
+            1
+          ],
+          14, ["case",
+            ["==", ["get", "admin_level"], 2], 7,
+            ["==", ["get", "admin_level"], 4], 5,
+            3
+          ]
+        ]
+      }
+    },      
     {
       "id": "weir",
       "type": "line",
@@ -1865,16 +1865,10 @@
       "source-layer": "transportation",
       "minzoom": 12,
       "maxzoom": 24,
-      "filter": ["any",
-        ["all",
-          ["<", ["zoom"], 14],
-          ["match", ["get", "subclass"], ["cable_car", "chairlift", "gondola", "chair_lift", "mixed_lift", "funicular"], true, false]
+      "filter": ["step", ["zoom"],
+          ["match", ["get", "subclass"], ["cable_car", "chairlift", "gondola", "chair_lift", "mixed_lift", "funicular"], true, false],
+          14, true
         ],
-        ["all",
-          [">=", ["zoom"], 14],
-          ["match", ["get", "subclass"], ["cable_car", "chairlift", "gondola", "chair_lift", "mixed_lift", "funicular", "summer_toboggan", "goods"], true, false]
-        ]          
-      ],
       "layout": {},
       "paint": {
         "line-dasharray": [3.5, 2],        
@@ -1882,10 +1876,10 @@
           "interpolate", ["exponential", 2], ["zoom"],
           12, 2,
           14, ["match", ["get", "subclass"], 
-                ["summer_toboggan", "goods"], 2, 
+                ["summer_toboggan", "goods", "drag_lift"], 2, 
               4],
           16, ["match", ["get", "subclass"], 
-                ["summer_toboggan", "goods"], 2, 
+                ["summer_toboggan", "goods", "drag_lift"], 2, 
               8]
         ]
       }
@@ -2431,9 +2425,7 @@
       "maxzoom": 24,
       "filter": ["==", ["get", "class"], "place"],
       "layout": {
-        "text-anchor": "top",
         "symbol-z-order": "source",
-        "text-padding": 1,
         "text-field": ["step", ["zoom"],
         "",
         8, ["match", 
@@ -2477,7 +2469,10 @@
         17, ""
         ],
         "text-font": ["Open Sans Semibold"],
-        "text-offset": [0, 0.5],
+        "text-radial-offset": 0.5,
+        "text-variable-anchor": ["left", "right", "top", "bottom", "top-left", "top-right", "bottom-left", "bottom-right"],
+        "text-justify": "auto",
+        "text-padding": 1,
         "text-size": 24,
         "text-letter-spacing": 0
       },

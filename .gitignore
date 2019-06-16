@@ -8,3 +8,4 @@ serve/trace.log
 
 data/pbf/
 .env
+*.mbtiles
