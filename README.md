@@ -18,8 +18,9 @@ Toolchain to generate, serve and display a vector tile map.
 * Check progress and wait until done: `docker logs -f --tail 10 vectortiles_postprocessing_1`
 * Remove all instances that are no longer needed: `sudo docker-compose down`
 
-## References
+## DEM-References
 
+- https://github.com/tilezen/joerd/blob/master/docs/use-service.md
 
 ## UI-References
 

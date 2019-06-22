@@ -28,7 +28,12 @@
     },
     "mapbox-terrain-rgb": {
       "type": "raster-dem",
-      "url": "mapbox://mapbox.terrain-rgb"
+      "tileSize": 256,
+      "maxzoom": 14,
+      "encoding": "terrarium",
+      "tiles": [
+        "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+      ]
     },
     "contour-lines": {
       "type": "vector",
@@ -305,17 +310,11 @@
       "id": "hillshading",
       "source": "mapbox-terrain-rgb",
       "type": "hillshade",
-      "maxzoom": 15,
       "paint": {
         "hillshade-illumination-direction": 315,
-        "hillshade-exaggeration": 0.4,
-        "hillshade-shadow-color": {
-          "stops": [
-            [14, "rgba(0, 0, 0, 1)"],
-            [15, "rgba(0, 0, 0, 0)"]
-          ]
-        },
-        "hillshade-highlight-color": "rgba(255, 255, 255, 0)",
+        "hillshade-exaggeration": 0.38,
+        "hillshade-shadow-color": "#000",
+        "hillshade-highlight-color": "rgba(0, 0, 0, 0)",
         "hillshade-accent-color": "rgba(0, 0, 0, .5)"
       }
     },
@@ -394,7 +393,7 @@
         "line-cap": "round"
       },
       "paint": {
-        "line-color": "#a4a",
+        "line-color": "rgba(0xaa, 4, 0xaa, 0.6)",
         "line-width": [
           "interpolate", ["exponential", 2], ["zoom"],
           2, 1,
@@ -1866,10 +1865,13 @@
       "minzoom": 12,
       "maxzoom": 24,
       "filter": ["step", ["zoom"],
-          ["match", ["get", "subclass"], ["cable_car", "chairlift", "gondola", "chair_lift", "mixed_lift", "funicular"], true, false],
-          14, true
+          ["match", 
+            ["get", "subclass"], ["cable_car", "chairlift", "gondola", "chair_lift", "mixed_lift", "funicular"], true, 
+          false],
+          14, ["match", 
+            ["get", "subclass"], ["cable_car", "chairlift", "gondola", "chair_lift", "mixed_lift", "funicular", "summer_toboggan", "goods", "drag_lift"], true, 
+          false]
         ],
-      "layout": {},
       "paint": {
         "line-dasharray": [3.5, 2],        
         "line-width": [
