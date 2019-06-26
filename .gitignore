@@ -10,3 +10,5 @@ data/pbf/
 .env
 *.mbtiles
 .terraform/
+secret.auto.tfvars
+*.tfstate*

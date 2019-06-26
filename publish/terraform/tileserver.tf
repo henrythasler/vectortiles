@@ -1,10 +1,17 @@
 provider "aws" {
   version = "~> 2.16"
   profile = "default"
-  region  = "eu-central-1"
+  region  = var.region
 }
 
-resource "aws_instance" "testing" {
-  ami           = "ami-0cd855c8009cb26ef"
-  instance_type = "t2.micro"
+resource "aws_db_instance" "osmdata" {
+  engine              = "postgres"
+  engine_version      = "11.2"
+  instance_class      = "db.t2.micro"
+  allocated_storage   = 20
+  storage_type        = "gp2"
+  username            = "postgres"
+  password            = var.postgres_password
+  name                = "world"
+  skip_final_snapshot = true
 }
