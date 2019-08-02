@@ -1,2 +1,4 @@
 #!/bin/bash
-wget -qO- http://download.geofabrik.de/europe/germany/bayern/oberfranken-latest.osm.pbf | aws s3 cp - s3://gis-data-0001/oberfranken-latest.osm.pbf
+echo "starting up..."
+wget -qO- ${DOWNLOAD_URL} | aws s3 cp - s3://${GIS_DATA_BUCKET}/data/pbf/${OBJECT_NAME}
+echo "all done"
