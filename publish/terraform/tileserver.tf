@@ -58,6 +58,13 @@ resource "aws_s3_bucket_object" "postprocessing" {
   etag   = "${filemd5("../../import/postprocessing.sh")}"
 }
 
+resource "aws_s3_bucket_object" "shp_download" {
+  bucket = "${aws_s3_bucket.gis_data_0000.id}"
+  key    = "scripts/shp_download.sh"
+  source = "./scripts/shp_download.sh"
+  etag   = "${filemd5("./scripts/shp_download.sh")}"
+}
+
 resource "aws_batch_job_definition" "prepare_local_database" {
   name                 = "prepare_local_database"
   type                 = "container"
@@ -154,6 +161,27 @@ resource "aws_batch_job_definition" "postprocessing" {
         {"name": "POSTGIS_USER", "value": "${var.postgres_user}"},
         {"name": "DATABASE_NAME", "value": "${var.database_local}"},
         {"name": "PGPASSWORD", "value": "${var.postgres_password}"}
+    ],
+    "mountPoints": [],
+    "ulimits": []
+}
+CONTAINER_PROPERTIES  
+}
+
+resource "aws_batch_job_definition" "shp_download" {
+  name                 = "shp_download"
+  type                 = "container"
+  container_properties = <<CONTAINER_PROPERTIES
+{
+    "command": ["shp_download.sh"],
+    "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
+    "memory": 512,
+    "vcpus": 1,
+    "jobRoleArn": "arn:aws:iam::324094553422:role/ecsTaskExecutionRole",
+    "volumes": [],
+    "environment": [
+        {"name": "BATCH_FILE_TYPE", "value": "script"},
+        {"name": "BATCH_FILE_S3_URL", "value": "s3://${aws_s3_bucket_object.shp_download.bucket}/${aws_s3_bucket_object.shp_download.id}"}
     ],
     "mountPoints": [],
     "ulimits": []
