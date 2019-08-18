@@ -181,7 +181,34 @@ resource "aws_batch_job_definition" "shp_download" {
     "volumes": [],
     "environment": [
         {"name": "BATCH_FILE_TYPE", "value": "script"},
-        {"name": "BATCH_FILE_S3_URL", "value": "s3://${aws_s3_bucket_object.shp_download.bucket}/${aws_s3_bucket_object.shp_download.id}"}
+        {"name": "BATCH_FILE_S3_URL", "value": "s3://${aws_s3_bucket_object.shp_download.bucket}/${aws_s3_bucket_object.shp_download.id}"},
+        {"name": "GIS_DATA_BUCKET", "value": "${aws_s3_bucket.gis_data_0000.id}"}
+    ],
+    "mountPoints": [],
+    "ulimits": []
+}
+CONTAINER_PROPERTIES  
+}
+
+resource "aws_batch_job_definition" "shp_import" {
+  name                 = "shp_import"
+  type                 = "container"
+  container_properties = <<CONTAINER_PROPERTIES
+{
+    "command": ["shp_import.sh"],
+    "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
+    "memory": 2048,
+    "vcpus": 2,
+    "jobRoleArn": "arn:aws:iam::324094553422:role/ecsTaskExecutionRole",
+    "volumes": [],
+    "environment": [
+        {"name": "BATCH_FILE_TYPE", "value": "script"},
+        {"name": "BATCH_FILE_S3_URL", "value": "s3://${aws_s3_bucket_object.import.bucket}/scripts/shp_import.sh"},
+        {"name": "POSTGIS_HOSTNAME", "value": "${aws_db_instance.osmdata.address}"},
+        {"name": "POSTGIS_USER", "value": "${var.postgres_user}"},
+        {"name": "SHAPE_DATABASE_NAME", "value": "${var.database_local}"},
+        {"name": "PGPASSWORD", "value": "${var.postgres_password}"},
+        {"name": "GIS_DATA_BUCKET", "value": "${aws_s3_bucket.gis_data_0000.id}"}
     ],
     "mountPoints": [],
     "ulimits": []

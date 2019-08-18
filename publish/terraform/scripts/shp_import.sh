@@ -1,12 +1,7 @@
 #!/bin/bash
-NC='\033[0m'
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-BOLD='\033[1m'
 
-# apk upgrade --update
-# apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing proj4-dev gdal-dev
+mkdir -p shp
+aws s3 cp s3://${GIS_DATA_BUCKET}/data/shp ./shp --recursive --no-progress
 
 ### Setup database
 psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} \
@@ -22,19 +17,19 @@ psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${SHAPE_DATABASE_NAME} \
     -c "COMMIT;" 2>&1 >/dev/null
 
 ### Import all shapefiles in given folder
-for folder in $(find /shp/ -mindepth 1 -maxdepth 1 -type d) 
+for folder in $(find ./shp/ -mindepth 1 -maxdepth 1 -type d) 
 do
     for file in ${folder}/*.shp
     do
         if [[ ! -e "$file" ]]
         then 
-            printf "${RED}No shapefiles found: ${BOLD}%s${NC}\n\n" ${folder}
+            printf "No shapefiles found: %s\n" ${folder}
             continue
         fi
 
         table="$(basename -- ${file})"
         table=${table%.*}
-        printf "${BOLD}%s${NC}\n" ${table}
+        printf "%s\n" ${table}
         
         psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${SHAPE_DATABASE_NAME} -c "DROP TABLE IF EXISTS ${table};" 2>&1 >/dev/null -c "COMMIT;" 2>&1 >/dev/null 
 
@@ -46,7 +41,7 @@ do
         # exit
         if [ ${crs} != "3857" ]
         then
-            printf "${YELLOW}Reprojecting${NC} from EPSG:${crs} to EPSG:3857\n"
+            printf "Reprojecting from EPSG:${crs} to EPSG:3857\n"
             base=`basename $file .shp`
 
             # ogr2ogr --config PG_USE_COPY YES -t_srs EPSG:3857 -f PostgreSQL PG:"host=${POSTGIS_HOSTNAME} user=${POSTGIS_USER} dbname=${SHAPE_DATABASE_NAME}" ${file} 
@@ -55,13 +50,13 @@ do
             then 
                 shp2pgsql -s 3857 -I -g geometry /{$base}-3857.shp ${table} | psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${SHAPE_DATABASE_NAME} > /dev/null
             else
-                printf "${RED}Failed${NC} Importing with source CRS\n"
+                printf "Failed Importing with source CRS\n"
                 shp2pgsql -s ${crs} -I -g geometry ${file} ${table} | psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${SHAPE_DATABASE_NAME} > /dev/null
             fi
         else
             shp2pgsql -s ${crs} -I -g geometry ${file} ${table} | psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${SHAPE_DATABASE_NAME} > /dev/null
         fi
-        printf "${GREEN}OK${NC}\n\n"
+        printf "OK\n"
     done
 done
 
