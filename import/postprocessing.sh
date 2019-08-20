@@ -118,6 +118,21 @@ function merge() {
     printf "import.${target} ${GREEN}done${NC}\n"
 }
 
+# cluster POIs
+function cluster() {
+    local source=${1}
+    local target=${2}
+    local distance=${3}
+    local filter=${4:-"TRUE"}
+    printf "start import.${target}...\n"
+    psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${DATABASE_NAME} \
+        -c "DROP TABLE IF EXISTS import.${target}" 2>&1 >/dev/null \
+        -c "CREATE TABLE import.${target} AS (SELECT (array_agg(id))[1] as id, ST_Centroid(ST_Union(geometry)) as geometry,	count(id) as count,	class, subclass, (array_remove(array_agg(name), ''))[1] as name, (array_agg(ele))[1] as ele, (array_agg(access))[1] as access, (array_agg(religion))[1] as religion, (array_agg(parking))[1] as parking, (array_agg(subway))[1] as subway FROM( SELECT row_number() over () as id, geometry, name, class, subclass, ele, access, religion, parking, subway, ST_ClusterDBSCAN(geometry, ${distance}, 1) over () as cluster_id FROM import.${source} WHERE ${filter}) tmp GROUP BY class, subclass, cluster_id)" \
+        -c "CREATE INDEX ON import.${target} USING gist (geometry)" \
+        -c "ANALYZE import.${target}"
+    printf "import.${target} ${GREEN}done${NC}\n"
+}
+
 ### main()
 
 # landuse
@@ -215,10 +230,17 @@ filter "label" "label_gen8" ", class, subclass, name, ele, pop" "subclass NOT IN
 wait
 
 # poi filter
-filter "poi" "poi_gen11" ", class, subclass, name, ele, access, parking, subway, religion" "subclass IN('station', 'halt') AND subway=0" &
-filter "poi" "poi_gen12" ", class, subclass, name, ele, access, parking, subway, religion" "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site')" &
-filter "poi" "poi_gen13" ", class, subclass, name, ele, access, parking, subway, religion" "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site', 'bicycle')" &
-filter "poi" "poi_gen14" ", class, subclass, name, ele, access, parking, subway, religion" "subclass NOT IN('playground', 'viewpoint', 'information')" &
+# filter "poi" "poi_gen11" ", class, subclass, name, ele, access, parking, subway, religion" "subclass IN('station', 'halt') AND subway=0" &
+# filter "poi" "poi_gen12" ", class, subclass, name, ele, access, parking, subway, religion" "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site')" &
+# filter "poi" "poi_gen13" ", class, subclass, name, ele, access, parking, subway, religion" "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site', 'bicycle')" &
+# filter "poi" "poi_gen14" ", class, subclass, name, ele, access, parking, subway, religion" "subclass NOT IN('playground', 'viewpoint', 'information')" &
+cluster "poi" "poi_cluster_gen11" 300 "subclass IN('station', 'halt') AND subway=0" &
+cluster "poi" "poi_cluster_gen12" 160 "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site')" &
+cluster "poi" "poi_cluster_gen13" 160 "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site', 'bicycle')" &
+cluster "poi" "poi_cluster_gen14" 120 "subclass NOT IN('playground', 'viewpoint', 'information')" &
+cluster "poi" "poi_cluster_gen15" 80 &
+cluster "poi" "poi_cluster_gen16" 40 &
+cluster "poi" "poi_cluster_gen17" 20 &
 wait
 
 # label waterarea preprocessing
