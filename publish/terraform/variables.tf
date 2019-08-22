@@ -13,3 +13,6 @@ variable "postgres_user" {
 variable "database_local" {
   default = "local"
 }
+variable "database_shapes" {
+  default = "shapes"
+}

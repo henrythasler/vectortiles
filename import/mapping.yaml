@@ -561,6 +561,8 @@ tables:
   buildings:
     type: polygon
     columns:
+    - name: osm_id
+      type: id      
     - name: geometry
       type: geometry
     mapping:

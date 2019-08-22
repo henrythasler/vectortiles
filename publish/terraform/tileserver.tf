@@ -1,20 +1,21 @@
 provider "aws" {
   version = "~> 2.16"
   profile = "default"
-  region  = var.region
+  region  = "${var.region}"
 }
 
 resource "aws_db_instance" "osmdata" {
   engine              = "postgres"
   engine_version      = "11.2"
   identifier          = "osmdata"
-  instance_class      = var.postgres_instance_class
+  instance_class      = "${var.postgres_instance_class}"
   allocated_storage   = 20
   storage_type        = "gp2"
-  username            = var.postgres_user
-  password            = var.postgres_password
+  username            = "${var.postgres_user}"
+  password            = "${var.postgres_password}"
   name                = "world"
   skip_final_snapshot = true
+  publicly_accessible = true
 }
 
 resource "aws_s3_bucket" "gis_data_0000" {
@@ -65,10 +66,24 @@ resource "aws_s3_bucket_object" "shp_download" {
   etag   = "${filemd5("./scripts/shp_download.sh")}"
 }
 
+resource "aws_s3_bucket_object" "shp_import" {
+  bucket = "${aws_s3_bucket.gis_data_0000.id}"
+  key    = "scripts/shp_import.sh"
+  source = "./scripts/shp_import.sh"
+  etag   = "${filemd5("./scripts/shp_import.sh")}"
+}
+
+resource "aws_s3_bucket_object" "shp_postprocessing" {
+  bucket = "${aws_s3_bucket.gis_data_0000.id}"
+  key    = "scripts/shp_postprocessing.sh"
+  source = "./scripts/shp_postprocessing.sh"
+  etag   = "${filemd5("./scripts/shp_postprocessing.sh")}"
+}
+
 resource "aws_batch_job_definition" "prepare_local_database" {
   name                 = "prepare_local_database"
   type                 = "container"
-  container_properties = <<CONTAINER_PROPERTIES
+  container_properties = <<EOF
 {
     "command": ["preprocessing.sh"],
     "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
@@ -88,13 +103,13 @@ resource "aws_batch_job_definition" "prepare_local_database" {
     "mountPoints": [],
     "ulimits": []
 }
-CONTAINER_PROPERTIES  
+EOF  
 }
 
 resource "aws_batch_job_definition" "download_pbf" {
   name                 = "download_pbf"
   type                 = "container"
-  container_properties = <<CONTAINER_PROPERTIES
+  container_properties = <<EOF
 {
     "command": ["download.sh"],
     "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
@@ -112,18 +127,18 @@ resource "aws_batch_job_definition" "download_pbf" {
     "mountPoints": [],
     "ulimits": []
 }
-CONTAINER_PROPERTIES  
+EOF  
 }
 
 resource "aws_batch_job_definition" "import_into_database" {
   name                 = "import_into_database"
   type                 = "container"
-  container_properties = <<CONTAINER_PROPERTIES
+  container_properties = <<EOF
 {
     "command": ["import.sh"],
     "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
-    "memory": 2048,
-    "vcpus": 1,
+    "memory": 8192,
+    "vcpus": 2,
     "jobRoleArn": "arn:aws:iam::324094553422:role/ecsTaskExecutionRole",
     "volumes": [],
     "environment": [
@@ -139,19 +154,19 @@ resource "aws_batch_job_definition" "import_into_database" {
     "mountPoints": [],
     "ulimits": []
 }
-CONTAINER_PROPERTIES  
+EOF  
 }
 
 
 resource "aws_batch_job_definition" "postprocessing" {
   name                 = "postprocessing"
   type                 = "container"
-  container_properties = <<CONTAINER_PROPERTIES
+  container_properties = <<EOF
 {
     "command": ["postprocessing.sh"],
     "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
-    "memory": 2048,
-    "vcpus": 1,
+    "memory": 512,
+    "vcpus": 4,
     "jobRoleArn": "arn:aws:iam::324094553422:role/ecsTaskExecutionRole",
     "volumes": [],
     "environment": [
@@ -165,13 +180,13 @@ resource "aws_batch_job_definition" "postprocessing" {
     "mountPoints": [],
     "ulimits": []
 }
-CONTAINER_PROPERTIES  
+EOF  
 }
 
 resource "aws_batch_job_definition" "shp_download" {
   name                 = "shp_download"
   type                 = "container"
-  container_properties = <<CONTAINER_PROPERTIES
+  container_properties = <<EOF
 {
     "command": ["shp_download.sh"],
     "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
@@ -187,13 +202,13 @@ resource "aws_batch_job_definition" "shp_download" {
     "mountPoints": [],
     "ulimits": []
 }
-CONTAINER_PROPERTIES  
+EOF  
 }
 
 resource "aws_batch_job_definition" "shp_import" {
   name                 = "shp_import"
   type                 = "container"
-  container_properties = <<CONTAINER_PROPERTIES
+  container_properties = <<EOF
 {
     "command": ["shp_import.sh"],
     "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
@@ -203,15 +218,40 @@ resource "aws_batch_job_definition" "shp_import" {
     "volumes": [],
     "environment": [
         {"name": "BATCH_FILE_TYPE", "value": "script"},
-        {"name": "BATCH_FILE_S3_URL", "value": "s3://${aws_s3_bucket_object.import.bucket}/scripts/shp_import.sh"},
+        {"name": "BATCH_FILE_S3_URL", "value": "s3://${aws_s3_bucket_object.import.bucket}/${aws_s3_bucket_object.shp_import.id}"},
         {"name": "POSTGIS_HOSTNAME", "value": "${aws_db_instance.osmdata.address}"},
         {"name": "POSTGIS_USER", "value": "${var.postgres_user}"},
-        {"name": "SHAPE_DATABASE_NAME", "value": "${var.database_local}"},
+        {"name": "SHAPE_DATABASE_NAME", "value": "${var.database_shapes}"},
         {"name": "PGPASSWORD", "value": "${var.postgres_password}"},
         {"name": "GIS_DATA_BUCKET", "value": "${aws_s3_bucket.gis_data_0000.id}"}
     ],
     "mountPoints": [],
     "ulimits": []
 }
-CONTAINER_PROPERTIES  
+EOF  
+}
+
+resource "aws_batch_job_definition" "shp_postprocessing" {
+  name                 = "shp_postprocessing"
+  type                 = "container"
+  container_properties = <<EOF
+{
+    "command": ["shp_postprocessing.sh"],
+    "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
+    "memory": 2048,
+    "vcpus": 2,
+    "jobRoleArn": "arn:aws:iam::324094553422:role/ecsTaskExecutionRole",
+    "volumes": [],
+    "environment": [
+        {"name": "BATCH_FILE_TYPE", "value": "script"},
+        {"name": "BATCH_FILE_S3_URL", "value": "s3://${aws_s3_bucket_object.import.bucket}/${aws_s3_bucket_object.shp_postprocessing.id}"},
+        {"name": "POSTGIS_HOSTNAME", "value": "${aws_db_instance.osmdata.address}"},
+        {"name": "POSTGIS_USER", "value": "${var.postgres_user}"},
+        {"name": "SHAPE_DATABASE_NAME", "value": "${var.database_shapes}"},
+        {"name": "PGPASSWORD", "value": "${var.postgres_password}"}
+    ],
+    "mountPoints": [],
+    "ulimits": []
+}
+EOF  
 }
