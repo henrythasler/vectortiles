@@ -137,7 +137,6 @@ function cluster() {
 
 # landuse
 filter "landuse_import" "landuse" ", osm_id, class, subclass, area, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name"
-# drop "landuse_import"
 generalize "landuse" "landuse_gen14" 5 ", osm_id, class, subclass, name, area" "ST_Area(geometry)>1000" &
 generalize "landuse" "landuse_gen13" 10 ", osm_id, class, subclass, name, area" "ST_Area(geometry)>2000" &
 wait
@@ -152,7 +151,6 @@ wait
 
 # landcover
 filter "landcover_import" "landcover" ", osm_id, class, subclass, area, surface, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name"
-# drop "landcover_import"
 generalize "landcover" "landcover_gen14" 5 ", osm_id, class, subclass, surface, area, name" "ST_Area(geometry)>1000" &
 generalize "landcover" "landcover_gen13" 10 ", osm_id, class, subclass, surface, area, name" "ST_Area(geometry)>2000" &
 wait
@@ -190,7 +188,6 @@ wait
 
 # roads - prepare
 filter "roads_temp" "roads" ", osm_id, class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" 
-# drop "roads_temp"
 
 # roads - generalize
 generalize "roads" "roads_gen15" 3 ", osm_id, class, subclass, oneway, tracktype, bridge, tunnel, service, layer, rank, bicycle, scale, ref" "(service <=1) OR (ST_Length(geometry) > 50)" &
@@ -224,6 +221,9 @@ drop "label_polygon"
 drop "label_points"
 drop "poi_polygon"
 drop "poi_points"
+drop "roads_temp"
+drop "landuse_import"
+drop "landcover_import"
 
 # label filter
 filter "label" "label_gen15" ", osm_id, class, subclass, name, ele, pop" "subclass NOT IN('city', 'town')" &
@@ -236,10 +236,6 @@ filter "label" "label_gen8" ", osm_id, class, subclass, name, ele, pop" "subclas
 wait
 
 # poi filter
-# filter "poi" "poi_gen11" ", class, subclass, name, ele, access, parking, subway, religion" "subclass IN('station', 'halt') AND subway=0" &
-# filter "poi" "poi_gen12" ", class, subclass, name, ele, access, parking, subway, religion" "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site')" &
-# filter "poi" "poi_gen13" ", class, subclass, name, ele, access, parking, subway, religion" "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site', 'bicycle')" &
-# filter "poi" "poi_gen14" ", class, subclass, name, ele, access, parking, subway, religion" "subclass NOT IN('playground', 'viewpoint', 'information')" &
 cluster "poi" "poi_cluster_gen11" 300 "subclass IN('station', 'halt') AND subway=0" &
 cluster "poi" "poi_cluster_gen12" 160 "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site')" &
 cluster "poi" "poi_cluster_gen13" 160 "subclass IN('station', 'halt', 'alpine_hut', 'hotel', 'peak', 'pub', 'fast_food', 'restaurant', 'biergarten', 'hospital', 'shelter', 'camp_site', 'caravan_site', 'bicycle')" &

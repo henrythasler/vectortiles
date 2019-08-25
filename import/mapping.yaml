@@ -26,6 +26,9 @@ tables:
     - name: ele
       type: integer
       key: ele
+    - name: fee
+      type: string
+      key: fee
     - name: access
       type: enumerate
       key: access
@@ -86,6 +89,9 @@ tables:
     - name: ele
       type: integer
       key: ele
+    - name: fee
+      type: string
+      key: fee
     - name: access
       type: enumerate
       key: access
@@ -122,7 +128,6 @@ tables:
       shop: [bicycle, supermarket]
       railway: [station, halt, tram_stop]
       man_made: [mast, tower, communications_tower, antenna]
-
 
   label_points:
     type: point
@@ -449,7 +454,7 @@ tables:
         mapping:
           landuse: [forest, recreation_ground, grass, cemetery]
           leisure: [park, playground, pitch, golf_course]
-          natural: [wood, scrub, beach, wetland, glacier]
+          natural: [wood, scrub, beach, wetland, glacier, heath]
 
   transportation:
     type: linestring
