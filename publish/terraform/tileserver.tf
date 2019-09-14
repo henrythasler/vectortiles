@@ -5,17 +5,21 @@ provider "aws" {
 }
 
 resource "aws_db_instance" "osmdata" {
-  engine              = "postgres"
-  engine_version      = "11.2"
-  identifier          = "osmdata"
-  instance_class      = "${var.postgres_instance_class}"
-  allocated_storage   = 20
-  storage_type        = "gp2"
-  username            = "${var.postgres_user}"
-  password            = "${var.postgres_password}"
-  name                = "world"
-  skip_final_snapshot = true
-  publicly_accessible = true
+  engine                       = "postgres"
+  engine_version               = "11.2"
+  identifier                   = "osmdata"
+  instance_class               = "${var.postgres_instance_class}"
+  allocated_storage            = 20
+  storage_type                 = "gp2"
+  username                     = "${var.postgres_user}"
+  password                     = "${var.postgres_password}"
+  name                         = "world"
+  performance_insights_enabled = true
+  skip_final_snapshot          = true
+  monitoring_interval          = 1
+  publicly_accessible          = true
+
+
 }
 
 resource "aws_s3_bucket" "gis_data_0000" {
@@ -80,6 +84,13 @@ resource "aws_s3_bucket_object" "shp_postprocessing" {
   etag   = "${filemd5("./scripts/shp_postprocessing.sh")}"
 }
 
+resource "aws_s3_bucket_object" "shp_water" {
+  bucket = "${aws_s3_bucket.gis_data_0000.id}"
+  key    = "scripts/shp_water.sh"
+  source = "./scripts/shp_water.sh"
+  etag   = "${filemd5("./scripts/shp_water.sh")}"
+}
+
 resource "aws_batch_job_definition" "prepare_local_database" {
   name                 = "prepare_local_database"
   type                 = "container"
@@ -107,8 +118,8 @@ EOF
 }
 
 resource "aws_batch_job_definition" "download_pbf" {
-  name                 = "download_pbf"
-  type                 = "container"
+  name = "download_pbf"
+  type = "container"
   container_properties = <<EOF
 {
     "command": ["download.sh"],
@@ -159,8 +170,8 @@ EOF
 
 
 resource "aws_batch_job_definition" "postprocessing" {
-  name                 = "postprocessing"
-  type                 = "container"
+  name = "postprocessing"
+  type = "container"
   container_properties = <<EOF
 {
     "command": ["postprocessing.sh"],
@@ -206,8 +217,8 @@ EOF
 }
 
 resource "aws_batch_job_definition" "shp_import" {
-  name                 = "shp_import"
-  type                 = "container"
+  name = "shp_import"
+  type = "container"
   container_properties = <<EOF
 {
     "command": ["shp_import.sh"],
@@ -249,6 +260,37 @@ resource "aws_batch_job_definition" "shp_postprocessing" {
         {"name": "POSTGIS_USER", "value": "${var.postgres_user}"},
         {"name": "SHAPE_DATABASE_NAME", "value": "${var.database_shapes}"},
         {"name": "PGPASSWORD", "value": "${var.postgres_password}"}
+    ],
+    "mountPoints": [],
+    "ulimits": []
+}
+EOF  
+}
+
+resource "aws_batch_job_definition" "shp_water" {
+  name = "shp_water"
+  type = "container"
+  container_properties = <<EOF
+{
+    "command": ["shp_water.sh"],
+    "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
+    "memory": 1024,
+    "vcpus": 1,
+    "jobRoleArn": "arn:aws:iam::324094553422:role/ecsTaskExecutionRole",
+    "volumes": [],
+    "environment": [
+        {"name": "BATCH_FILE_TYPE", "value": "script"},
+        {"name": "BATCH_FILE_S3_URL", "value": "s3://${aws_s3_bucket_object.import.bucket}/${aws_s3_bucket_object.shp_water.id}"},
+        {"name": "POSTGIS_HOSTNAME", "value": "${aws_db_instance.osmdata.address}"},
+        {"name": "POSTGIS_USER", "value": "${var.postgres_user}"},
+        {"name": "SHAPE_DATABASE_NAME", "value": "${var.database_shapes}"},
+        {"name": "PGPASSWORD", "value": "${var.postgres_password}"},
+        {"name": "GIS_DATA_BUCKET", "value": "${aws_s3_bucket.gis_data_0000.id}"},
+        {"name": "SHAPEFOLDER", "value": "data/shp/simplified-water-polygons-split-3857"},
+        {"name": "SHAPEFILE", "value": "simplified_water_polygons"},
+        {"name": "GRID", "value": "grid_coarse"},
+        {"name": "RESOLUTION", "value": "1024"},
+        {"name": "OUTPUT", "value": "water_gen"}
     ],
     "mountPoints": [],
     "ulimits": []
