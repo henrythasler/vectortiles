@@ -159,8 +159,8 @@ resource "aws_batch_job_definition" "import_into_database" {
 {
     "command": ["import.sh"],
     "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
-    "memory": 4096,
-    "vcpus": 1,
+    "memory": 8192,
+    "vcpus": 4,
     "jobRoleArn": "arn:aws:iam::324094553422:role/ecsTaskExecutionRole",
     "volumes": [],
     "environment": [
