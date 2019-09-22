@@ -176,8 +176,8 @@ wait
 
 # waterway
 generalize "waterway" "waterway_gen12" 20 ", osm_id, class, subclass, tunnel, layer, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "ST_Length(geometry)>50" &
-generalize "waterway" "waterway_gen10" 50 ", osm_id, class, subclass, tunnel, layer, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "ST_Length(geometry)>200" &
-generalize "waterway" "waterway_gen8" 100 ", osm_id, class, subclass, tunnel, layer, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "ST_Length(geometry)>400" &
+generalize "waterway" "waterway_gen10" 50 ", osm_id, class, subclass, tunnel, layer, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "subclass IN('river', 'canal', 'stream') AND ST_Length(geometry)>200" &
+generalize "waterway" "waterway_gen8" 100 ", osm_id, class, subclass, tunnel, layer, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name" "subclass IN('river', 'canal') AND ST_Length(geometry)>400" &
 wait
 
 # transportation

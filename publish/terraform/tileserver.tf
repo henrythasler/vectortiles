@@ -4,6 +4,17 @@ provider "aws" {
   region  = "${var.region}"
 }
 
+
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-0000"
+    key    = "vectortiles/terraform.tfstate"
+    region = "eu-central-1"
+    dynamodb_table = "terraform-state-lock"
+    encrypt        = true    
+  }
+}
+
 resource "aws_db_instance" "osmdata" {
   engine                       = "postgres"
   engine_version               = "11.2"
@@ -148,8 +159,8 @@ resource "aws_batch_job_definition" "import_into_database" {
 {
     "command": ["import.sh"],
     "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
-    "memory": 8192,
-    "vcpus": 2,
+    "memory": 4096,
+    "vcpus": 1,
     "jobRoleArn": "arn:aws:iam::324094553422:role/ecsTaskExecutionRole",
     "volumes": [],
     "environment": [
