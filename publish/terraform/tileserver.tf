@@ -29,8 +29,6 @@ resource "aws_db_instance" "osmdata" {
   skip_final_snapshot          = true
   monitoring_interval          = 1
   publicly_accessible          = true
-
-
 }
 
 resource "aws_s3_bucket" "gis_data_0000" {
@@ -72,6 +70,13 @@ resource "aws_s3_bucket_object" "postprocessing" {
   key    = "scripts/postprocessing.sh"
   source = "../../import/postprocessing.sh"
   etag   = "${filemd5("../../import/postprocessing.sh")}"
+}
+
+resource "aws_s3_bucket_object" "production" {
+  bucket = "${aws_s3_bucket.gis_data_0000.id}"
+  key    = "scripts/production.sh"
+  source = "./scripts/production.sh"
+  etag   = "${filemd5("./scripts/production.sh")}"
 }
 
 resource "aws_s3_bucket_object" "shp_download" {
@@ -194,6 +199,31 @@ resource "aws_batch_job_definition" "postprocessing" {
     "environment": [
         {"name": "BATCH_FILE_TYPE", "value": "script"},
         {"name": "BATCH_FILE_S3_URL", "value": "s3://${aws_s3_bucket_object.postprocessing.bucket}/${aws_s3_bucket_object.postprocessing.id}"},
+        {"name": "POSTGIS_HOSTNAME", "value": "${aws_db_instance.osmdata.address}"},
+        {"name": "POSTGIS_USER", "value": "${var.postgres_user}"},
+        {"name": "DATABASE_NAME", "value": "${var.database_local}"},
+        {"name": "PGPASSWORD", "value": "${var.postgres_password}"}
+    ],
+    "mountPoints": [],
+    "ulimits": []
+}
+EOF  
+}
+
+resource "aws_batch_job_definition" "production" {
+  name = "production"
+  type = "container"
+  container_properties = <<EOF
+{
+    "command": ["production.sh"],
+    "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
+    "memory": 512,
+    "vcpus": 4,
+    "jobRoleArn": "arn:aws:iam::324094553422:role/ecsTaskExecutionRole",
+    "volumes": [],
+    "environment": [
+        {"name": "BATCH_FILE_TYPE", "value": "script"},
+        {"name": "BATCH_FILE_S3_URL", "value": "s3://${aws_s3_bucket_object.production.bucket}/${aws_s3_bucket_object.production.id}"},
         {"name": "POSTGIS_HOSTNAME", "value": "${aws_db_instance.osmdata.address}"},
         {"name": "POSTGIS_USER", "value": "${var.postgres_user}"},
         {"name": "DATABASE_NAME", "value": "${var.database_local}"},
