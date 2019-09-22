@@ -201,12 +201,11 @@ generalize "roads" "roads_gen8" 400 ", osm_id, class, subclass, oneway, tracktyp
 wait
 
 # manmade_lines
-generalize "manmade_lines" "manmade_lines_gen13" 10 ", osm_id, class, subclass" "subclass IN('taxiway', 'runway')" &
-wait
+generalize "manmade_lines" "manmade_lines_gen13" 10 ", osm_id, class, subclass" "subclass IN('taxiway', 'runway')"
 
 # buildings
-generalize "buildings" "buildings_gen14" ", osm_id" "ST_Area(geometry)>80" 5 &
-wait
+filter "buildings_temp" "buildings" ", osm_id" 
+generalize "buildings" "buildings_gen14" ", osm_id" "ST_Area(geometry)>80" 5
 
 # poi merge
 merge_to_point "buildings_temp" "housenumbers_temp" "housenumbers" ", osm_id, number, name_de, name_en, name" "(number <> '') IS NOT FALSE" &

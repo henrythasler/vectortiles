@@ -563,15 +563,15 @@ tables:
     mapping:
       route: [bicycle]
 
-  buildings:
-    type: polygon
-    columns:
-    - name: osm_id
-      type: id      
-    - name: geometry
-      type: geometry
-    mapping:
-      building: [__any__]
+  # buildings:
+  #   type: polygon
+  #   columns:
+  #   - name: osm_id
+  #     type: id      
+  #   - name: geometry
+  #     type: geometry
+  #   mapping:
+  #     building: [__any__]
 
   admin:
     type: linestring

@@ -20,7 +20,7 @@ resource "aws_db_instance" "osmdata" {
   engine_version               = "11.2"
   identifier                   = "osmdata"
   instance_class               = "${var.postgres_instance_class}"
-  allocated_storage            = 20
+  allocated_storage            = 100
   storage_type                 = "gp2"
   username                     = "${var.postgres_user}"
   password                     = "${var.postgres_password}"
@@ -160,7 +160,7 @@ resource "aws_batch_job_definition" "import_into_database" {
     "command": ["import.sh"],
     "image": "324094553422.dkr.ecr.eu-central-1.amazonaws.com/postgis-client:latest",
     "memory": 8192,
-    "vcpus": 4,
+    "vcpus": 2,
     "jobRoleArn": "arn:aws:iam::324094553422:role/ecsTaskExecutionRole",
     "volumes": [],
     "environment": [
