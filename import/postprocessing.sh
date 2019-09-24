@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# exit when any command fails
+set -e
+
 #defines
 NC='\033[0m'
 RED='\033[0;31m'
@@ -213,17 +216,6 @@ merge_to_point "label_polygon" "label_points" "label" ", osm_id, class, subclass
 merge_to_point "poi_polygon" "poi_points" "poi" ", osm_id, class, subclass, CASE WHEN (name_de <> '') IS NOT FALSE THEN name_de WHEN (name_en <> '') IS NOT FALSE THEN name_en ELSE name END as name, ele, access, parking, subway, religion" &
 wait
 
-# remove all temporary tables
-drop "buildings_temp"
-drop "housenumbers_temp"
-drop "label_polygon"
-drop "label_points"
-drop "poi_polygon"
-drop "poi_points"
-drop "roads_temp"
-drop "landuse_import"
-drop "landcover_import"
-
 # label filter
 filter "label" "label_gen15" ", osm_id, class, subclass, name, ele, pop" "subclass NOT IN('city', 'town')" &
 filter "label" "label_gen14" ", osm_id, class, subclass, name, ele, pop" "subclass NOT IN('city')" &
@@ -257,6 +249,17 @@ wait
 
 # merge cycleroutes into one layer for improved rendering of transparent lines
 # merge "cycleroute" "cycleroute_merged"
+
+# remove all temporary tables
+drop "buildings_temp"
+drop "housenumbers_temp"
+drop "label_polygon"
+drop "label_points"
+drop "poi_polygon"
+drop "poi_points"
+drop "roads_temp"
+drop "landuse_import"
+drop "landcover_import"
 
 ### show resulting database size
 psql -h ${POSTGIS_HOSTNAME} -U ${POSTGIS_USER} -d ${DATABASE_NAME} \
